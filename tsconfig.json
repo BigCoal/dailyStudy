@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+      "module": "commonjs",        // 生成代码的模板标准
+      "target": "es6",             // 目标语言的版本，现在基本都是ES6
+      "noImplicitAny": true,       // 不允许隐式的any类型
+      "outDir": "./dist",          // 指定输出目录
+      "sourceMap": true            // 是否生成目标文件的sourceMap文件
+  },
+  
+  // include下指定编译文件，即目标ts文件所在位置：**表示递归子目录；*表示目录下的所有文件
+  // 示例中我将所有的ts文件都放在了src目录下
+  "include": [
+      "算法/**/*"        
+  ]
+}

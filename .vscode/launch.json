@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [{
+        "name": "调试TypeScript",    // 配置名称，显示在启动配置下拉菜单中
+        "type": "node",              // 配置类型，TypeScript是通过node来进行调试
+        "request": "launch",         // 请求配置的类型
+        "program": "${workspaceRoot}/node_modules/ts-node/dist/bin.js",    // 可执行文件的绝对路径
+        "args": [
+            "${relativeFile}"        // 传递给程序的命令行参数
+        ],
+        "cwd": "${workspaceRoot}",   // cd到工程的根目录下 
+        "protocol": "inspector"
+    }]
+}
