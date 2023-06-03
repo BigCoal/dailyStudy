@@ -7,4 +7,58 @@
 // arr=[1,100,2]。
 // 开始时，玩家A不管拿1还是2，玩家B作为绝顶聪明的人，都会把100拿走。玩家B会获胜，分数为100。所以返回100。
 
-function cardsInLine() {}
+//先手拿牌，先手获得的最大价值
+function firstHandle(arr: number[], i: number, j: number): number {
+  if (i == j) {
+    return arr[i];
+  }
+
+  const p1 = arr[i] + backHandle(arr, i + 1, j);
+  const p2 = arr[j] + backHandle(arr, i, j - 1);
+  return Math.max(p1, p2);
+}
+
+//后手拿牌,返回先手获得的最大价值
+function backHandle(arr: number[], i: number, j: number): number {
+  if (i == j) {
+    return 0;
+  }
+  const p1 = firstHandle(arr, i + 1, j);
+  const p2 = firstHandle(arr, i, j - 1);
+  return Math.min(p1, p2);
+}
+//暴力递归版本
+function cardsInLine(arr: number[]) {
+  const p1 = firstHandle(arr, 0, arr.length - 1);
+  const p2 = backHandle(arr, 0, arr.length - 1);
+  return Math.max(p1, p2);
+}
+
+//动态规划
+//i:0~N-1 j:0~N-1
+function cardsInLineDp(arr: number[]) {
+  const N = arr.length;
+  const firstDp = Array.from(new Array(N), () => new Array(N));
+  const backDp = Array.from(new Array(N), () => new Array(N));
+
+  for (let i = 0; i < firstDp.length; i++) {
+    firstDp[i][i] = arr[i];
+    backDp[i][i] = 0;
+  }
+  for (let i = firstDp.length - 2; i >= 0; i--) {
+    for (let j = i + 1; j < firstDp[0].length; j++) {
+      const fP1 = arr[i] + backDp[i + 1][j];
+      const fP2 = arr[j] + backDp[i][j - 1];
+      firstDp[i][j] = Math.max(fP1, fP2);
+
+      const bP1 = firstDp[i + 1][j];
+      const bP2 = firstDp[i][j - 1];
+      backDp[i][j] = Math.min(bP1, bP2);
+    }
+  }
+
+  return Math.max(firstDp[0][N - 1], backDp[0][N - 1]);
+}
+
+console.log(cardsInLine([1, 2, 100, 4]));
+console.log(cardsInLineDp([1, 2, 100, 4]));

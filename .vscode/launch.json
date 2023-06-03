@@ -1,6 +1,23 @@
 {
     "version": "0.2.0",
-    "configurations": [{
+    "configurations": [
+        
+    {
+        "name": "ts-node",
+        "type": "node",
+        "request": "launch",
+        "args": [
+            "${relativeFile}"
+        ],
+        "runtimeArgs": [
+            "-r",
+            "ts-node/register"
+        ],
+        "cwd": "${workspaceRoot}",
+        "protocol": "inspector",
+        "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
         "name": "调试TypeScript",    // 配置名称，显示在启动配置下拉菜单中
         "type": "node",              // 配置类型，TypeScript是通过node来进行调试
         "request": "launch",         // 请求配置的类型
