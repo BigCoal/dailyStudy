@@ -58,7 +58,7 @@ export function DP1(kinds: number[], aim: number) {
     for (let j = 0; j < N; j++) {
       dp[i][j] = dp[i + 1][j];
       if (j - kinds[i] >= 0 && dp[i][j - kinds[i]] !== Number.MAX_VALUE) {
-        dp[i][j] = Math.min(dp[i + 1][j], dp[i][j - kinds[i]] + 1); //这里非常有意思，有时间再好好想想
+        dp[i][j] = Math.min(dp[i + 1][j], dp[i][j - kinds[i]] + 1); //TODO 这里非常有意思，有时间再好好想想
       }
     }
   }
