@@ -7,7 +7,7 @@ function process(kinds: number[], index: number, aim: number): number {
     return aim == 0 ? 1 : 0;
   }
   let ans = 0;
-  for (let zhang = 0; zhang <= Number.MAX_VALUE; zhang++) {
+  for (let zhang = 0; zhang <= Number.MAX_SAFE_INTEGER; zhang++) {
     if (aim - zhang * kinds[index] >= 0) {
       ans += process(kinds, index + 1, aim - zhang * kinds[index]);
     } else {
@@ -26,7 +26,7 @@ export function DP(kinds: number[], aim: number) {
   for (let i = M - 2; i >= 0; i--) {
     for (let j = 0; j < N; j++) {
       let ans = 0;
-      for (let zhang = 0; zhang <= Number.MAX_VALUE; zhang++) {
+      for (let zhang = 0; zhang <= Number.MAX_SAFE_INTEGER; zhang++) {
         if (j - zhang * kinds[i] >= 0) {
           ans += dp[i + 1][j - zhang * kinds[i]];
         } else {

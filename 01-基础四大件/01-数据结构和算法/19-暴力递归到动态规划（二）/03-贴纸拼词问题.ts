@@ -18,12 +18,12 @@ export function process(
   reset: number
 ): number {
   if (index == arrNumWords.length) {
-    return reset <= 0 ? 0 : Number.MAX_VALUE;
+    return reset <= 0 ? 0 : Number.MAX_SAFE_INTEGER;
   }
 
-  let res = Number.MAX_VALUE;
+  let res = Number.MAX_SAFE_INTEGER;
   const copyArr = [...strNumWords];
-  for (let zhang = 0; zhang < Number.MAX_VALUE; zhang++) {
+  for (let zhang = 0; zhang < Number.MAX_SAFE_INTEGER; zhang++) {
     res = Math.min(
       res,
       zhang + process(copyArr, arrNumWords, index + 1, reset)

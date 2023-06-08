@@ -3,13 +3,13 @@
 // 返回组成aim的最少货币数
 function process(kinds: number[], index: number, aim: number): number {
   if (index == kinds.length) {
-    return aim == 0 ? 0 : Number.MAX_VALUE;
+    return aim == 0 ? 0 : Number.MAX_SAFE_INTEGER;
   }
-  let ans = Number.MAX_VALUE;
-  for (let zhang = 0; zhang <= Number.MAX_VALUE; zhang++) {
+  let ans = Number.MAX_SAFE_INTEGER;
+  for (let zhang = 0; zhang <= Number.MAX_SAFE_INTEGER; zhang++) {
     if (aim - zhang * kinds[index] >= 0) {
       const next = process(kinds, index + 1, aim - zhang * kinds[index]);
-      if (next !== Number.MAX_VALUE) {
+      if (next !== Number.MAX_SAFE_INTEGER) {
         ans = Math.min(ans, zhang + next);
       }
     } else {
@@ -24,16 +24,16 @@ export function DP(kinds: number[], aim: number) {
   const M = kinds.length + 1;
   const N = aim + 1;
   const dp = Array.from(new Array(M), () =>
-    new Array(N).fill(Number.MAX_VALUE)
+    new Array(N).fill(Number.MAX_SAFE_INTEGER)
   );
   dp[M - 1][0] = 0;
   for (let i = M - 2; i >= 0; i--) {
     for (let j = 0; j < N; j++) {
-      let ans = Number.MAX_VALUE;
-      for (let zhang = 0; zhang <= Number.MAX_VALUE; zhang++) {
+      let ans = Number.MAX_SAFE_INTEGER;
+      for (let zhang = 0; zhang <= Number.MAX_SAFE_INTEGER; zhang++) {
         if (j - zhang * kinds[i] >= 0) {
           const next = dp[i + 1][j - zhang * kinds[i]];
-          if (next !== Number.MAX_VALUE) {
+          if (next !== Number.MAX_SAFE_INTEGER) {
             ans = Math.min(ans, zhang + next);
           }
         } else {
@@ -51,13 +51,16 @@ export function DP1(kinds: number[], aim: number) {
   const M = kinds.length + 1;
   const N = aim + 1;
   const dp = Array.from(new Array(M), () =>
-    new Array(N).fill(Number.MAX_VALUE)
+    new Array(N).fill(Number.MAX_SAFE_INTEGER)
   );
   dp[M - 1][0] = 0;
   for (let i = M - 2; i >= 0; i--) {
     for (let j = 0; j < N; j++) {
       dp[i][j] = dp[i + 1][j];
-      if (j - kinds[i] >= 0 && dp[i][j - kinds[i]] !== Number.MAX_VALUE) {
+      if (
+        j - kinds[i] >= 0 &&
+        dp[i][j - kinds[i]] !== Number.MAX_SAFE_INTEGER
+      ) {
         dp[i][j] = Math.min(dp[i + 1][j], dp[i][j - kinds[i]] + 1); //TODO 这里非常有意思，有时间再好好想想
       }
     }
