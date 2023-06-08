@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实现：立即执行，下次执行必须停止wait秒后触发才能执行</title>
+</head>
+
+<body>
+    <script>
+        function moveFn() {
+            console.log(1)
+        }
+
+        document.addEventListener("mousemove", debounce(moveFn, 300, true))
+
+        function debounce(fn, wait, immediate) {
+            let timeout = null;
+            return function () {
+                const context = this;
+                const arg = arguments;
+                if (timeout) clearTimeout(timeout);
+                if (immediate) {
+                    const call = !timeout;
+                    timeout = setTimeout(() => {
+                        timeout = null;
+                    }, wait)
+                    if (call) fn.apply(context, arg);
+                } else {
+                    timeout = setTimeout(() => {
+                        fn.apply(context, arg)
+                    }, wait)
+                }
+
+            }
+        }
+    </script>
+</body>
+
+</html>

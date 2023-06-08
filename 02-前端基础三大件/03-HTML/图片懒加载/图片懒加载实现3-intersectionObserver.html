@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            position: relative;
+            height: 300px;
+            overflow: auto;
+        }
+
+        img {
+            margin-top: 500px;
+            height: 100px;
+            width: 100px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box">
+        <img data-src="../../static/images/wallpaper1.jpeg">
+        <img data-src="../../static/images/wallpaper2.jpeg">
+        <img data-src="../../static/images/wallpaper3.jpeg">
+        <img data-src="../../static/images/wallpaper4.jpeg">
+        <img data-src="../../static/images/wallpaper5.jpeg">
+    </div>
+    <script>
+        const imgs = document.querySelectorAll("img")
+        const box = document.querySelector("#box")
+
+        const io = new IntersectionObserver((changes) => {
+            changes.forEach((change) => {
+                if (change.isIntersecting) {
+                    console.log("触发") //当图片和box交叉并且是进入状态时触发
+                    const img = change.target;
+                    img.src = img.dataset.src;
+                    io.unobserve(img);  //完成后解除观察
+                }
+            });
+        }, {
+            root: box
+        })
+
+        for (let i = 0; i < imgs.length; i++) {
+            io.observe(imgs[i]) //建立图片的动作观察
+        }
+    </script>
+
+
+</body>
+
+</html>

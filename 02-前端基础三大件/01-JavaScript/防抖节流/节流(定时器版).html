@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节流(定时器版)</title>
+</head>
+
+<body>
+    <script>
+        function throttle(fn, wait) {
+            let timeout = null;
+
+            return function () {
+                const context = this;
+                const arg = arguments;
+                if (!timeout) {
+                    timeout = setTimeout(() => {
+                        fn.apply(context, arg);
+                        timeout = null;
+                    }, wait)
+                }
+            }
+        }
+
+        const runThrottle = throttle(function () {
+            console.log(1)
+        }, 3000, true)
+
+        document.addEventListener("mousemove", runThrottle)
+
+    </script>
+</body>
+
+</html>

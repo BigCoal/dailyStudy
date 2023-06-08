@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖取消</title>
+</head>
+
+<body>
+    <button id="cancel">取消</button>
+    <script>
+        function debounce(fn, wait, immediate) {
+            let timeout = null;
+            const deb = function () {
+                const context = this;
+                const arg = arguments;
+                if (timeout) clearTimeout(timeout);
+                if (immediate) {
+                    const call = !timeout;
+                    timeout = setTimeout(() => {
+                        timeout = null;
+                    }, wait)
+                    if (call) fn.apply(context, arg);
+                } else {
+                    timeout = setTimeout(() => {
+                        fn.apply(context, arg)
+                    }, wait)
+                }
+
+            }
+
+            deb.cancel = function () {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+
+            return deb
+        }
+
+        const runDebounce = debounce(moveFn, 10000, true)
+
+        function cancelDebounce() {
+            console.log("取消")
+            runDebounce.cancel()
+        }
+        function moveFn() {
+            console.log(1)
+        }
+
+        document.addEventListener("mousemove", runDebounce)
+        document.getElementById("cancel").addEventListener("click", cancelDebounce)
+
+    </script>
+</body>
+
+</html>

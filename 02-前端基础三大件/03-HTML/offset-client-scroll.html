@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>offset</title>
+</head>
+<style>
+  /* * {
+    margin: 0;
+    padding: 0;
+  } */
+
+  .test {}
+
+  .box {
+    margin: 40px;
+    overflow: hidden;
+    background: gold;
+    padding: 10px;
+    border: 5px solid #ccc;
+  }
+
+  .mydiv {
+    width: 100px;
+    height: 120px;
+    padding: 20px;
+    border: 2px solid #ccc;
+    margin: 20px 30px;
+  }
+</style>
+
+<body>
+  <div class="test">
+    <div class="box">
+      <div class="mydiv" id="myDiv"></div>
+    </div>
+  </div>
+
+  <script>
+    function getPosition() {
+      var mydiv = document.getElementById('myDiv');
+      // offsetHeight 元素垂直方向占用的空间大小 包括元素的高度+水平滚动轴高度+边框高度
+      console.log("offsetHeight:" + mydiv.offsetHeight); // 输出164   计算为 120+20+20+2+2 = 164
+      // offsetWidth 元素在水平方向上占用的空间大小，以像素计。
+      console.log("offsetParent:" + mydiv.offsetParent); // 输出 60 
+      // 包括元素的宽度、（可见的）垂直滚动条的宽度、左边框宽度和右边框宽度。
+      console.log("offsetWidth:" + mydiv.offsetWidth); // 输出 144  计算为 100+20+20+2+2 = 144
+      // offsetTop
+      console.log("offsetTop:" + mydiv.offsetTop); // 输出 60 
+      // offsetLeft
+      console.log("offsetLeft:" + mydiv.offsetLeft); // 输出 70
+
+
+      console.log("clientHeight:" + mydiv.clientHeight); // 输出 60 
+      console.log("clientWidth:" + mydiv.clientWidth); // 输出 60 
+      console.log("clientLeft:" + mydiv.clientLeft); // 输出 60 
+      console.log("clientTop:" + mydiv.clientTop); // 输出 60 
+      console.log("scrollHeight:" + mydiv.scrollHeight); // 输出 60 
+      console.log("scrollWidth:" + mydiv.scrollWidth); // 输出 60 
+      console.log("scrollLeft:" + mydiv.scrollLeft); // 输出 60 
+      console.log("scrollTop:" + mydiv.scrollTop); // 输出 60 
+      console.log("getBoundingClientRect:" + JSON.stringify(mydiv.getBoundingClientRect())); // 输出 60
+    }
+    getPosition()
+
+  </script>
+</body>
+
+</html>

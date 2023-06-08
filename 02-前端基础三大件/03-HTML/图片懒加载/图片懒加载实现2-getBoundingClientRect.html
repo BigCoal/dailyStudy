@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img {
+            margin-top: 500px;
+            height: 100px;
+            width: 100px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <img data-src="../../static/images/wallpaper1.jpeg">
+    <img data-src="../../static/images/wallpaper2.jpeg">
+    <img data-src="../../static/images/wallpaper3.jpeg">
+    <img data-src="../../static/images/wallpaper4.jpeg">
+    <img data-src="../../static/images/wallpaper5.jpeg">
+
+    <script>
+        const imgs = document.querySelectorAll("img")
+
+        function lazeImg() {
+            for (let i = 0; i < imgs.length; i++) {
+                const element = imgs[i];
+                const src = element.dataset.src;
+                const distanceViewTop = element.getBoundingClientRect().top;//注意：是距离视口 顶部的距离
+                if (document.documentElement.clientHeight > distanceViewTop - 100 && src) {
+                    console.log("触发")
+                    element.src = src
+                    element.dataset.src = ""
+                }
+            }
+        }
+
+        //TODO 优化，未来可以添加上节流
+        document.addEventListener("scroll", lazeImg)
+    </script>
+
+
+</body>
+
+</html>

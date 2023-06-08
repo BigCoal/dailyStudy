@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            position: relative;
+            height: 300px;
+            overflow: auto;
+        }
+
+        img {
+            margin-top: 500px;
+            height: 100px;
+            width: 100px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box">
+        <img data-src="../../static/images/wallpaper1.jpeg">
+        <img data-src="../../static/images/wallpaper2.jpeg">
+        <img data-src="../../static/images/wallpaper3.jpeg">
+        <img data-src="../../static/images/wallpaper4.jpeg">
+        <img data-src="../../static/images/wallpaper5.jpeg">
+    </div>
+    <script>
+        const imgs = document.querySelectorAll("img")
+        const box = document.querySelector("#box")
+
+        function lazeImg() {
+            for (let i = 0; i < imgs.length; i++) {
+                const element = imgs[i];
+                const src = element.dataset.src;
+                const distanceOffsetParentTop = element.offsetTop - box.scrollTop;//距离offsetParent 顶部的距离
+                if (distanceOffsetParentTop < box.clientHeight + 100 && src) {
+                    console.log("触发")
+                    element.src = src
+                    element.dataset.src = ""
+                }
+            }
+        }
+
+        //TODO 优化，未来可以添加上节流
+        box.addEventListener("scroll", lazeImg)
+    </script>
+
+
+</body>
+
+</html>
