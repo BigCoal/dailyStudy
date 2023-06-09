@@ -3,7 +3,10 @@ const path = require("path");
 const request = require("request");
 
 //目标文件
-const mdPath = "../src/03-前端框架/02-Webpack/01-手写tapable/01-tapable.md";
+const mdPath = path.join(
+  __dirname,
+  "../src/04-工程化/03-Babel/ AST（抽象语法树）以及 AST 的广泛应用.md"
+);
 const mdPathDir = path.dirname(mdPath);
 
 //目标目录下没有用静态目录创建
@@ -11,6 +14,7 @@ const staticDir = path.join(mdPathDir, "static");
 if (!fs.existsSync(staticDir)) {
   fs.mkdirSync(staticDir);
 }
+
 // 读取 Markdown 文件内容
 const markdownString = fs.readFileSync(mdPath, "utf-8");
 
