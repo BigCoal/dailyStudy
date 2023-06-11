@@ -1,0 +1,46 @@
+一、步骤
+  01 实例化 compiler 对象（ 它会贯穿整个webpack工作的过程 ）
+  02 由 compiler 调用 run 方法
+
+二、compiler 实例化操作
+  01 compiler 继承 tapable，因此它具备钩子的操作能力（监听事件，触发事件，webpack是一个事件流）
+
+  02 在实例化了 compiler 对象之后就往它的身上挂载很多属性，其中 NodeEnvironmentPlugin 这个操作就让它具备了
+  文件读写的能力（我们的模拟时采用的是 node 自带的 fs )
+
+  03 具备了 fs 操作能力之后又将 plugins 中的插件都挂载到了 compiler 对象身上  
+
+  04 将内部默认的插件与 compiler 建立关系，其中 EntryOptionPlugin 处理了入口模块的 id 
+
+  05 在实例化 compiler 的时候只是监听了 make 钩子（SingleEntryPlugin)
+    5-1 在 SingleEntryPlugin 模块的 apply 方法中有二个钩子监听
+    5-2 其中 compilation 钩子就是让 compilation 具备了利用 normalModuleFactory 工厂创建一个普通模块的能力
+    5-3 因为它就是利用一个自己创建的模块来加载需要被打包的模块 
+    5-4 其中 make 钩子 在 compiler.run 的时候会被触发，走到这里就意味着某个模块执行打包之前的所有准备工作就完成了
+    5-5 addEntry 方法调用（）
+
+三、run 方法执行（ 当前想看的是什么时候触发了 make 钩子 ）
+
+  01 run 方法里就是一堆钩子按着顺序触发（beforeRun run compile）
+
+  02 compile 方法执行
+    1 准备参数(其中 normalModuleFactory 是我们后续用于创建模块的)
+    2 触发beforeCompile
+    3 将第一步的参数传给一个函数，开始创建一个 compilation （newCompilation）
+    4 在调用 newCompilation 的内部
+      - 调用了 createCompilation 
+      - 触发了 this.compilation 钩子 和 compilation 钩子的监听
+  03 当创建了 compilation 对象之后就触发了 make 钩子
+
+  04 当我们触发 make 钩子监听的时候，将 compilation 对象传递了过去 
+
+四、总结 
+
+  1 实例化 compiler  
+  2 调用 compile 方法
+  3 newCompilation 
+  4 实例化了一个compilation 对象（它和 compiler 是有关系）
+  5 触发 make 监听 
+  6 addEntry 方法（这个时候就带着 context name entry  一堆的东西） 就奔着编译去了.....
+
+    

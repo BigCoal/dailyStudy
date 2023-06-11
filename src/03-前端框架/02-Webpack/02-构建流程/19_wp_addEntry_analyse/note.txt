@@ -1,0 +1,28 @@
+01 make 钩子在被触发的时候，接收到了 compilation 对象实现，它的身上挂载了很多内容
+
+02 从 compilation 当中解构了三个值 
+  entry : 当前需要被打包的模块的相对路径（./src/index.js)
+  name: main 
+  context: 当前项目的根路径 
+
+03 dep 是对当前的入口模块中的依赖关系进行处理 
+
+04 调用了 addEntry 方法 
+
+05 在 compilation实例的身上有一个 addEntry 方法，然后内部调用了 _addModuleChain 方法，去处理依赖
+
+06 在 compilation 当中我们可以通过 NormalModuleFactory 工厂来创建一个普通的模块对象  
+
+07 在 webpack 内部默认启了一个 100 并发量的打包操作，当前我们看到的是 normalModule.create()
+
+08 在 beforeResolve 里面会触发一个 factory 钩子监听【 这个部分的操作其实是处理 loader， 当前我们重点去看 】
+
+09 上述操作完成之后获取到了一个函数被存在 factory 里，然后对它进行了调用  
+
+10 在这个函数调用里又触发了一个叫 resolver 的钩子（ 处理 loader的，拿到了 resolver方法就意味着所有的Loader 处理完毕 ）
+
+11 调用 resolver() 方法之后，就会进入到  afterResolve 这个钩子里，然后就会触发  new NormalModule 
+
+12 在完成上述操作之后就将module 进行了保存和一些其它属性的添加  
+
+13 调用 buildModule 方法开始编译---》 调用 build ---》doBuild 
