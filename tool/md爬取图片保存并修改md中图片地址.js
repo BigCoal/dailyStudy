@@ -3,10 +3,7 @@ const path = require("path");
 const request = require("request");
 
 //目标文件
-const mdPath = path.join(
-  __dirname,
-  "../src/04-工程化/03-Babel/ AST（抽象语法树）以及 AST 的广泛应用.md"
-);
+const mdPath = path.join(__dirname, "../src/05-其他/UML类图/UML类图.md");
 const mdPathDir = path.dirname(mdPath);
 
 //目标目录下没有用静态目录创建
