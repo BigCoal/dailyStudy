@@ -30,10 +30,93 @@ export default defineUserConfig({
         text: "工程化",
         link: "/04-Front-End-Engineering/01-CanIUse/01-caniuse.md",
       },
+      {
+        text: "英语自学",
+        link: "/06-English/新概念/新概念1/1-2 Excuse me.md",
+      },
     ],
     // 侧边栏
     sidebar: {
       "/01-Computer-Basic/": [
+        {
+          text: "算法与数据结构",
+          collapsible: true,
+          children: [
+            {
+              text: "基础",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/01-数据结构和算法/00-基础/运算符优先级.md",
+                "/01-Computer-Basic/01-数据结构和算法/00-基础/原码、反码、补码.md",
+                "/01-Computer-Basic/01-数据结构和算法/00-基础/位运算.md",
+                "/01-Computer-Basic/01-数据结构和算法/00-基础/位运算(下).md",
+              ],
+            },
+            {
+              text: "复杂度",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/01-数据结构和算法/01-复杂度，二分法/空间复杂度.md",
+                "/01-Computer-Basic/01-数据结构和算法/01-复杂度，二分法/时间复杂度.md",
+              ],
+            },
+            {
+              text: "二叉树",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/01-数据结构和算法/10-二叉树（一）/二叉树.md",
+              ],
+            },
+            {
+              text: "从暴力递归到动态规划",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/01-数据结构和算法/17-认识一些经典的递归过程/认识一些经典递归过程.md",
+                "/01-Computer-Basic/01-数据结构和算法/18-暴力递归到动态规划（一）/暴力递归到动态规划（一）.md",
+                "/01-Computer-Basic/01-数据结构和算法/22-暴力递归到动态规划（五）/暴力递归到动态规划（五）.md",
+                "/01-Computer-Basic/01-数据结构和算法/23-暴力递归到动态规划（六）/暴力递归到动态规划（六）.md",
+              ],
+            },
+            {
+              text: "复杂度",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/01-数据结构和算法/33-与哈希函数有关结构/哈希表.md",
+                "/01-Computer-Basic/01-数据结构和算法/33-与哈希函数有关结构/一致性哈希算法.md",
+              ],
+            },
+          ],
+        },
+        {
+          text: "计算机网络",
+          collapsible: true,
+          children: [
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP发展历程.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/TCP协议详解.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/DNS原理入门.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/CDN原理入门.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/浏览器、DNS、CDN缓存.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/http缓存与cdn缓存配置指南.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/Data-URL.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP Headers.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP cookies.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 消息.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 缓存.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 请求方法.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 请求的响应头部 Vary 的理解.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 详解长短连接，管道化，队头阻塞及它们之间的关系.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP2四大核心特性.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTPS.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP_1.x 的连接管理.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP概述.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/meta标签.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/图解SSL_TLS协议.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/理解TCP序列号Seq和确认号Ack.md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/跨源资源共享 (CORS).md",
+            "/01-Computer-Basic/02-计算机网络/HTTP/浏览器的工作原理.md",
+          ],
+        },
         {
           text: "设计模式",
           collapsible: true,
@@ -45,6 +128,15 @@ export default defineUserConfig({
         },
       ],
       "/02-Front-End-Basic/": [
+        {
+          text: "HTML",
+          collapsible: true,
+          children: [
+            "/02-Front-End-Basic/03-HTML/client-offset-scroll.md",
+            "/02-Front-End-Basic/03-HTML/浏览器工作原理(上).md",
+            "/02-Front-End-Basic/03-HTML/浏览器工作原理(下).md",
+          ],
+        },
         {
           text: "Javascript",
           collapsible: true,
@@ -228,6 +320,116 @@ export default defineUserConfig({
             },
           ],
         },
+        {
+          text: "CSS",
+          collapsible: true,
+          children: [
+            "/02-Front-End-Basic/02-CSS/流、元素与基本尺寸.md",
+            {
+              text: "盒尺寸四大家族",
+              collapsible: true,
+              children: [
+                "/02-Front-End-Basic/02-CSS/盒尺寸四大家族/Content.md",
+                "/02-Front-End-Basic/02-CSS/盒尺寸四大家族/Padding.md",
+                "/02-Front-End-Basic/02-CSS/盒尺寸四大家族/Margin.md",
+                "/02-Front-End-Basic/02-CSS/盒尺寸四大家族/Border.md",
+              ],
+            },
+            {
+              text: "内联元素和流",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/02-CSS/内联元素和流/字母x.md",
+                "/02-Front-End-Basic/02-CSS/内联元素和流/line-height.md",
+                "/02-Front-End-Basic/02-CSS/内联元素和流/vertical-align.md",
+              ],
+            },
+            {
+              text: "流的破坏与保护",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float的天然克星clear.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/最佳结界overflow.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/BFC.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/position-absolute.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/position-relative.md",
+                "/02-Front-End-Basic/02-CSS/流的破坏与保护/position-fixed.md",
+              ],
+            },
+            "/02-Front-End-Basic/02-CSS/css世界的层叠规则/css世界的层叠规则.md",
+            {
+              text: "强大的文本处理能力",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-size.md",
+                "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-family.md",
+              ],
+            },
+          ],
+        },
+        {
+          text: "Typescript",
+          collapsible: true,
+          children: [
+            {
+              text: "基本",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/handbook/basic-types.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/interfaces.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/functions.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/literal-types.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/classes.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/enums.md",
+                "/02-Front-End-Basic/04-Typescript/handbook/generics.md",
+              ],
+            },
+            {
+              text: "进阶",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/reference/advanced-types.md",
+                "/02-Front-End-Basic/04-Typescript/reference/utility-types.md",
+                "/02-Front-End-Basic/04-Typescript/reference/declaration-merging.md",
+                "/02-Front-End-Basic/04-Typescript/reference/mixins.md",
+                "/02-Front-End-Basic/04-Typescript/reference/type-compatibility.md",
+                "/02-Front-End-Basic/04-Typescript/reference/type-inference.md",
+                "/02-Front-End-Basic/04-Typescript/reference/jsx.md",
+                "/02-Front-End-Basic/04-Typescript/reference/modules.md",
+                "/02-Front-End-Basic/04-Typescript/reference/module-resolution.md",
+                "/02-Front-End-Basic/04-Typescript/reference/namespaces.md",
+                "/02-Front-End-Basic/04-Typescript/reference/namespaces-and-modules",
+              ],
+            },
+            {
+              text: "声明文件",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/declaration-files/introduction.md",
+                "/02-Front-End-Basic/04-Typescript/declaration-files/by-example.md",
+                "/02-Front-End-Basic/04-Typescript/declaration-files/library-structures.md",
+                "/02-Front-End-Basic/04-Typescript/declaration-files/templates.md",
+              ],
+            },
+            {
+              text: "工程配置",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/project-config/tsconfig.json.md",
+                "/02-Front-End-Basic/04-Typescript/project-config/project-references.md",
+                "/02-Front-End-Basic/04-Typescript/project-config/compiler-options.md",
+              ],
+            },
+          ],
+        },
       ],
       "/03-Front-End-Frame/": [
         {
@@ -241,6 +443,22 @@ export default defineUserConfig({
       ],
       "/04-Front-End-Engineering/": [
         "/04-Front-End-Engineering/01-CanIUse/01-caniuse.md",
+        "/04-Front-End-Engineering/03-Babel/ AST（抽象语法树）以及 AST 的广泛应用.md",
+        "/04-Front-End-Engineering/04-commitLint/commitLint.md",
+        {
+          text: "Git",
+          collapsible: true,
+          children: [
+            "/04-Front-End-Engineering/05-Git/版本管理.md",
+            "/04-Front-End-Engineering/05-Git/commit合并.md",
+          ],
+        },
+      ],
+      "/06-English/": [
+        "/06-English/新概念/新概念1/1-2 Excuse me.md",
+        "/06-English/新概念/新概念1/3-4 Sorry sit",
+        "/06-English/新概念/新概念1/5-6 Nice to meet you copy.md",
+        "/06-English/新概念/新概念1/7-8 Are you a teacher.md",
       ],
     },
   }),
