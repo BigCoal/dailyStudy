@@ -4,15 +4,20 @@ Vue.js 3.0 的编译场景分**服务端 SSR 编译**和 **web 编译**，本文
 
 我们先来看 web 编译的入口 compile 函数，分析它的实现原理：
 
-复制代码
-
-```
+```js
 function compile(template, options = {}) {
-  return baseCompile(template, extend({}, parserOptions, options, {
-    nodeTransforms: [...DOMNodeTransforms, ...(options.nodeTransforms || [])],
-    directiveTransforms: extend({}, DOMDirectiveTransforms, options.directiveTransforms || {}),
-    transformHoist:  null
-  }))
+  return baseCompile(
+    template,
+    extend({}, parserOptions, options, {
+      nodeTransforms: [...DOMNodeTransforms, ...(options.nodeTransforms || [])],
+      directiveTransforms: extend(
+        {},
+        DOMDirectiveTransforms,
+        options.directiveTransforms || {}
+      ),
+      transformHoist: null,
+    })
+  );
 }
 ```
 
@@ -22,28 +27,32 @@ compile 内部通过执行 baseCompile 方法完成编译工作，可以看到 b
 
 接下来，我们来看一下 baseCompile 的实现：
 
-复制代码
-
-```
-function baseCompile(template,  options = {}) {
-  const prefixIdentifiers = false
+```js
+function baseCompile(template, options = {}) {
+  const prefixIdentifiers = false;
   // 解析 template 生成 AST
-  const ast = isString(template) ? baseParse(template, options) : template
-  const [nodeTransforms, directiveTransforms] = getBaseTransformPreset()
+  const ast = isString(template) ? baseParse(template, options) : template;
+  const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
   // AST 转换
-  transform(ast, extend({}, options, {
-    prefixIdentifiers,
-    nodeTransforms: [
-      ...nodeTransforms,
-      ...(options.nodeTransforms || [])
-    ],
-    directiveTransforms: extend({}, directiveTransforms, options.directiveTransforms || {}
-    )
-  }))
+  transform(
+    ast,
+    extend({}, options, {
+      prefixIdentifiers,
+      nodeTransforms: [...nodeTransforms, ...(options.nodeTransforms || [])],
+      directiveTransforms: extend(
+        {},
+        directiveTransforms,
+        options.directiveTransforms || {}
+      ),
+    })
+  );
   // 生成代码
-  return generate(ast, extend({}, options, {
-    prefixIdentifiers
-  }))
+  return generate(
+    ast,
+    extend({}, options, {
+      prefixIdentifiers,
+    })
+  );
 }
 ```
 
@@ -55,9 +64,7 @@ function baseCompile(template,  options = {}) {
 
 你可以在百度百科中看到 [AST 的定义](https://baike.baidu.com/item/抽象语法树/6129952?fr=aladdin)，这里我就不赘述啦，对应到我们的 template，也可以用 AST 去描述它，比如我们有如下 template：
 
-复制代码
-
-```
+```html
 <div class="app">
   <!-- 这是一段注释 -->
   <hello>
@@ -69,9 +76,7 @@ function baseCompile(template,  options = {}) {
 
 它经过第一步解析后，生成相应的 AST 对象：
 
-复制代码
-
-```
+```js
 {
   "type": 0,
   "children": [
@@ -305,11 +310,8 @@ function baseCompile(template,  options = {}) {
 
 因为 Vue.js 3.0 和 Vue.js 2.x 有一个很大的不同——Vue.js 3.0 支持了 Fragment 的语法，即组件可以有多个根节点，比如：
 
-复制代码
-
-```
-<img src="./logo.jpg">
-<hello :msg="msg"></hello>
+```html
+<img src="./logo.jpg" /> <hello :msg="msg"></hello>
 ```
 
 这种写法在 Vue.js 2.x 中会报错，提示模板只能有一个根节点，而 Vue.js 3.0 允许了这种写法。但是对于一棵树而言，必须有一个根节点，所以虚拟节点在这种场景下就非常有用了，它可以作为 AST 的根节点，然后其 children 包含了 img 和 hello 的节点。
@@ -318,9 +320,7 @@ function baseCompile(template,  options = {}) {
 
 先来看一下 baseParse 的实现：
 
-复制代码
-
-```
+```js
 function baseParse(content, options = {}) {
     // 创建解析上下文
     const context = createPa  rserContext(content, options)
@@ -336,9 +336,7 @@ baseParse 主要就做三件事情：**创建解析上下文**，**解析子节�
 
 首先，我们来分析创建解析上下文的过程，先来看 createParserContext 的实现：
 
-复制代码
-
-```
+```js
 // 默认解析配置
 const defaultParserOptions = {
   delimiters: [`{{`, `}}`],
@@ -347,9 +345,10 @@ const defaultParserOptions = {
   isVoidTag: NO,
   isPreTag: NO,
   isCustomElement: NO,
-  decodeEntities: (rawText) => rawText.replace(decodeRE, (_, p1) => decodeMap[p1]),
-  onError: defaultOnError
-}
+  decodeEntities: (rawText) =>
+    rawText.replace(decodeRE, (_, p1) => decodeMap[p1]),
+  onError: defaultOnError,
+};
 function createParserContext(content, options) {
   return {
     options: extend({}, defaultParserOptions, options),
@@ -359,8 +358,8 @@ function createParserContext(content, options) {
     originalSource: content,
     source: content,
     inPre: false,
-    inVPre: false
-  }
+    inVPre: false,
+  };
 }
 ```
 
@@ -374,20 +373,18 @@ function createParserContext(content, options) {
 
 我们先来看一下 parseChildren 函数的实现：
 
-复制代码
-
-```
+```js
 function parseChildren(context, mode, ancestors) {
-  const parent = last(ancestors)
-  const ns = parent ? parent.ns : 0 /* HTML */
-  const nodes = []
+  const parent = last(ancestors);
+  const ns = parent ? parent.ns : 0; /* HTML */
+  const nodes = [];
 
   // 自顶向下分析代码，生成 nodes
 
-  let removedWhitespace = false
+  let removedWhitespace = false;
   // 空白字符管理
 
-  return removedWhitespace ? nodes.filter(Boolean) : nodes
+  return removedWhitespace ? nodes.filter(Boolean) : nodes;
 }
 ```
 
@@ -395,103 +392,91 @@ parseChildren 的目的就是解析并创建 AST 节点数组。它有两个主�
 
 首先，我们来看**生成 AST 节点数组**的流程：
 
-复制代码
-
-```
+```js
 function parseChildren(context, mode, ancestors) {
   // 父节点
-  const parent = last(ancestors)
-  const ns = parent ? parent.ns : 0 /* HTML */
-  const nodes = []
+  const parent = last(ancestors);
+  const ns = parent ? parent.ns : 0; /* HTML */
+  const nodes = [];
   // 判断是否遍历结束
   while (!isEnd(context, mode, ancestors)) {
-    const s = context.source
-    let node = undefined
+    const s = context.source;
+    let node = undefined;
     if (mode === 0 /* DATA */ || mode === 1 /* RCDATA */) {
       if (!context.inVPre && startsWith(s, context.options.delimiters[0])) {
         // 处理 {{ 插值代码
-        node = parseInterpolation(context, mode)
-      }
-      else if (mode === 0 /* DATA */ && s[0] === '<') {
+        node = parseInterpolation(context, mode);
+      } else if (mode === 0 /* DATA */ && s[0] === "<") {
         // 处理 < 开头的代码
         if (s.length === 1) {
           // s 长度为 1，说明代码结尾是 <，报错
-          emitError(context, 5 /* EOF_BEFORE_TAG_NAME */, 1)
-        }
-        else if (s[1] === '!') {
+          emitError(context, 5 /* EOF_BEFORE_TAG_NAME */, 1);
+        } else if (s[1] === "!") {
           // 处理 <! 开头的代码
-          if (startsWith(s, '<!--')) {
+          if (startsWith(s, "<!--")) {
             // 处理注释节点
-            node = parseComment(context)
-          }
-          else if (startsWith(s, '<!DOCTYPE')) {
+            node = parseComment(context);
+          } else if (startsWith(s, "<!DOCTYPE")) {
             // 处理 <!DOCTYPE 节点
-            node = parseBogusComment(context)
-          }
-          else if (startsWith(s, '<![CDATA[')) {
+            node = parseBogusComment(context);
+          } else if (startsWith(s, "<![CDATA[")) {
             // 处理 <![CDATA[ 节点
             if (ns !== 0 /* HTML */) {
-              node = parseCDATA(context, ancestors)
+              node = parseCDATA(context, ancestors);
+            } else {
+              emitError(context, 1 /* CDATA_IN_HTML_CONTENT */);
+              node = parseBogusComment(context);
             }
-            else {
-              emitError(context, 1 /* CDATA_IN_HTML_CONTENT */)
-              node = parseBogusComment(context)
-            }
+          } else {
+            emitError(context, 11 /* INCORRECTLY_OPENED_COMMENT */);
+            node = parseBogusComment(context);
           }
-          else {
-            emitError(context, 11 /* INCORRECTLY_OPENED_COMMENT */)
-            node = parseBogusComment(context)
-          }
-        }
-        else if (s[1] === '/') {
+        } else if (s[1] === "/") {
           // 处理 </ 结束标签
           if (s.length === 2) {
             // s 长度为 2，说明代码结尾是 </，报错
-            emitError(context, 5 /* EOF_BEFORE_TAG_NAME */, 2)
-          }
-          else if (s[2] === '>') {
+            emitError(context, 5 /* EOF_BEFORE_TAG_NAME */, 2);
+          } else if (s[2] === ">") {
             // </> 缺少结束标签，报错
-            emitError(context, 14 /* MISSING_END_TAG_NAME */, 2)
-            advanceBy(context, 3)
-            continue
-          }
-          else if (/[a-z]/i.test(s[2])) {
+            emitError(context, 14 /* MISSING_END_TAG_NAME */, 2);
+            advanceBy(context, 3);
+            continue;
+          } else if (/[a-z]/i.test(s[2])) {
             // 多余的结束标签
-            emitError(context, 23 /* X_INVALID_END_TAG */)
-            parseTag(context, 1 /* End */, parent)
-            continue
+            emitError(context, 23 /* X_INVALID_END_TAG */);
+            parseTag(context, 1 /* End */, parent);
+            continue;
+          } else {
+            emitError(context, 12 /* INVALID_FIRST_CHARACTER_OF_TAG_NAME */, 2);
+            node = parseBogusComment(context);
           }
-          else {
-            emitError(context, 12 /* INVALID_FIRST_CHARACTER_OF_TAG_NAME */, 2)
-            node = parseBogusComment(context)
-          }
-        }
-        else if (/[a-z]/i.test(s[1])) {
+        } else if (/[a-z]/i.test(s[1])) {
           // 解析标签元素节点
-          node = parseElement(context, ancestors)
-        }
-        else if (s[1] === '?') {
-          emitError(context, 21 /* UNEXPECTED_QUESTION_MARK_INSTEAD_OF_TAG_NAME */, 1)
-          node = parseBogusComment(context)
-        }
-        else {
-          emitError(context, 12 /* INVALID_FIRST_CHARACTER_OF_TAG_NAME */, 1)
+          node = parseElement(context, ancestors);
+        } else if (s[1] === "?") {
+          emitError(
+            context,
+            21 /* UNEXPECTED_QUESTION_MARK_INSTEAD_OF_TAG_NAME */,
+            1
+          );
+          node = parseBogusComment(context);
+        } else {
+          emitError(context, 12 /* INVALID_FIRST_CHARACTER_OF_TAG_NAME */, 1);
         }
       }
     }
     if (!node) {
       // 解析普通文本节点
-      node = parseText(context, mode)
+      node = parseText(context, mode);
     }
     if (isArray(node)) {
       // 如果 node 是数组，则遍历添加
       for (let i = 0; i < node.length; i++) {
-        pushNode(nodes, node[i])
+        pushNode(nodes, node[i]);
       }
-    }
-    else {
+    } else {
       // 添加单个 node
-      pushNode(nodes, node)
+      pushNode(nodes, node);
     }
   }
 }
@@ -507,50 +492,48 @@ function parseChildren(context, mode, ancestors) {
 
 我们来看 parseComment 的实现：
 
-复制代码
-
-```
+```js
 function parseComment(context) {
-  const start = getCursor(context)
-  let content
+  const start = getCursor(context);
+  let content;
   // 常规注释的结束符
-  const match = /--(\!)?>/.exec(context.source)
+  const match = /--(\!)?>/.exec(context.source);
   if (!match) {
     // 没有匹配的注释结束符
-    content = context.source.slice(4)
-    advanceBy(context, context.source.length)
-    emitError(context, 7 /* EOF_IN_COMMENT */)
-  }
-  else {
+    content = context.source.slice(4);
+    advanceBy(context, context.source.length);
+    emitError(context, 7 /* EOF_IN_COMMENT */);
+  } else {
     if (match.index <= 3) {
       // 非法的注释符号
-      emitError(context, 0 /* ABRUPT_CLOSING_OF_EMPTY_COMMENT */)
+      emitError(context, 0 /* ABRUPT_CLOSING_OF_EMPTY_COMMENT */);
     }
     if (match[1]) {
       // 注释结束符不正确
-      emitError(context, 10 /* INCORRECTLY_CLOSED_COMMENT */)
+      emitError(context, 10 /* INCORRECTLY_CLOSED_COMMENT */);
     }
     // 获取注释的内容
-    content = context.source.slice(4, match.index)
+    content = context.source.slice(4, match.index);
     // 截取到注释结尾之间的代码，用于后续判断嵌套注释
-    const s = context.source.slice(0, match.index)
-    let prevIndex = 1, nestedIndex = 0
+    const s = context.source.slice(0, match.index);
+    let prevIndex = 1,
+      nestedIndex = 0;
     // 判断嵌套注释符的情况，存在即报错
-    while ((nestedIndex = s.indexOf('<!--', prevIndex)) !== -1) {
-      advanceBy(context, nestedIndex - prevIndex + 1)
+    while ((nestedIndex = s.indexOf("<!--", prevIndex)) !== -1) {
+      advanceBy(context, nestedIndex - prevIndex + 1);
       if (nestedIndex + 4 < s.length) {
-        emitError(context, 16 /* NESTED_COMMENT */)
+        emitError(context, 16 /* NESTED_COMMENT */);
       }
-      prevIndex = nestedIndex + 1
+      prevIndex = nestedIndex + 1;
     }
     // 前进代码到注释结束符后
-    advanceBy(context, match.index + match[0].length - prevIndex + 1)
+    advanceBy(context, match.index + match[0].length - prevIndex + 1);
   }
   return {
     type: 3 /* COMMENT */,
     content,
-    loc: getSelection(context, start)
-  }
+    loc: getSelection(context, start),
+  };
 }
 ```
 
@@ -559,32 +542,34 @@ function parseComment(context) {
 
 接着就是通过调用 advanceBy 前进代码到注释结束符后，这个函数在整个模板解析过程中经常被调用，它的目的是用来前进代码，更新 context 解析上下文，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function advanceBy(context, numberOfCharacters) {
-  const { source } = context
+  const { source } = context;
   // 更新 context 的 offset、line、column
-  advancePositionWithMutation(context, source, numberOfCharacters)
+  advancePositionWithMutation(context, source, numberOfCharacters);
   // 更新 context 的 source
-  context.source = source.slice(numberOfCharacters)
+  context.source = source.slice(numberOfCharacters);
 }
-function advancePositionWithMutation(pos, source, numberOfCharacters = source.length) {
-  let linesCount = 0
-  let lastNewLinePos = -1
+function advancePositionWithMutation(
+  pos,
+  source,
+  numberOfCharacters = source.length
+) {
+  let linesCount = 0;
+  let lastNewLinePos = -1;
   for (let i = 0; i < numberOfCharacters; i++) {
     if (source.charCodeAt(i) === 10 /* newline char code */) {
-      linesCount++
-      lastNewLinePos = i
+      linesCount++;
+      lastNewLinePos = i;
     }
   }
-  pos.offset += numberOfCharacters
-  pos.line += linesCount
+  pos.offset += numberOfCharacters;
+  pos.line += linesCount;
   pos.column =
     lastNewLinePos === -1
       ? pos.column + numberOfCharacters
-      : numberOfCharacters - lastNewLinePos
-  return pos
+      : numberOfCharacters - lastNewLinePos;
+  return pos;
 }
 ```
 
@@ -602,43 +587,42 @@ parseComment 最终返回的值就是一个描述注释节点的对象，其中 
 
 接下来，我们来看插值的解析过程，它会解析模板中的插值，比如 `{{ msg }}` ，即当前代码 s 是以 `{{` 开头的字符串，且不在 v-pre 指令的环境下（v-pre 会跳过插值的解析），则会走到插值的解析处理逻辑 parseInterpolation 函数，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function parseInterpolation(context, mode) {
   // 从配置中获取插值开始和结束分隔符，默认是 {{ 和 }}
-  const [open, close] = context.options.delimiters
-  const closeIndex = context.source.indexOf(close, open.length)
+  const [open, close] = context.options.delimiters;
+  const closeIndex = context.source.indexOf(close, open.length);
   if (closeIndex === -1) {
-    emitError(context, 25 /* X_MISSING_INTERPOLATION_END */)
-    return undefined
+    emitError(context, 25 /* X_MISSING_INTERPOLATION_END */);
+    return undefined;
   }
-  const start = getCursor(context)
+  const start = getCursor(context);
   // 代码前进到插值开始分隔符后
-  advanceBy(context, open.length)
+  advanceBy(context, open.length);
   // 内部插值开始位置
-  const innerStart = getCursor(context)
+  const innerStart = getCursor(context);
   // 内部插值结束位置
-  const innerEnd = getCursor(context)
+  const innerEnd = getCursor(context);
   // 插值原始内容的长度
-  const rawContentLength = closeIndex - open.length
+  const rawContentLength = closeIndex - open.length;
   // 插值原始内容
-  const rawContent = context.source.slice(0, rawContentLength)
+  const rawContent = context.source.slice(0, rawContentLength);
   // 获取插值的内容，并前进代码到插值的内容后
-  const preTrimContent = parseTextData(context, rawContentLength, mode)
-  const content = preTrimContent.trim()
+  const preTrimContent = parseTextData(context, rawContentLength, mode);
+  const content = preTrimContent.trim();
   // 内容相对于插值开始分隔符的头偏移
-  const startOffset = preTrimContent.indexOf(content)
+  const startOffset = preTrimContent.indexOf(content);
   if (startOffset > 0) {
     // 更新内部插值开始位置
-    advancePositionWithMutation(innerStart, rawContent, startOffset)
+    advancePositionWithMutation(innerStart, rawContent, startOffset);
   }
   // 内容相对于插值结束分隔符的尾偏移
-  const endOffset = rawContentLength - (preTrimContent.length - content.length - startOffset)
+  const endOffset =
+    rawContentLength - (preTrimContent.length - content.length - startOffset);
   // 更新内部插值结束位置
   advancePositionWithMutation(innerEnd, rawContent, endOffset);
   // 前进代码到插值结束分隔符后
-  advanceBy(context, close.length)
+  advanceBy(context, close.length);
   return {
     type: 5 /* INTERPOLATION */,
     content: {
@@ -646,10 +630,10 @@ function parseInterpolation(context, mode) {
       isStatic: false,
       isConstant: false,
       content,
-      loc: getSelection(context, innerStart, innerEnd)
+      loc: getSelection(context, innerStart, innerEnd),
     },
-    loc: getSelection(context, start)
-  }
+    loc: getSelection(context, start),
+  };
 }
 ```
 
@@ -667,32 +651,30 @@ parseInterpolation 最终返回的值就是一个描述插值节点的对象，�
 
 接下来，我们来看普通文本的解析过程，它会解析模板中的普通文本，比如 `This is an app` ，即当前代码 s 既不是以 `{{` 插值分隔符开头的字符串，也不是以 < 开头的字符串，则走到普通文本的解析处理逻辑，我们来看 parseText 的实现：
 
-复制代码
-
-```
+```js
 function parseText(context, mode) {
   // 文本结束符
-  const endTokens = ['<', context.options.delimiters[0]]
+  const endTokens = ["<", context.options.delimiters[0]];
   if (mode === 3 /* CDATA */) {
     // CDATA 标记 XML 中的纯文本
-    endTokens.push(']]>')
+    endTokens.push("]]>");
   }
-  let endIndex = context.source.length
+  let endIndex = context.source.length;
   // 遍历文本结束符，匹配找到结束的位置
   for (let i = 0; i < endTokens.length; i++) {
-    const index = context.source.indexOf(endTokens[i], 1)
+    const index = context.source.indexOf(endTokens[i], 1);
     if (index !== -1 && endIndex > index) {
-      endIndex = index
+      endIndex = index;
     }
   }
-  const start = getCursor(context)
+  const start = getCursor(context);
   // 获取文本的内容，并前进代码到文本的内容后
-  const content = parseTextData(context, endIndex, mode)
+  const content = parseTextData(context, endIndex, mode);
   return {
     type: 2 /* TEXT */,
     content,
-    loc: getSelection(context, start)
-  }
+    loc: getSelection(context, start),
+  };
 }
 ```
 

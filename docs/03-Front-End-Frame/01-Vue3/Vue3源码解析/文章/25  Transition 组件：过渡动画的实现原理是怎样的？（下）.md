@@ -8,9 +8,7 @@
 
 在 patch 阶段的 mountElement 函数中，在插入元素节点前且存在过渡的条件下会执行 vnode.transition 中的 beforeEnter 函数，我们来看它的定义：
 
-复制代码
-
-```
+```js
 beforeEnter(el) {
   let hook = onBeforeEnter
   if (!state.isMounted) {
@@ -38,105 +36,123 @@ beforeEnter 钩子函数主要做的事情就是根据 appear 的值和 DOM 是�
 
 appear、onBeforeEnter、onBeforeAppear 这些变量都是从 props 中获取的，那么这些 props 是怎么初始化的呢？回到 Transition 组件的定义：
 
-复制代码
-
-```
-const Transition = (props, { slots }) => h(BaseTransition, resolveTransitionProps(props), slots)
+```js
+const Transition = (props, { slots }) =>
+  h(BaseTransition, resolveTransitionProps(props), slots);
 ```
 
 可以看到，传递的 props 经过了 resolveTransitionProps 函数的封装，我们来看它的定义：
 
-复制代码
-
-```
+```js
 function resolveTransitionProps(rawProps) {
-  let { name = 'v', type, css = true, duration, enterFromClass = `${name}-enter-from`, enterActiveClass = `${name}-enter-active`, enterToClass = `${name}-enter-to`, appearFromClass = enterFromClass, appearActiveClass = enterActiveClass, appearToClass = enterToClass, leaveFromClass = `${name}-leave-from`, leaveActiveClass = `${name}-leave-active`, leaveToClass = `${name}-leave-to` } = rawProps
-  const baseProps = {}
+  let {
+    name = "v",
+    type,
+    css = true,
+    duration,
+    enterFromClass = `${name}-enter-from`,
+    enterActiveClass = `${name}-enter-active`,
+    enterToClass = `${name}-enter-to`,
+    appearFromClass = enterFromClass,
+    appearActiveClass = enterActiveClass,
+    appearToClass = enterToClass,
+    leaveFromClass = `${name}-leave-from`,
+    leaveActiveClass = `${name}-leave-active`,
+    leaveToClass = `${name}-leave-to`,
+  } = rawProps;
+  const baseProps = {};
   for (const key in rawProps) {
     if (!(key in DOMTransitionPropsValidators)) {
-      baseProps[key] = rawProps[key]
+      baseProps[key] = rawProps[key];
     }
   }
   if (!css) {
-    return baseProps
+    return baseProps;
   }
-  const durations = normalizeDuration(duration)
-  const enterDuration = durations && durations[0]
-  const leaveDuration = durations && durations[1]
-  const { onBeforeEnter, onEnter, onEnterCancelled, onLeave, onLeaveCancelled, onBeforeAppear = onBeforeEnter, onAppear = onEnter, onAppearCancelled = onEnterCancelled } = baseProps
+  const durations = normalizeDuration(duration);
+  const enterDuration = durations && durations[0];
+  const leaveDuration = durations && durations[1];
+  const {
+    onBeforeEnter,
+    onEnter,
+    onEnterCancelled,
+    onLeave,
+    onLeaveCancelled,
+    onBeforeAppear = onBeforeEnter,
+    onAppear = onEnter,
+    onAppearCancelled = onEnterCancelled,
+  } = baseProps;
   const finishEnter = (el, isAppear, done) => {
-    removeTransitionClass(el, isAppear ? appearToClass : enterToClass)
-    removeTransitionClass(el, isAppear ? appearActiveClass : enterActiveClass)
-    done && done()
-  }
+    removeTransitionClass(el, isAppear ? appearToClass : enterToClass);
+    removeTransitionClass(el, isAppear ? appearActiveClass : enterActiveClass);
+    done && done();
+  };
   const finishLeave = (el, done) => {
-    removeTransitionClass(el, leaveToClass)
-    removeTransitionClass(el, leaveActiveClass)
-    done && done()
-  }
+    removeTransitionClass(el, leaveToClass);
+    removeTransitionClass(el, leaveActiveClass);
+    done && done();
+  };
   const makeEnterHook = (isAppear) => {
     return (el, done) => {
-      const hook = isAppear ? onAppear : onEnter
-      const resolve = () => finishEnter(el, isAppear, done)
-      hook && hook(el, resolve)
+      const hook = isAppear ? onAppear : onEnter;
+      const resolve = () => finishEnter(el, isAppear, done);
+      hook && hook(el, resolve);
       nextFrame(() => {
-        removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass)
-        addTransitionClass(el, isAppear ? appearToClass : enterToClass)
+        removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
+        addTransitionClass(el, isAppear ? appearToClass : enterToClass);
         if (!(hook && hook.length > 1)) {
           if (enterDuration) {
-            setTimeout(resolve, enterDuration)
-          }
-          else {
-            whenTransitionEnds(el, type, resolve)
+            setTimeout(resolve, enterDuration);
+          } else {
+            whenTransitionEnds(el, type, resolve);
           }
         }
-      })
-    }
-  }
+      });
+    };
+  };
   return extend(baseProps, {
     onBeforeEnter(el) {
-      onBeforeEnter && onBeforeEnter(el)
-      addTransitionClass(el, enterActiveClass)
-      addTransitionClass(el, enterFromClass)
+      onBeforeEnter && onBeforeEnter(el);
+      addTransitionClass(el, enterActiveClass);
+      addTransitionClass(el, enterFromClass);
     },
     onBeforeAppear(el) {
-      onBeforeAppear && onBeforeAppear(el)
-      addTransitionClass(el, appearActiveClass)
-      addTransitionClass(el, appearFromClass)
+      onBeforeAppear && onBeforeAppear(el);
+      addTransitionClass(el, appearActiveClass);
+      addTransitionClass(el, appearFromClass);
     },
     onEnter: makeEnterHook(false),
     onAppear: makeEnterHook(true),
     onLeave(el, done) {
-      const resolve = () => finishLeave(el, done)
-      addTransitionClass(el, leaveActiveClass)
-      addTransitionClass(el, leaveFromClass)
+      const resolve = () => finishLeave(el, done);
+      addTransitionClass(el, leaveActiveClass);
+      addTransitionClass(el, leaveFromClass);
       nextFrame(() => {
-        removeTransitionClass(el, leaveFromClass)
-        addTransitionClass(el, leaveToClass)
+        removeTransitionClass(el, leaveFromClass);
+        addTransitionClass(el, leaveToClass);
         if (!(onLeave && onLeave.length > 1)) {
           if (leaveDuration) {
-            setTimeout(resolve, leaveDuration)
-          }
-          else {
-            whenTransitionEnds(el, type, resolve)
+            setTimeout(resolve, leaveDuration);
+          } else {
+            whenTransitionEnds(el, type, resolve);
           }
         }
-      })
-      onLeave && onLeave(el, resolve)
+      });
+      onLeave && onLeave(el, resolve);
     },
     onEnterCancelled(el) {
-      finishEnter(el, false)
-      onEnterCancelled && onEnterCancelled(el)
+      finishEnter(el, false);
+      onEnterCancelled && onEnterCancelled(el);
     },
     onAppearCancelled(el) {
-      finishEnter(el, true)
-      onAppearCancelled && onAppearCancelled(el)
+      finishEnter(el, true);
+      onAppearCancelled && onAppearCancelled(el);
     },
     onLeaveCancelled(el) {
-      finishLeave(el)
-      onLeaveCancelled && onLeaveCancelled(el)
-    }
-  })
+      finishLeave(el);
+      onLeaveCancelled && onLeaveCancelled(el);
+    },
+  });
 }
 ```
 
@@ -152,9 +168,7 @@ onBeforeAppear 和 onBeforeEnter 的逻辑类似，就不赘述了，它是在�
 
 执行完 beforeEnter 钩子函数，接着插入元素到页面，然后会执行 vnode.transition 中的 enter 钩子函数，我们来看它的定义：
 
-复制代码
-
-```
+```js
 enter(el) {
   let hook = onEnter
   let afterHook = onAfterEnter
@@ -205,28 +219,25 @@ enter 钩子函数主要做的事情就是根据 appear 的值和 DOM 是否挂�
 
 同理，onEnter、onAppear、onAfterEnter 和 onEnterCancelled 函数也是从 Props 传入的，我们重点看 onEnter 的实现，它是 makeEnterHook(false) 函数执行后的返回值，如下：
 
-复制代码
-
-```
+```js
 const makeEnterHook = (isAppear) => {
   return (el, done) => {
-    const hook = isAppear ? onAppear : onEnter
-    const resolve = () => finishEnter(el, isAppear, done)
-    hook && hook(el, resolve)
+    const hook = isAppear ? onAppear : onEnter;
+    const resolve = () => finishEnter(el, isAppear, done);
+    hook && hook(el, resolve);
     nextFrame(() => {
-      removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass)
-      addTransitionClass(el, isAppear ? appearToClass : enterToClass)
+      removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
+      addTransitionClass(el, isAppear ? appearToClass : enterToClass);
       if (!(hook && hook.length > 1)) {
         if (enterDuration) {
-          setTimeout(resolve, enterDuration)
-        }
-        else {
-          whenTransitionEnds(el, type, resolve)
+          setTimeout(resolve, enterDuration);
+        } else {
+          whenTransitionEnds(el, type, resolve);
         }
       }
-    })
-  }
-}
+    });
+  };
+};
 ```
 
 在函数内部，首先执行基础 props 传入的 onEnter 钩子函数，然后在下一帧给 DOM 元素 el 移除了 enterFromClass，同时添加了 enterToClass 样式。
@@ -237,14 +248,12 @@ const makeEnterHook = (isAppear) => {
 
 Transition 组件允许我们传入 enterDuration 这个 prop，它会指定进入过渡的动画时长，当然如果你不指定，Vue.js 内部会监听动画结束事件，然后在动画结束后，执行 finishEnter 函数，来看它的实现：
 
-复制代码
-
-```
+```js
 const finishEnter = (el, isAppear, done) => {
-  removeTransitionClass(el, isAppear ? appearToClass : enterToClass)
-  removeTransitionClass(el, isAppear ? appearActiveClass : enterActiveClass)
-  done && done()
-}
+  removeTransitionClass(el, isAppear ? appearToClass : enterToClass);
+  removeTransitionClass(el, isAppear ? appearActiveClass : enterActiveClass);
+  done && done();
+};
 ```
 
 其实就是给 DOM 元素移除 enterToClass 以及 enterActiveClass，同时执行 done 函数，进而执行 onAfterEnter 钩子函数。
@@ -253,9 +262,7 @@ const finishEnter = (el, isAppear, done) => {
 
 当元素被删除的时候，会执行 remove 方法，在真正从 DOM 移除元素前且存在过渡的情况下，会执行 vnode.transition 中的 leave 钩子函数，并且把移动 DOM 的方法作为第二个参数传入，我们来看它的定义：
 
-复制代码
-
-```
+```js
 leave(el, remove) {
   const key = String(vnode.key)
   if (el._enterCb) {
@@ -301,9 +308,7 @@ done 函数内部主要做的事情就是执行 remove 方法移除 DOM，然后
 
 接下来，我们重点看一下 onLeave 函数的实现，看看离开过渡动画是如何执行的。
 
-复制代码
-
-```
+```js
 onLeave(el, done) {
   const resolve = () => finishLeave(el, done)
   addTransitionClass(el, leaveActiveClass)
@@ -332,14 +337,12 @@ onLeave 函数首先给 DOM 元素添加 leaveActiveClass 和 leaveFromClass，�
 
 和进入动画类似，Transition 组件允许我们传入 leaveDuration 这个 prop，指定过渡的动画时长，当然如果你不指定，Vue.js 内部会监听动画结束事件，然后在动画结束后，执行 resolve 函数，它是执行 finishLeave 函数的返回值，来看它的实现：
 
-复制代码
-
-```
+```js
 const finishLeave = (el, done) => {
-  removeTransitionClass(el, leaveToClass)
-  removeTransitionClass(el, leaveActiveClass)
-  done && done()
-}
+  removeTransitionClass(el, leaveToClass);
+  removeTransitionClass(el, leaveActiveClass);
+  done && done();
+};
 ```
 
 其实就是给 DOM 元素移除 leaveToClass 以及 leaveActiveClass，同时执行 done 函数，进而执行 onAfterLeave 钩子函数。
@@ -350,14 +353,10 @@ const finishLeave = (el, done) => {
 
 前面我们在介绍 Transition 的渲染过程中提到过模式的应用，模式有什么用呢，我们还是通过示例说明，把前面的例子稍加修改：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
-    <button @click="show = !show">
-      Toggle render
-    </button>
+    <button @click="show = !show">Toggle render</button>
     <transition name="fade">
       <p v-if="show">hello</p>
       <p v-else>hi</p>
@@ -368,10 +367,10 @@ const finishLeave = (el, done) => {
   export default {
     data() {
       return {
-        show: true
-      }
-    }
-  }
+        show: true,
+      };
+    },
+  };
 </script>
 <style>
   .fade-enter-active,
@@ -389,9 +388,7 @@ const finishLeave = (el, done) => {
 
 然后，我们给这个 Transition 组件加一个 out-in 的 mode：
 
-复制代码
-
-```
+```html
 <transition mode="out-in" name="fade">
   <p v-if="show">hello</p>
   <p v-else>hi</p>
@@ -415,18 +412,21 @@ const finishLeave = (el, done) => {
 
 我们来看一下 out-in 模式的实现：
 
-复制代码
-
-```
-const leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state, instance)
-setTransitionHooks(oldInnerChild, leavingHooks)
-if (mode === 'out-in') {
-  state.isLeaving = true
+```js
+const leavingHooks = resolveTransitionHooks(
+  oldInnerChild,
+  rawProps,
+  state,
+  instance
+);
+setTransitionHooks(oldInnerChild, leavingHooks);
+if (mode === "out-in") {
+  state.isLeaving = true;
   leavingHooks.afterLeave = () => {
-    state.isLeaving = false
-    instance.update()
-  }
-  return emptyPlaceholder(child)
+    state.isLeaving = false;
+    instance.update();
+  };
+  return emptyPlaceholder(child);
 }
 ```
 

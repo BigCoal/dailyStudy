@@ -27,7 +27,7 @@
 
 元素的上外边框至包含 offsetParent 元素的上内边框之间的像素距离。
 
-![](../assets/offset.png)
+![](./assets/offset.png)
 
 exp:
 
@@ -96,7 +96,7 @@ exp:
 
 元素左侧边框的宽度 border-left-width
 
-![](../assets/client.png)
+![](./assets/client.png)
 
 exp:
 
@@ -180,7 +180,7 @@ exp:
 
 被隐藏在内容区域上方的像素数。通过设置这个属性可以改变元素的滚动位置。
 
-![](../assets/scroll.png)
+![](./assets/scroll.png)
 在确定文档的总高度时（包括基于视口的最小高度时），必须取得[scroll](https://so.csdn.net/so/search?q=scroll)Width/clientWidth 和 scrollHeight/clientHeight 中的最大值，才能保证在跨浏览器的环境下得到精确的结果。下面就是这样一个例子。
 
 ```js

@@ -12,14 +12,10 @@ Transition 组件通常有三类用法：CSS 过渡，CSS 动画和 JavaScript �
 
 首先来看 CSS 过渡：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
-    <button @click="show = !show">
-      Toggle render
-    </button>
+    <button @click="show = !show">Toggle render</button>
     <transition name="fade">
       <p v-if="show">hello</p>
     </transition>
@@ -29,10 +25,10 @@ Transition 组件通常有三类用法：CSS 过渡，CSS 动画和 JavaScript �
   export default {
     data() {
       return {
-        show: true
-      }
-    }
-  }
+        show: true,
+      };
+    },
+  };
 </script>
 <style>
   .fade-enter-active,
@@ -50,14 +46,15 @@ CSS 过渡主要定义了一些过渡的 CSS 样式，当我们点击按钮切�
 
 接着来看 CSS 动画：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
     <button @click="show = !show">Toggle show</button>
     <transition name="bounce">
-      <p v-if="show">Vue is an awesome front-end MVVM framework. We can use it to build multiple apps.</p>
+      <p v-if="show">
+        Vue is an awesome front-end MVVM framework. We can use it to build
+        multiple apps.
+      </p>
     </transition>
   </div>
 </template>
@@ -65,10 +62,10 @@ CSS 过渡主要定义了一些过渡的 CSS 样式，当我们点击按钮切�
   export default {
     data() {
       return {
-        show: true
-      }
-    }
-  }
+        show: true,
+      };
+    },
+  };
 </script>
 <style>
   .bounce-enter-active {
@@ -95,14 +92,10 @@ CSS 过渡主要定义了一些过渡的 CSS 样式，当我们点击按钮切�
 
 最后，是 JavaScript 钩子：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
-    <button @click="show = !show">
-      Toggle render
-    </button>
+    <button @click="show = !show">Toggle render</button>
     <transition
       @before-enter="beforeEnter"
       @enter="enter"
@@ -118,27 +111,27 @@ CSS 过渡主要定义了一些过渡的 CSS 样式，当我们点击按钮切�
   export default {
     data() {
       return {
-        show: true
-      }
+        show: true,
+      };
     },
     methods: {
       beforeEnter(el) {
-        el.style.opacity = 0
-        el.style.transition = 'opacity 0.5s ease'
+        el.style.opacity = 0;
+        el.style.transition = "opacity 0.5s ease";
       },
       enter(el) {
-        this.$el.offsetHeight
-        el.style.opacity = 1
+        this.$el.offsetHeight;
+        el.style.opacity = 1;
       },
       beforeLeave(el) {
-        el.style.opacity = 1
+        el.style.opacity = 1;
       },
       leave(el) {
-        el.style.transition = 'opacity 0.5s ease'
-        el.style.opacity = 0
-      }
-    }
-  }
+        el.style.transition = "opacity 0.5s ease";
+        el.style.opacity = 0;
+      },
+    },
+  };
 </script>
 ```
 
@@ -174,14 +167,10 @@ Transition 组件也允许在一个过渡组件中定义它过渡生命周期的
 
 为了方便你的理解，我们还是结合示例来分析：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
-    <button @click="show = !show">
-      Toggle render
-    </button>
+    <button @click="show = !show">Toggle render</button>
     <transition name="fade">
       <p v-if="show">hello</p>
     </transition>
@@ -191,26 +180,44 @@ Transition 组件也允许在一个过渡组件中定义它过渡生命周期的
 
 先来看模板编译后生成的 render 函数：
 
-复制代码
-
-```
-import { createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock, createCommentVNode as _createCommentVNode, Transition as _Transition, withCtx as _withCtx } from "vue"
+```js
+import {
+  createVNode as _createVNode,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+  createCommentVNode as _createCommentVNode,
+  Transition as _Transition,
+  withCtx as _withCtx,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (_openBlock(), _createBlock("template", null, [
-    _createVNode("div", { class: "app" }, [
-      _createVNode("button", {
-        onClick: $event => (_ctx.show = !_ctx.show)
-      }, " Toggle render ", 8 /* PROPS */, ["onClick"]),
-      _createVNode(_Transition, { name: "fade" }, {
-        default: _withCtx(() => [
-          (_ctx.show)
-            ? (_openBlock(), _createBlock("p", { key: 0 }, "hello"))
-            : _createCommentVNode("v-if", true)
-        ]),
-        _: 1
-      })
+  return (
+    _openBlock(),
+    _createBlock("template", null, [
+      _createVNode("div", { class: "app" }, [
+        _createVNode(
+          "button",
+          {
+            onClick: ($event) => (_ctx.show = !_ctx.show),
+          },
+          " Toggle render ",
+          8 /* PROPS */,
+          ["onClick"]
+        ),
+        _createVNode(
+          _Transition,
+          { name: "fade" },
+          {
+            default: _withCtx(() => [
+              _ctx.show
+                ? (_openBlock(), _createBlock("p", { key: 0 }, "hello"))
+                : _createCommentVNode("v-if", true),
+            ]),
+            _: 1,
+          }
+        ),
+      ]),
     ])
-  ]))
+  );
 }
 ```
 
@@ -218,10 +225,9 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 我们接着来看 Transition 组件的定义：
 
-复制代码
-
-```
-const Transition = (props, { slots }) => h(BaseTransition, resolveTransitionProps(props), slots)
+```js
+const Transition = (props, { slots }) =>
+  h(BaseTransition, resolveTransitionProps(props), slots);
 const BaseTransition = {
   name: `BaseTransition`,
   props: {
@@ -242,89 +248,109 @@ const BaseTransition = {
     onBeforeAppear: TransitionHookValidator,
     onAppear: TransitionHookValidator,
     onAfterAppear: TransitionHookValidator,
-    onAppearCancelled: TransitionHookValidator
+    onAppearCancelled: TransitionHookValidator,
   },
   setup(props, { slots }) {
-    const instance = getCurrentInstance()
-    const state = useTransitionState()
-    let prevTransitionKey
+    const instance = getCurrentInstance();
+    const state = useTransitionState();
+    let prevTransitionKey;
     return () => {
-      const children = slots.default && getTransitionRawChildren(slots.default(), true)
+      const children =
+        slots.default && getTransitionRawChildren(slots.default(), true);
       if (!children || !children.length) {
-        return
+        return;
       }
       // Transition 组件只允许一个子元素节点，多个报警告，提示使用 TransitionGroup 组件
-      if ((process.env.NODE_ENV !== 'production') && children.length > 1) {
-        warn('<transition> can only be used on a single element or component. Use ' +
-          '<transition-group> for lists.')
+      if (process.env.NODE_ENV !== "production" && children.length > 1) {
+        warn(
+          "<transition> can only be used on a single element or component. Use " +
+            "<transition-group> for lists."
+        );
       }
       // 不需要追踪响应式，所以改成原始值，提升性能
-      const rawProps = toRaw(props)
-      const { mode } = rawProps
+      const rawProps = toRaw(props);
+      const { mode } = rawProps;
       // 检查 mode 是否合法
-      if ((process.env.NODE_ENV !== 'production') && mode && !['in-out', 'out-in', 'default'].includes(mode)) {
-        warn(`invalid <transition> mode: ${mode}`)
+      if (
+        process.env.NODE_ENV !== "production" &&
+        mode &&
+        !["in-out", "out-in", "default"].includes(mode)
+      ) {
+        warn(`invalid <transition> mode: ${mode}`);
       }
       // 获取第一个子元素节点
-      const child = children[0]
+      const child = children[0];
       if (state.isLeaving) {
-        return emptyPlaceholder(child)
+        return emptyPlaceholder(child);
       }
       // 处理 <transition><keep-alive/></transition> 的情况
-      const innerChild = getKeepAliveChild(child)
+      const innerChild = getKeepAliveChild(child);
       if (!innerChild) {
-        return emptyPlaceholder(child)
+        return emptyPlaceholder(child);
       }
-      const enterHooks = resolveTransitionHooks(innerChild, rawProps, state, instance)
-        setTransitionHooks(innerChild, enterHooks)
-      const oldChild = instance.subTree
-      const oldInnerChild = oldChild && getKeepAliveChild(oldChild)
-      let transitionKeyChanged = false
-      const { getTransitionKey } = innerChild.type
+      const enterHooks = resolveTransitionHooks(
+        innerChild,
+        rawProps,
+        state,
+        instance
+      );
+      setTransitionHooks(innerChild, enterHooks);
+      const oldChild = instance.subTree;
+      const oldInnerChild = oldChild && getKeepAliveChild(oldChild);
+      let transitionKeyChanged = false;
+      const { getTransitionKey } = innerChild.type;
       if (getTransitionKey) {
-        const key = getTransitionKey()
+        const key = getTransitionKey();
         if (prevTransitionKey === undefined) {
-          prevTransitionKey = key
-        }
-        else if (key !== prevTransitionKey) {
-          prevTransitionKey = key
-          transitionKeyChanged = true
+          prevTransitionKey = key;
+        } else if (key !== prevTransitionKey) {
+          prevTransitionKey = key;
+          transitionKeyChanged = true;
         }
       }
-      if (oldInnerChild &&
+      if (
+        oldInnerChild &&
         oldInnerChild.type !== Comment &&
-        (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)) {
-        const leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state, instance)
+        (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)
+      ) {
+        const leavingHooks = resolveTransitionHooks(
+          oldInnerChild,
+          rawProps,
+          state,
+          instance
+        );
         // 更新旧树的钩子函数
-        setTransitionHooks(oldInnerChild, leavingHooks)
+        setTransitionHooks(oldInnerChild, leavingHooks);
         // 在两个视图之间切换
-        if (mode === 'out-in') {
-          state.isLeaving = true
+        if (mode === "out-in") {
+          state.isLeaving = true;
           // 返回空的占位符节点，当离开过渡结束后，重新渲染组件
           leavingHooks.afterLeave = () => {
-            state.isLeaving = false
-            instance.update()
-          }
-          return emptyPlaceholder(child)
-        }
-        else if (mode === 'in-out') {
+            state.isLeaving = false;
+            instance.update();
+          };
+          return emptyPlaceholder(child);
+        } else if (mode === "in-out") {
           leavingHooks.delayLeave = (el, earlyRemove, delayedLeave) => {
-            const leavingVNodesCache = getLeavingNodesForType(state, oldInnerChild)
-            leavingVNodesCache[String(oldInnerChild.key)] = oldInnerChild
+            const leavingVNodesCache = getLeavingNodesForType(
+              state,
+              oldInnerChild
+            );
+            leavingVNodesCache[String(oldInnerChild.key)] = oldInnerChild;
             // early removal callback
             el._leaveCb = () => {
-              earlyRemove()
-              el._leaveCb = undefined
-              delete enterHooks.delayedLeave
-            }
-            enterHooks.delayedLeave = delayedLeave
-          }
+              earlyRemove();
+              el._leaveCb = undefined;
+              delete enterHooks.delayedLeave;
+            };
+            enterHooks.delayedLeave = delayedLeave;
+          };
         }
       }
-      return child
-    }
-  }
-}
+      return child;
+    };
+  },
+};
 ```
 
 可以看到，Transition 组件是在 BaseTransition 的基础上封装的高阶函数式组件。由于整个 Transition 的实现代码较多，我就挑重点，为你讲清楚整体的实现思路。
@@ -351,123 +377,131 @@ Transition 组件和前面学习的 KeepAlive 组件一样，是一个抽象组�
 
 但是 Transition 是如何在节点的创建和删除过程中设置那些与过渡动画相关的 CSS 的呢？这些都与钩子函数相关，我们先来看 setTransitionHooks 的实现，看看它定义的钩子函数对象是怎样的：
 
-复制代码
-
-```
+```js
 function resolveTransitionHooks(vnode, props, state, instance) {
-  const { appear, mode, persisted = false, onBeforeEnter, onEnter, onAfterEnter, onEnterCancelled, onBeforeLeave, onLeave, onAfterLeave, onLeaveCancelled, onBeforeAppear, onAppear, onAfterAppear, onAppearCancelled } = props
-  const key = String(vnode.key)
-  const leavingVNodesCache = getLeavingNodesForType(state, vnode)
+  const {
+    appear,
+    mode,
+    persisted = false,
+    onBeforeEnter,
+    onEnter,
+    onAfterEnter,
+    onEnterCancelled,
+    onBeforeLeave,
+    onLeave,
+    onAfterLeave,
+    onLeaveCancelled,
+    onBeforeAppear,
+    onAppear,
+    onAfterAppear,
+    onAppearCancelled,
+  } = props;
+  const key = String(vnode.key);
+  const leavingVNodesCache = getLeavingNodesForType(state, vnode);
   const callHook = (hook, args) => {
     hook &&
-    callWithAsyncErrorHandling(hook, instance, 9 /* TRANSITION_HOOK */, args)
-  }
+      callWithAsyncErrorHandling(hook, instance, 9 /* TRANSITION_HOOK */, args);
+  };
   const hooks = {
     mode,
     persisted,
     beforeEnter(el) {
-      let hook = onBeforeEnter
+      let hook = onBeforeEnter;
       if (!state.isMounted) {
         if (appear) {
-          hook = onBeforeAppear || onBeforeEnter
-        }
-        else {
-          return
+          hook = onBeforeAppear || onBeforeEnter;
+        } else {
+          return;
         }
       }
       if (el._leaveCb) {
-        el._leaveCb(true /* cancelled */)
+        el._leaveCb(true /* cancelled */);
       }
-      const leavingVNode = leavingVNodesCache[key]
-      if (leavingVNode &&
+      const leavingVNode = leavingVNodesCache[key];
+      if (
+        leavingVNode &&
         isSameVNodeType(vnode, leavingVNode) &&
-        leavingVNode.el._leaveCb) {
-        leavingVNode.el._leaveCb()
+        leavingVNode.el._leaveCb
+      ) {
+        leavingVNode.el._leaveCb();
       }
-      callHook(hook, [el])
+      callHook(hook, [el]);
     },
     enter(el) {
-      let hook = onEnter
-      let afterHook = onAfterEnter
-      let cancelHook = onEnterCancelled
+      let hook = onEnter;
+      let afterHook = onAfterEnter;
+      let cancelHook = onEnterCancelled;
       if (!state.isMounted) {
         if (appear) {
-          hook = onAppear || onEnter
-          afterHook = onAfterAppear || onAfterEnter
-          cancelHook = onAppearCancelled || onEnterCancelled
-        }
-        else {
-          return
+          hook = onAppear || onEnter;
+          afterHook = onAfterAppear || onAfterEnter;
+          cancelHook = onAppearCancelled || onEnterCancelled;
+        } else {
+          return;
         }
       }
-      let called = false
+      let called = false;
       const done = (el._enterCb = (cancelled) => {
-        if (called)
-          return
-        called = true
+        if (called) return;
+        called = true;
         if (cancelled) {
-          callHook(cancelHook, [el])
-        }
-        else {
-          callHook(afterHook, [el])
+          callHook(cancelHook, [el]);
+        } else {
+          callHook(afterHook, [el]);
         }
         if (hooks.delayedLeave) {
-          hooks.delayedLeave()
+          hooks.delayedLeave();
         }
-        el._enterCb = undefined
-      })
+        el._enterCb = undefined;
+      });
       if (hook) {
-        hook(el, done)
+        hook(el, done);
         if (hook.length <= 1) {
-          done()
+          done();
         }
-      }
-      else {
-        done()
+      } else {
+        done();
       }
     },
     leave(el, remove) {
-      const key = String(vnode.key)
+      const key = String(vnode.key);
       if (el._enterCb) {
-        el._enterCb(true /* cancelled */)
+        el._enterCb(true /* cancelled */);
       }
       if (state.isUnmounting) {
-        return remove()
+        return remove();
       }
-      callHook(onBeforeLeave, [el])
-      let called = false
+      callHook(onBeforeLeave, [el]);
+      let called = false;
       const done = (el._leaveCb = (cancelled) => {
-        if (called)
-          return
-        called = true
-        remove()
+        if (called) return;
+        called = true;
+        remove();
         if (cancelled) {
-          callHook(onLeaveCancelled, [el])
+          callHook(onLeaveCancelled, [el]);
+        } else {
+          callHook(onAfterLeave, [el]);
         }
-        else {
-          callHook(onAfterLeave, [el])
-        }
-        el._leaveCb = undefined
+        el._leaveCb = undefined;
         if (leavingVNodesCache[key] === vnode) {
-          delete leavingVNodesCache[key]
+          delete leavingVNodesCache[key];
         }
-      })
-      leavingVNodesCache[key] = vnode
+      });
+      leavingVNodesCache[key] = vnode;
       if (onLeave) {
-        onLeave(el, done)
+        onLeave(el, done);
         if (onLeave.length <= 1) {
-          done()
+          done();
         }
-      }
-      else {
-        done()
+      } else {
+        done();
       }
     },
     clone(vnode) {
-      return resolveTransitionHooks(vnode, props, state, instance)
-    }
-  }
-  return hooks
+      return resolveTransitionHooks(vnode, props, state, instance);
+    },
+  };
+  return hooks;
 }
 ```
 

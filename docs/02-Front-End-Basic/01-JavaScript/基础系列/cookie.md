@@ -1,19 +1,16 @@
 # cookie
 
-前言
---
+## 前言
 
 2020.2 月份发布的 Chrome 80 版本中默认屏蔽了第三方的 Cookie，在灰度期间，就导致了阿里系的很多应用都产生了问题，为此还专门成立了小组，推动各 BU 进行改造，目前阿里系基本已经改造完成。所有的前端团队估计都收到过通知，也着实加深了一把大家对于 Cookie 的理解，所以很可能就此出个面试题，而即便不是面试题，当问到 HTTP 相关内容的时候，不妨也扯到这件事情来，一能表明你对前端时事的跟进，二还能借此引申到前端安全方面的内容，为你的面试加分。
 
 所以本文就给大家介绍一下浏览器的 Cookie 以及这个 "火热" 的 SameSite 属性。
 
-HTTP
-----
+## HTTP
 
 一般我们都会说 “HTTP 是一个无状态的协议”，不过要注意这里的 HTTP 其实是指 HTTP 1.x，而所谓无状态协议，简单的理解就是即使同一个客户端连续两次发送请求给服务器，服务器也识别不出这是同一个客户端发送的请求，这导致的问题就比如你加了一个商品到购物车中，但因为识别不出是同一个客户端，你刷新下页面就没有了……
 
-Cookie
-------
+## Cookie
 
 为了解决 HTTP 无状态导致的问题，后来出现了 Cookie。不过这样说可能会让你产生一些误解，首先无状态并不是不好，有优点，但也会导致一些问题。而 Cookie 的存在也不是为了解决通讯协议无状态的问题，只是为了解决客户端与服务端会话状态的问题，这个状态是指后端服务的状态而非通讯协议的状态。
 
@@ -28,10 +25,10 @@ Cookie
 ### Cookie 的查看
 
 我们可以在浏览器的开发者工具中查看到当前页面的 Cookie：
-![](../../assets/js/cookie/cookie1.jpeg)
+![](../assets/cookie/cookie1.jpeg)
 尽管我们在浏览器里查看到了 Cookie，这并不意味着 Cookie 文件只是存放在浏览器里的。实际上，Cookies 相关的内容还可以存在本地文件里，就比如说 Mac 下的 Chrome，存放目录就是 `~/Library/Application Support/Google/Chrome/Default`，里面会有一个名为 Cookies 的数据库文件，你可以使用 sqlite 软件打开它：
 
-![](../../assets/js/cookie/cookie2.png)
+![](../assets/cookie/cookie2.png)
 
 存放在本地的好处就在于即使你关闭了浏览器，Cookie 依然可以生效。
 
@@ -48,21 +45,21 @@ Cookie
 
 我们在请求返回的 Response Headers 可以看到 Set-Cookie 字段：
 
-![](../../assets/js/cookie/cookie3.jpeg)
+![](../assets/cookie/cookie3.jpeg)
 
 然后我们查看下 Cookie：
 
-![](../../assets/js/cookie/cookie4.jpeg)
+![](../assets/cookie/cookie4.jpeg)
 
 我们刷新一遍页面，再看下这个请求，可以在 Request Headers 看到 cookie 字段：
 
-![](../../assets/js/cookie/cookie5.jpeg)
+![](../assets/cookie/cookie5.jpeg)
 
 ### Cookies 的属性
 
 在下面这张图里我们可以看到 Cookies 相关的一些属性：
 
-![](../../assets/js/cookie/cookie6.jpeg)
+![](../assets/cookie/cookie6.jpeg)
 
 这里主要说一些大家可能没有注意的点：
 
@@ -152,7 +149,7 @@ SameSite 可以有下面三种值：
 
 同源策略的同源是指两个 URL 的协议 / 主机名 / 端口一致。例如，[https://www.taobao.com/pages/...，它的协议是](https://www.taobao.com/pages/...%EF%BC%8C%E5%AE%83%E7%9A%84%E5%8D%8F%E8%AE%AE%E6%98%AF) https，主机名是 [www.taobao.com，端口是](http://www.taobao.xn--com%2C-ye1g628gmm4a/) 443。
 
-同源策略作为浏览器的安全基石，其「同源」判断是比较严格的，相对而言，Cookie 中的「同站」判断就比较宽松：只要两个 URL 的 eTLD+1 相同即可，不需要考虑协议和端口。其中，eTLD 表示有效顶级域名，注册于 Mozilla 维护的公共后缀列表（Public Suffix List）中，例如，.com、.co.uk、.github.io 等。eTLD+1 则表示，有效顶级域名 + 二级域名，例如 taobao.com 等。(附：[eTLD和TLD的区别](http://www.qiutianaimeili.com/html/page/2021/06/2038q4c20l4c25.html) )
+同源策略作为浏览器的安全基石，其「同源」判断是比较严格的，相对而言，Cookie 中的「同站」判断就比较宽松：只要两个 URL 的 eTLD+1 相同即可，不需要考虑协议和端口。其中，eTLD 表示有效顶级域名，注册于 Mozilla 维护的公共后缀列表（Public Suffix List）中，例如，.com、.co.uk、.github.io 等。eTLD+1 则表示，有效顶级域名 + 二级域名，例如 taobao.com 等。(附：[eTLD 和 TLD 的区别](http://www.qiutianaimeili.com/html/page/2021/06/2038q4c20l4c25.html) )
 
 举几个例子，www.taobao.com 和 [www.baidu.com](http://www.baidu.com/) 是跨站，www.a.taobao.com 和 [www.b.taobao.com](http://www.b.taobao.com/) 是同站，a.github.io 和 b.github.io 是跨站 (注意是跨站)。
 
@@ -160,7 +157,7 @@ SameSite 可以有下面三种值：
 
 接下来看下从 None 改成 Lax 到底影响了哪些地方的 Cookies 的发送？直接来一个图表：
 
-![](../../assets/js/cookie/cookie7.png)
+![](../assets/cookie/cookie7.png)
 
 从上图可以看出，对大部分 web 应用而言，Post 表单，iframe，AJAX，Image 这四种情况从以前的跨站会发送三方 Cookie，变成了不发送。
 
@@ -179,19 +176,12 @@ Image：图片一般放 CDN，大部分情况不需要 Cookie，故影响有限�
 我们再看看会出现什么的问题？举几个例子：
 
 1.  天猫和飞猪的页面靠请求淘宝域名下的接口获取登录信息，由于 Cookie 丢失，用户无法登录，页面还会误判断成是由于用户开启了浏览器的 “禁止第三方 Cookie” 功能导致而给与错误的提示
-    
 2.  淘宝部分页面内嵌支付宝确认付款和确认收货页面、天猫内嵌淘宝的登录页面等，由于 Cookie 失效，付款、登录等操作都会失败
-    
 3.  阿里妈妈在各大网站比如今日头条，网易，微博等投放的广告，也是用 iframe 嵌入的，没有了 Cookie，就不能准确的进行推荐
-    
 4.  一些埋点系统会把用户 id 信息埋到 Cookie 中，用于日志上报，这种系统一般走的都是单独的域名，与业务域名分开，所以也会受到影响。
-    
 5.  一些用于防止恶意请求的系统，对判断为恶意请求的访问会弹出验证码让用户进行安全验证，通过安全验证后会在请求所在域种一个 Cookie，请求中带上这个 Cookie 之后，短时间内不再弹安全验证码。在 Chrome80 以上如果因为 Samesite 的原因请求没办法带上这个 Cookie，则会出现一直弹出验证码进行安全验证。
-    
 6.  天猫商家后台请求了跨域的接口，因为没有 Cookie，接口不会返回数据
-    
 7.  ……
-    
 
 如果不解决，影响的系统其实还是很多的……
 
@@ -201,7 +191,7 @@ Image：图片一般放 CDN，大部分情况不需要 Cookie，故影响有限�
 
 以 Adobe 网站为例：[https://www.adobe.com/sea/](https://www.adobe.com/sea/)，查看请求可以看到：
 
-![](../../assets/js/cookie/cookie8.jpeg)
+![](../assets/cookie/cookie8.jpeg)
 
 不过也会有两点要注意的地方：
 
@@ -225,33 +215,24 @@ Cookie 主要用于以下三个方面：
 
 如果被问到话，可以从大小、安全、增加请求大小等方面回答。
 
-参考
---
+## 参考
 
 1.  [MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Set-Cookie)
 2.  [HTTP 是一个无状态的协议。这句话里的无状态是什么意思？ - 灵剑的回答 - 知乎](https://www.zhihu.com/question/23202402/answer/527748675)
 3.  [Chrome 80.0 中将 SameSite 的默认值设为 Lax, 对现有的 Cookie 使用有什么影响? - 紫云飞的回答 - 知乎](https://www.zhihu.com/question/373011996/answer/1032783062)
 4.  一些内部文章
 
-各种系列
-----
+## 各种系列
 
 各种系列文章目录地址：[https://github.com/mqyqingfeng/Blog](https://hub.fastgit.org/mqyqingfeng/Blog)
 
 如果有错误或者不严谨的地方，请务必给予指正，十分感谢。如果喜欢或者 有所启发，欢迎 star，对作者也是一种鼓励。
 
-[img-0]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-1]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-2]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-3]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-4]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-5]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-6]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
-
-[img-7]:data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-0]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-1]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-2]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-3]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-4]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-5]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-6]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==
+[img-7]: data:text/plain;base64,NDA0IHBhZ2Ugbm90IGZvdW5kCg==

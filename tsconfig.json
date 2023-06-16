@@ -11,5 +11,5 @@
   // 示例中我将所有的ts文件都放在了src目录下
   "include": [
       "**/*"        
-  ]
+, "docs/.vuepress/vuepress.config.ts"  ]
 }

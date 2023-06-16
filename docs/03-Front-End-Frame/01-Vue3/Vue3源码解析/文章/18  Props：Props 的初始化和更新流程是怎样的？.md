@@ -6,9 +6,7 @@
 
 为了让你更直观地理解，我们来举个例子，假设有这样一个 BlogPost 组件，它是这样定义的：
 
-复制代码
-
-```
+```html
 <div class="blog-post">
   <h1>{{title}}</h1>
   <p>author: {{author}}</p>
@@ -17,17 +15,15 @@
   export default {
     props: {
       title: String,
-      author: String
-    }
-  }
+      author: String,
+    },
+  };
 </script>
 ```
 
 然后我们在父组件使用这个 BlogPost 组件的时候，可以给它传递一些 Props 数据：
 
-复制代码
-
-```
+```html
 <blog-post title="Vue3 publish" author="yyx"></blog-post>
 ```
 
@@ -39,55 +35,49 @@
 
 首先，我们来了解 Props 的初始化过程。之前在介绍 Setup 组件初始化的章节，我们介绍了在执行 setupComponent 函数的时候，会初始化 Props：
 
-复制代码
-
-```
-function setupComponent (instance, isSSR = false) {
-  const { props, children, shapeFlag } = instance.vnode
+```js
+function setupComponent(instance, isSSR = false) {
+  const { props, children, shapeFlag } = instance.vnode;
   // 判断是否是一个有状态的组件
-  const isStateful = shapeFlag & 4
+  const isStateful = shapeFlag & 4;
   // 初始化 props
-  initProps(instance, props, isStateful, isSSR)
+  initProps(instance, props, isStateful, isSSR);
   // 初始化插槽
-  initSlots(instance, children)
+  initSlots(instance, children);
   // 设置有状态的组件实例
   const setupResult = isStateful
     ? setupStatefulComponent(instance, isSSR)
-    : undefined
-  return setupResult
+    : undefined;
+  return setupResult;
 }
 ```
 
 所以 Props 初始化，就是通过 initProps 方法来完成的，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function initProps(instance, rawProps, isStateful, isSSR = false) {
-  const props = {}
-  const attrs = {}
-  def(attrs, InternalObjectKey, 1)
+  const props = {};
+  const attrs = {};
+  def(attrs, InternalObjectKey, 1);
   // 设置 props 的值
-  setFullProps(instance, rawProps, props, attrs)
+  setFullProps(instance, rawProps, props, attrs);
   // 验证 props 合法
-  if ((process.env.NODE_ENV !== 'production')) {
-    validateProps(props, instance.type)
+  if (process.env.NODE_ENV !== "production") {
+    validateProps(props, instance.type);
   }
   if (isStateful) {
     // 有状态组件，响应式处理
-    instance.props = isSSR ? props : shallowReactive(props)
-  }
-  else {
+    instance.props = isSSR ? props : shallowReactive(props);
+  } else {
     // 函数式组件处理
     if (!instance.type.props) {
-      instance.props = attrs
-    }
-    else {
-      instance.props = props
+      instance.props = attrs;
+    } else {
+      instance.props = props;
     }
   }
   // 普通属性赋值
-  instance.attrs = attrs
+  instance.attrs = attrs;
 }
 ```
 
@@ -101,36 +91,38 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
 
 我们看一下 setFullProps 的实现：
 
-复制代码
-
-```
+```js
 function setFullProps(instance, rawProps, props, attrs) {
   // 标准化 props 的配置
-  const [options, needCastKeys] = normalizePropsOptions(instance.type)
+  const [options, needCastKeys] = normalizePropsOptions(instance.type);
   if (rawProps) {
     for (const key in rawProps) {
-      const value = rawProps[key]
+      const value = rawProps[key];
       // 一些保留的 prop 比如 ref、key 是不会传递的
       if (isReservedProp(key)) {
-        continue
+        continue;
       }
       // 连字符形式的 props 也转成驼峰形式
-      let camelKey
+      let camelKey;
       if (options && hasOwn(options, (camelKey = camelize(key)))) {
-        props[camelKey] = value
-      }
-      else if (!isEmitListener(instance.type, key)) {
+        props[camelKey] = value;
+      } else if (!isEmitListener(instance.type, key)) {
         // 非事件派发相关的，且不在 props 中定义的普通属性用 attrs 保留
-        attrs[key] = value
+        attrs[key] = value;
       }
     }
   }
   if (needCastKeys) {
     // 需要做转换的 props
-    const rawCurrentProps = toRaw(props)
+    const rawCurrentProps = toRaw(props);
     for (let i = 0; i < needCastKeys.length; i++) {
-      const key = needCastKeys[i]
-      props[key] = resolvePropValue(options, rawCurrentProps, key, rawCurrentProps[key])
+      const key = needCastKeys[i];
+      props[key] = resolvePropValue(
+        options,
+        rawCurrentProps,
+        key,
+        rawCurrentProps[key]
+      );
     }
   }
 }
@@ -142,78 +134,74 @@ function setFullProps(instance, rawProps, props, attrs) {
 
 接下来，我们来看标准化 props 配置的过程，先看一下 normalizePropsOptions 函数的实现：
 
-复制代码
-
-```
+```js
 function normalizePropsOptions(comp) {
   // comp.__props 用于缓存标准化的结果，有缓存，则直接返回
   if (comp.__props) {
-    return comp.__props
+    return comp.__props;
   }
-  const raw = comp.props
-  const normalized = {}
-  const needCastKeys = []
+  const raw = comp.props;
+  const normalized = {};
+  const needCastKeys = [];
   // 处理 mixins 和 extends 这些 props
-  let hasExtends = false
+  let hasExtends = false;
   if (!shared.isFunction(comp)) {
     const extendProps = (raw) => {
-      const [props, keys] = normalizePropsOptions(raw)
-      shared.extend(normalized, props)
-      if (keys)
-        needCastKeys.push(...keys)
-    }
+      const [props, keys] = normalizePropsOptions(raw);
+      shared.extend(normalized, props);
+      if (keys) needCastKeys.push(...keys);
+    };
     if (comp.extends) {
-      hasExtends = true
-      extendProps(comp.extends)
+      hasExtends = true;
+      extendProps(comp.extends);
     }
     if (comp.mixins) {
-      hasExtends = true
-      comp.mixins.forEach(extendProps)
+      hasExtends = true;
+      comp.mixins.forEach(extendProps);
     }
   }
   if (!raw && !hasExtends) {
-    return (comp.__props = shared.EMPTY_ARR)
+    return (comp.__props = shared.EMPTY_ARR);
   }
   // 数组形式的 props 定义
   if (shared.isArray(raw)) {
     for (let i = 0; i < raw.length; i++) {
       if (!shared.isString(raw[i])) {
-        warn(`props must be strings when using array syntax.`, raw[i])
+        warn(`props must be strings when using array syntax.`, raw[i]);
       }
-      const normalizedKey = shared.camelize(raw[i])
+      const normalizedKey = shared.camelize(raw[i]);
       if (validatePropName(normalizedKey)) {
-        normalized[normalizedKey] = shared.EMPTY_OBJ
+        normalized[normalizedKey] = shared.EMPTY_OBJ;
       }
     }
-  }
-  else if (raw) {
+  } else if (raw) {
     if (!shared.isObject(raw)) {
-      warn(`invalid props options`, raw)
+      warn(`invalid props options`, raw);
     }
     for (const key in raw) {
-      const normalizedKey = shared.camelize(key)
+      const normalizedKey = shared.camelize(key);
       if (validatePropName(normalizedKey)) {
-        const opt = raw[key]
+        const opt = raw[key];
         // 标准化 prop 的定义格式
         const prop = (normalized[normalizedKey] =
-          shared.isArray(opt) || shared.isFunction(opt) ? { type: opt } : opt)
+          shared.isArray(opt) || shared.isFunction(opt) ? { type: opt } : opt);
         if (prop) {
-          const booleanIndex = getTypeIndex(Boolean, prop.type)
-          const stringIndex = getTypeIndex(String, prop.type)
-          prop[0 /* shouldCast */] = booleanIndex > -1
+          const booleanIndex = getTypeIndex(Boolean, prop.type);
+          const stringIndex = getTypeIndex(String, prop.type);
+          prop[0 /* shouldCast */] = booleanIndex > -1;
           prop[1 /* shouldCastTrue */] =
-            stringIndex < 0 || booleanIndex < stringIndex
+            stringIndex < 0 || booleanIndex < stringIndex;
           // 布尔类型和有默认值的 prop 都需要转换
-          if (booleanIndex > -1 || shared.hasOwn(prop, 'default')) {
-            needCastKeys.push(normalizedKey)
+          if (booleanIndex > -1 || shared.hasOwn(prop, "default")) {
+            needCastKeys.push(normalizedKey);
           }
         }
       }
     }
   }
-  const normalizedEntry = [normalized, needCastKeys]
-  comp.__props = normalizedEntry
-  return normalizedEntry
+  const normalizedEntry = [normalized, needCastKeys];
+  comp.__props = normalizedEntry;
+  return normalizedEntry;
 }
 ```
 
@@ -223,53 +211,45 @@ normalizePropsOptions 主要目的是标准化 props 的配置，这里需要注
 
 接着，函数会处理数组形式的 props 定义，例如：
 
-复制代码
-
-```
+```js
 export default {
-  props: ['name', 'nick-name']
-}
+  props: ["name", "nick-name"],
+};
 ```
 
 如果 props 被定义成数组形式，那么数组的每个元素必须是一个字符串，然后把字符串都变成驼峰形式作为 key，并为 normalized 的 key 对应的每一个值创建一个空对象。针对上述示例，最终标准化的 props 的定义是这样的：
 
-复制代码
-
-```
+```js
 export default {
   props: {
     name: {},
-    nickName: {}
-  }
-}
+    nickName: {},
+  },
+};
 ```
 
 如果 props 定义是一个对象形式，接着就是标准化它的每一个 prop 的定义，把数组或者函数形式的 prop 标准化成对象形式，例如：
 
-复制代码
-
-```
+```js
 export default {
   title: String,
-  author: [String, Boolean]
-}
+  author: [String, Boolean],
+};
 ```
 
 注意，上述代码中的 String 和 Boolean 都是内置的构造器函数。经过标准化的 props 的定义：
 
-复制代码
-
-```
+```js
 export default {
   props: {
     title: {
-      type: String
+      type: String,
     },
     author: {
-      type: [String, Boolean]
-    }
-  }
-}
+      type: [String, Boolean],
+    },
+  },
+};
 ```
 
 接下来，就是判断一些 prop 是否需要转换，其中，含有布尔类型的 prop 和有默认值的 prop 需要转换，这些 prop 的 key 保存在 needCastKeys 中。注意，这里会给 prop 添加两个特殊的 key，prop[0] 和 prop[1]赋值，它们的作用后续我们会说。
@@ -280,27 +260,24 @@ export default {
 
 我们回到 setFullProps 函数，接下来分析遍历 props 数据求值的流程。
 
-复制代码
-
-```
+```js
 function setFullProps(instance, rawProps, props, attrs) {
   // 标准化 props 的配置
 
   if (rawProps) {
     for (const key in rawProps) {
-      const value = rawProps[key]
+      const value = rawProps[key];
       // 一些保留的 prop 比如 ref、key 是不会传递的
       if (isReservedProp(key)) {
-        continue
+        continue;
       }
       // 连字符形式的 props 也转成驼峰形式
-      let camelKey
+      let camelKey;
       if (options && hasOwn(options, (camelKey = camelize(key)))) {
-        props[camelKey] = value
-      }
-      else if (!isEmitListener(instance.type, key)) {
+        props[camelKey] = value;
+      } else if (!isEmitListener(instance.type, key)) {
         // 非事件派发相关的，且不在 props 中定义的普通属性用 attrs 保留
-        attrs[key] = value
+        attrs[key] = value;
       }
     }
   }
@@ -315,9 +292,7 @@ function setFullProps(instance, rawProps, props, attrs) {
 
 接下来我们来看 setFullProps 的最后一个流程：对需要转换的 props 求值。
 
-复制代码
-
-```
+```js
 function setFullProps(instance, rawProps, props, attrs) {
   // 标准化 props 的配置
 
@@ -325,10 +300,15 @@ function setFullProps(instance, rawProps, props, attrs) {
 
   if (needCastKeys) {
     // 需要做转换的 props
-    const rawCurrentProps = toRaw(props)
+    const rawCurrentProps = toRaw(props);
     for (let i = 0; i < needCastKeys.length; i++) {
-      const key = needCastKeys[i]
-      props[key] = resolvePropValue(options, rawCurrentProps, key, rawCurrentProps[key])
+      const key = needCastKeys[i];
+      props[key] = resolvePropValue(
+        options,
+        rawCurrentProps,
+        key,
+        rawCurrentProps[key]
+      );
     }
   }
 }
@@ -336,33 +316,32 @@ function setFullProps(instance, rawProps, props, attrs) {
 
 在 normalizePropsOptions 的时候，我们拿到了需要转换的 props 的 key，接下来就是遍历 needCastKeys，依次执行 resolvePropValue 方法来求值。我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function resolvePropValue(options, props, key, value) {
-  const opt = options[key]
+  const opt = options[key];
   if (opt != null) {
-    const hasDefault = hasOwn(opt, 'default')
+    const hasDefault = hasOwn(opt, "default");
     // 默认值处理
     if (hasDefault && value === undefined) {
-      const defaultValue = opt.default
+      const defaultValue = opt.default;
       value =
         opt.type !== Function && isFunction(defaultValue)
           ? defaultValue()
-          : defaultValue
+          : defaultValue;
     }
     // 布尔类型转换
     if (opt[0 /* shouldCast */]) {
       if (!hasOwn(props, key) && !hasDefault) {
-        value = false
-      }
-      else if (opt[1 /* shouldCastTrue */] &&
-        (value === '' || value === hyphenate(key))) {
-        value = true
+        value = false;
+      } else if (
+        opt[1 /* shouldCastTrue */] &&
+        (value === "" || value === hyphenate(key))
+      ) {
+        value = true;
       }
     }
   }
-  return value
+  return value;
 }
 ```
 
@@ -370,28 +349,24 @@ resolvePropValue 主要就是针对两种情况的转换，第一种是默认值
 
 第二种是布尔类型的值，前面我们在 normalizePropsOptions 的时候已经给 prop 的定义添加了两个特殊的 key，所以 opt[0] 为 true 表示这是一个含有 Boolean 类型的 prop，然后判断是否有传对应的值，如果不是且没有默认值的话，就直接转成 false，举个例子：
 
-复制代码
-
-```
+```js
 export default {
   props: {
-    author: Boolean
-  }
-}
+    author: Boolean,
+  },
+};
 ```
 
 如果父组件调用子组件的时候没有给 author 这个 prop 传值，那么它转换后的值就是 false。
 
 接着看 opt[1] 为 true，并且 props 传值是空字符串或者是 key 字符串的情况，命中这个逻辑表示这是一个含有 Boolean 和 String 类型的 prop，且 Boolean 在 String 前面，例如：
 
-复制代码
-
-```
+```js
 export default {
   props: {
-    author: [Boolean, String]
-  }
-}
+    author: [Boolean, String],
+  },
+};
 ```
 
 这种时候如果传递的 prop 值是空字符串，或者是 author 字符串，则 prop 的值会被转换成 true。
@@ -402,65 +377,62 @@ export default {
 
 接下来我们再回到 initProps 函数，分析第二个流程：验证 props 是否合法。
 
-复制代码
-
-```
+```js
 function initProps(instance, rawProps, isStateful, isSSR = false) {
-  const props = {}
+  const props = {};
   // 设置 props 的值
 
   // 验证 props 合法
-  if ((process.env.NODE_ENV !== 'production')) {
-    validateProps(props, instance.type)
+  if (process.env.NODE_ENV !== "production") {
+    validateProps(props, instance.type);
   }
 }
 ```
 
 验证过程是在非生产环境下执行的，我们来看一下 validateProps 的实现：
 
-复制代码
-
-```
+```js
 function validateProps(props, comp) {
-  const rawValues = toRaw(props)
-  const options = normalizePropsOptions(comp)[0]
+  const rawValues = toRaw(props);
+  const options = normalizePropsOptions(comp)[0];
   for (const key in options) {
-    let opt = options[key]
-    if (opt == null)
-      continue
-    validateProp(key, rawValues[key], opt, !hasOwn(rawValues, key))
+    let opt = options[key];
+    if (opt == null) continue;
+    validateProp(key, rawValues[key], opt, !hasOwn(rawValues, key));
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  const { type, required, validator } = prop
+  const { type, required, validator } = prop;
   // 检测 required
   if (required && isAbsent) {
-    warn('Missing required prop: "' + name + '"')
-    return
+    warn('Missing required prop: "' + name + '"');
+    return;
   }
   // 虽然没有值但也没有配置 required，直接返回
   if (value == null && !prop.required) {
-    return
+    return;
   }
   // 类型检测
   if (type != null && type !== true) {
-    let isValid = false
-    const types = isArray(type) ? type : [type]
-    const expectedTypes = []
+    let isValid = false;
+    const types = isArray(type) ? type : [type];
+    const expectedTypes = [];
     // 只要指定的类型之一匹配，值就有效
     for (let i = 0; i < types.length && !isValid; i++) {
-      const { valid, expectedType } = assertType(value, types[i])
-      expectedTypes.push(expectedType || '')
-      isValid = valid
+      const { valid, expectedType } = assertType(value, types[i]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
     }
     if (!isValid) {
-      warn(getInvalidTypeMessage(name, value, expectedTypes))
-      return
+      warn(getInvalidTypeMessage(name, value, expectedTypes));
+      return;
     }
   }
   // 自定义校验器
   if (validator && !validator(value)) {
-    warn('Invalid prop: custom validator check failed for prop "' + name + '".')
+    warn(
+      'Invalid prop: custom validator check failed for prop "' + name + '".'
+    );
   }
 }
 ```
@@ -469,20 +441,18 @@ function validateProp(name, value, prop, isAbsent) {
 
 对于单个 Prop 的配置，我们除了配置它的类型 type，还可以配置 required 表明它的必要性，以及 validator 自定义校验器，举个例子：
 
-复制代码
-
-```
+```js
 export default {
   props: {
     value: {
       type: Number,
       required: true,
       validator(val) {
-        return val >= 0
-      }
-    }
-  }
-}
+        return val >= 0;
+      },
+    },
+  },
+};
 ```
 
 因此 validateProp 首先验证 required 的情况，一旦 prop 配置了 required 为 true，那么必须给它传值，否则会报警告。
@@ -497,27 +467,23 @@ export default {
 
 我们再回到 initProps 方法，来看最后一个流程：把 props 变成响应式，添加到实例 instance.props 上。
 
-复制代码
-
-```
+```js
 function initProps(instance, rawProps, isStateful, isSSR = false) {
   // 设置 props 的值
   // 验证 props 合法
   if (isStateful) {
     // 有状态组件，响应式处理
-    instance.props = isSSR ? props : shallowReactive(props)
-  }
-  else {
+    instance.props = isSSR ? props : shallowReactive(props);
+  } else {
     // 函数式组件处理
     if (!instance.type.props) {
-      instance.props = attrs
-    }
-    else {
-      instance.props = props
+      instance.props = attrs;
+    } else {
+      instance.props = props;
     }
   }
   // 普通属性赋值
-  instance.attrs = attrs
+  instance.attrs = attrs;
 }
 ```
 
@@ -529,9 +495,7 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
 
 所谓 Props 的更新主要是指 Props 数据的更新，它最直接的反应是会触发组件的重新渲染，我们可以通过一个简单的示例分析这个过程。例如我们有这样一个子组件 HelloWorld，它是这样定义的：
 
-复制代码
-
-```
+```html
 <template>
   <div>
     <p>{{ msg }}</p>
@@ -540,9 +504,9 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
 <script>
   export default {
     props: {
-      msg: String
-    }
-  }
+      msg: String,
+    },
+  };
 </script>
 ```
 
@@ -550,28 +514,26 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
 
 然后我们在 App 父组件中引入这个子组件，它的定义如下：
 
-复制代码
-
-```
+```html
 <template>
   <hello-world :msg="msg"></hello-world>
   <button @click="toggleMsg">Toggle Msg</button>
 </template>
 <script>
-  import HelloWorld from './components/HelloWorld'
+  import HelloWorld from "./components/HelloWorld";
   export default {
     components: { HelloWorld },
     data() {
       return {
-        msg: 'Hello world'
-      }
+        msg: "Hello world",
+      };
     },
     methods: {
       toggleMsg() {
-        this.msg = this.msg === 'Hello world' ? 'Hello Vue' : 'Hello world'
-      }
-    }
-  }
+        this.msg = this.msg === "Hello world" ? "Hello Vue" : "Hello world";
+      },
+    },
+  };
 </script>
 ```
 
@@ -581,26 +543,23 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
 
 在组件更新的章节我们说过，组件的重新渲染会触发 patch 过程，然后遍历子节点递归 patch，那么遇到组件节点，会执行 updateComponent 方法：
 
-复制代码
-
-```
+```js
 const updateComponent = (n1, n2, parentComponent, optimized) => {
-  const instance = (n2.component = n1.component)
+  const instance = (n2.component = n1.component);
   // 根据新旧子组件 vnode 判断是否需要更新子组件
   if (shouldUpdateComponent(n1, n2, parentComponent, optimized)) {
     // 新的子组件 vnode 赋值给 instance.next
-    instance.next = n2
+    instance.next = n2;
     // 子组件也可能因为数据变化被添加到更新队列里了，移除它们防止对一个子组件重复更新
-    invalidateJob(instance.update)
+    invalidateJob(instance.update);
     // 执行子组件的副作用渲染函数
-    instance.update()
-  }
-  else {
+    instance.update();
+  } else {
     // 不需要更新，只复制属性
-    n2.component = n1.component
-    n2.el = n1.el
+    n2.component = n1.component;
+    n2.el = n1.el;
   }
-}
+};
 ```
 
 在这个过程中，会执行 shouldUpdateComponent 方法判断是否需要更新子组件，内部会对比 props，由于我们的 prop 数据 msg 由 Hello world 变成了 Hello Vue，值不一样所以 shouldUpdateComponent 会返回 true，这样就把新的子组件 vnode 赋值给 instance.next，然后执行 instance.update 触发子组件的重新渲染。
@@ -609,118 +568,135 @@ const updateComponent = (n1, n2, parentComponent, optimized) => {
 
 执行 instance.update 函数，实际上是执行 componentEffect 组件副作用渲染函数：
 
-复制代码
-
-```
-const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized) => {
+```js
+const setupRenderEffect = (
+  instance,
+  initialVNode,
+  container,
+  anchor,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
   // 创建响应式的副作用渲染函数
   instance.update = effect(function componentEffect() {
     if (!instance.isMounted) {
       // 渲染组件
-    }
-    else {
+    } else {
       // 更新组件
-      let { next, vnode } = instance
+      let { next, vnode } = instance;
       // next 表示新的组件 vnode
       if (next) {
         // 更新组件 vnode 节点信息
-        updateComponentPreRender(instance, next, optimized)
-      }
-      else {
-        next = vnode
+        updateComponentPreRender(instance, next, optimized);
+      } else {
+        next = vnode;
       }
       // 渲染新的子树 vnode
-      const nextTree = renderComponentRoot(instance)
+      const nextTree = renderComponentRoot(instance);
       // 缓存旧的子树 vnode
-      const prevTree = instance.subTree
+      const prevTree = instance.subTree;
       // 更新子树 vnode
-      instance.subTree = nextTree
+      instance.subTree = nextTree;
       // 组件更新核心逻辑，根据新旧子树 vnode 做 patch
-      patch(prevTree, nextTree,
+      patch(
+        prevTree,
+        nextTree,
         // 如果在 teleport 组件中父节点可能已经改变，所以容器直接找旧树 DOM 元素的父节点
         hostParentNode(prevTree.el),
         // 参考节点在 fragment 的情况可能改变，所以直接找旧树 DOM 元素的下一个节点
         getNextHostNode(prevTree),
         instance,
         parentSuspense,
-        isSVG)
+        isSVG
+      );
       // 缓存更新后的 DOM 节点
-      next.el = nextTree.el
+      next.el = nextTree.el;
     }
-  }, prodEffectOptions)
-}
+  }, prodEffectOptions);
+};
 ```
 
 在更新组件的时候，会判断是否有 instance.next,它代表新的组件 vnode，根据前面的逻辑 next 不为空，所以会执行 updateComponentPreRender 更新组件 vnode 节点信息，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 const updateComponentPreRender = (instance, nextVNode, optimized) => {
-  nextVNode.component = instance
-  const prevProps = instance.vnode.props
-  instance.vnode = nextVNode
-  instance.next = null
-  updateProps(instance, nextVNode.props, prevProps, optimized)
-  updateSlots(instance, nextVNode.children)
-}
+  nextVNode.component = instance;
+  const prevProps = instance.vnode.props;
+  instance.vnode = nextVNode;
+  instance.next = null;
+  updateProps(instance, nextVNode.props, prevProps, optimized);
+  updateSlots(instance, nextVNode.children);
+};
 ```
 
 其中，会执行 updateProps 更新 props 数据，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
-  const { props, attrs, vnode: { patchFlag } } = instance
-  const rawCurrentProps = toRaw(props)
-  const [options] = normalizePropsOptions(instance.type)
-  if ((optimized || patchFlag > 0) && !(patchFlag & 16 /* FULL_PROPS */)) {
+  const {
+    props,
+    attrs,
+    vnode: { patchFlag },
+  } = instance;
+  const rawCurrentProps = toRaw(props);
+  const [options] = normalizePropsOptions(instance.type);
+  if ((optimized || patchFlag > 0) && !((patchFlag & 16) /* FULL_PROPS */)) {
     if (patchFlag & 8 /* PROPS */) {
       // 只更新动态 props 节点
-      const propsToUpdate = instance.vnode.dynamicProps
+      const propsToUpdate = instance.vnode.dynamicProps;
       for (let i = 0; i < propsToUpdate.length; i++) {
-        const key = propsToUpdate[i]
-        const value = rawProps[key]
+        const key = propsToUpdate[i];
+        const value = rawProps[key];
         if (options) {
           if (hasOwn(attrs, key)) {
-            attrs[key] = value
+            attrs[key] = value;
+          } else {
+            const camelizedKey = camelize(key);
+            props[camelizedKey] = resolvePropValue(
+              options,
+              rawCurrentProps,
+              camelizedKey,
+              value
+            );
           }
-          else {
-            const camelizedKey = camelize(key)
-            props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value)
-          }
-        }
-        else {
-          attrs[key] = value
+        } else {
+          attrs[key] = value;
         }
       }
     }
-  }
-  else {
+  } else {
     // 全量 props 更新
-    setFullProps(instance, rawProps, props, attrs)
+    setFullProps(instance, rawProps, props, attrs);
     // 因为新的 props 是动态的，把那些不在新的 props 中但存在于旧的 props 中的值设置为 undefined
-    let kebabKey
+    let kebabKey;
     for (const key in rawCurrentProps) {
-      if (!rawProps ||
+      if (
+        !rawProps ||
         (!hasOwn(rawProps, key) &&
-          ((kebabKey = hyphenate(key)) === key || !hasOwn(rawProps, kebabKey)))) {
+          ((kebabKey = hyphenate(key)) === key || !hasOwn(rawProps, kebabKey)))
+      ) {
         if (options) {
-          if (rawPrevProps &&
+          if (
+            rawPrevProps &&
             (rawPrevProps[key] !== undefined ||
-              rawPrevProps[kebabKey] !== undefined)) {
-            props[key] = resolvePropValue(options, rawProps || EMPTY_OBJ, key, undefined)
+              rawPrevProps[kebabKey] !== undefined)
+          ) {
+            props[key] = resolvePropValue(
+              options,
+              rawProps || EMPTY_OBJ,
+              key,
+              undefined
+            );
           }
-        }
-        else {
-          delete props[key]
+        } else {
+          delete props[key];
         }
       }
     }
   }
-  if ((process.env.NODE_ENV !== 'production') && rawProps) {
-    validateProps(props, instance.type)
+  if (process.env.NODE_ENV !== "production" && rawProps) {
+    validateProps(props, instance.type);
   }
 }
 ```
@@ -733,25 +709,23 @@ updateProps 主要的目标就是把父组件渲染时求得的 props 新值，�
 
 好了，至此我们搞明白了子组件实例的 props 值是如何更新的，那么我们现在来思考一下前面的一个问题，为什么 instance.props 需要变成响应式呢？其实这是一种需求，因为我们也希望在子组件中可以监听 props 值的变化做一些事情，举个例子：
 
-复制代码
-
-```
-import { ref, h, defineComponent, watchEffect } from 'vue'
-const count = ref(0)
-let dummy
+```js
+import { ref, h, defineComponent, watchEffect } from "vue";
+const count = ref(0);
+let dummy;
 const Parent = {
-  render: () => h(Child, { count: count.value })
-}
+  render: () => h(Child, { count: count.value }),
+};
 const Child = defineComponent({
   props: { count: Number },
   setup(props) {
     watchEffect(() => {
-      dummy = props.count
-    })
-    return () => h('div', props.count)
-  }
-})
-count.value++
+      dummy = props.count;
+    });
+    return () => h("div", props.count);
+  },
+});
+count.value++;
 ```
 
 这里，我们定义了父组件 Parent 和子组件 Child，子组件 Child 中定义了 prop count，除了在渲染模板中引用了 count，我们在 setup 函数中通过了 watchEffect 注册了一个回调函数，内部依赖了 props.count，当修改 count.value 的时候，我们希望这个回调函数也能执行，所以这个 prop 的值需要是响应式的，由于 setup 函数的第一个参数是 props 变量，其实就是组件实例 instance.props，所以也就是要求 instance.props 是响应式的。
@@ -760,22 +734,20 @@ count.value++
 
 shallowReactive 和普通的 reactive 函数的主要区别是处理器函数不同，我们来回顾 getter 的处理器函数：
 
-复制代码
-
-```
+```js
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target, key, receiver) {
     if (key === "__v_isReactive" /* IS_REACTIVE */) {
       return !isReadonly;
-    }
-    else if (key === "__v_isReadonly" /* IS_READONLY */) {
+    } else if (key === "__v_isReadonly" /* IS_READONLY */) {
       return isReadonly;
-    }
-    else if (key === "__v_raw" /* RAW */ &&
+    } else if (
+      key === "__v_raw" /* RAW */ &&
       receiver ===
-      (isReadonly
-        ? target["__v_readonly" /* READONLY */]
-        : target["__v_reactive" /* REACTIVE */])) {
+        (isReadonly
+          ? target["__v_readonly" /* READONLY */]
+          : target["__v_reactive" /* REACTIVE */])
+    ) {
       return target;
     }
     const targetIsArray = isArray(target);
@@ -783,9 +755,11 @@ function createGetter(isReadonly = false, shallow = false) {
       return Reflect.get(arrayInstrumentations, key, receiver);
     }
     const res = Reflect.get(target, key, receiver);
-    if (isSymbol(key)
-      ? builtInSymbols.has(key)
-      : key === `__proto__` || key === `__v_isRef`) {
+    if (
+      isSymbol(key)
+        ? builtInSymbols.has(key)
+        : key === `__proto__` || key === `__v_isRef`
+    ) {
       return res;
     }
     if (!isReadonly) {
@@ -815,9 +789,7 @@ shallowReactive 创建的 getter 函数，shallow 变量为 true，那么就不�
 
 最后，给你留一道思考题目，我们把前面的示例稍加修改，HelloWorld 子组件如下：
 
-复制代码
-
-```
+```html
 <template>
   <div>
     <p>{{ msg }}</p>
@@ -829,44 +801,42 @@ shallowReactive 创建的 getter 函数，shallow 变量为 true，那么就不�
   export default {
     props: {
       msg: String,
-      info: Object
-    }
-  }
+      info: Object,
+    },
+  };
 </script>
 ```
 
 我们添加了 info prop，然后在模板中渲染了 info 的子属性数据，然后我们再修改一下父组件：
 
-复制代码
-
-```
+```html
 <template>
   <hello-world :msg="msg" :info="info"></hello-world>
   <button @click="addAge">Add age</button>
   <button @click="toggleMsg">Toggle Msg</button>
 </template>
 <script>
-  import HelloWorld from './components/HelloWorld'
+  import HelloWorld from "./components/HelloWorld";
   export default {
     components: { HelloWorld },
     data() {
       return {
         info: {
-          name: 'Tom',
-          age: 18
+          name: "Tom",
+          age: 18,
         },
-        msg: 'Hello world'
-      }
+        msg: "Hello world",
+      };
     },
     methods: {
       addAge() {
-        this.info.age++
+        this.info.age++;
       },
       toggleMsg() {
-        this.msg = this.msg === 'Hello world' ? 'Hello Vue' : 'Hello world'
-      }
-    }
-  }
+        this.msg = this.msg === "Hello world" ? "Hello Vue" : "Hello world";
+      },
+    },
+  };
 </script>
 ```
 

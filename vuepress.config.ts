@@ -471,11 +471,6 @@ export default defineUserConfig({
             // "/03-Front-End-Frame/01-Vue3/Vue3源码解析/文章/模块一导读  组件的实现：直击 Vue 核心的实现.md",
             // "/03-Front-End-Frame/01-Vue3/Vue3源码解析/文章/特别放送导读  研究 Vue 官方生态的实现原理.md",
           ],
-          //  [
-          //             // 字符串 - 页面文件路径
-          //             "/03-Front-End-Frame/01-Vue3/Vue3源码解析/文章/01  组件渲染：vnode 到真实 DOM 是如何转变的？.md",
-
-          //           ],
         },
       ],
       "/04-Front-End-Engineering/": [

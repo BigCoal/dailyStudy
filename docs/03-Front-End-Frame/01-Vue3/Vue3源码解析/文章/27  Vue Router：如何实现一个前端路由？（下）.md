@@ -6,74 +6,83 @@
 
 通过前面的示例我们了解到，路由组件就是通过 RouterView 组件渲染的，那么 RouterView 是怎么渲染的呢，我们来看它的实现：
 
-复制代码
-
-```
+```js
 const RouterView = defineComponent({
-  name: 'RouterView',
+  name: "RouterView",
   props: {
     name: {
       type: String,
-      default: 'default',
+      default: "default",
     },
     route: Object,
   },
   setup(props, { attrs, slots }) {
-    warnDeprecatedUsage()
-    const injectedRoute = inject(routeLocationKey)
-    const depth = inject(viewDepthKey, 0)
-    const matchedRouteRef = computed(() => (props.route || injectedRoute).matched[depth])
-    provide(viewDepthKey, depth + 1)
-    provide(matchedRouteKey, matchedRouteRef)
-    const viewRef = ref()
-    watch(() => [viewRef.value, matchedRouteRef.value, props.name], ([instance, to, name], [oldInstance, from, oldName]) => {
-      if (to) {
-        to.instances[name] = instance
-        if (from && instance === oldInstance) {
-          to.leaveGuards = from.leaveGuards
-          to.updateGuards = from.updateGuards
+    warnDeprecatedUsage();
+    const injectedRoute = inject(routeLocationKey);
+    const depth = inject(viewDepthKey, 0);
+    const matchedRouteRef = computed(
+      () => (props.route || injectedRoute).matched[depth]
+    );
+    provide(viewDepthKey, depth + 1);
+    provide(matchedRouteKey, matchedRouteRef);
+    const viewRef = ref();
+    watch(
+      () => [viewRef.value, matchedRouteRef.value, props.name],
+      ([instance, to, name], [oldInstance, from, oldName]) => {
+        if (to) {
+          to.instances[name] = instance;
+          if (from && instance === oldInstance) {
+            to.leaveGuards = from.leaveGuards;
+            to.updateGuards = from.updateGuards;
+          }
+        }
+        if (
+          instance &&
+          to &&
+          (!from || !isSameRouteRecord(to, from) || !oldInstance)
+        ) {
+          (to.enterCallbacks[name] || []).forEach((callback) =>
+            callback(instance)
+          );
         }
       }
-      if (instance &&
-        to &&
-        (!from || !isSameRouteRecord(to, from) || !oldInstance)) {
-        (to.enterCallbacks[name] || []).forEach(callback => callback(instance))
-      }
-    })
+    );
     return () => {
-      const route = props.route || injectedRoute
-      const matchedRoute = matchedRouteRef.value
-      const ViewComponent = matchedRoute && matchedRoute.components[props.name]
-      const currentName = props.name
+      const route = props.route || injectedRoute;
+      const matchedRoute = matchedRouteRef.value;
+      const ViewComponent = matchedRoute && matchedRoute.components[props.name];
+      const currentName = props.name;
       if (!ViewComponent) {
         return slots.default
           ? slots.default({ Component: ViewComponent, route })
-          : null
+          : null;
       }
-      const routePropsOption = matchedRoute.props[props.name]
+      const routePropsOption = matchedRoute.props[props.name];
       const routeProps = routePropsOption
         ? routePropsOption === true
           ? route.params
-          : typeof routePropsOption === 'function'
-            ? routePropsOption(route)
-            : routePropsOption
-        : null
-      const onVnodeUnmounted = vnode => {
+          : typeof routePropsOption === "function"
+          ? routePropsOption(route)
+          : routePropsOption
+        : null;
+      const onVnodeUnmounted = (vnode) => {
         if (vnode.component.isUnmounted) {
-          matchedRoute.instances[currentName] = null
+          matchedRoute.instances[currentName] = null;
         }
-      }
-      const component = h(ViewComponent, assign({}, routeProps, attrs, {
-        onVnodeUnmounted,
-        ref: viewRef,
-      }))
-      return (
-        slots.default
-          ? slots.default({ Component: component, route })
-          : component)
-    }
+      };
+      const component = h(
+        ViewComponent,
+        assign({}, routeProps, attrs, {
+          onVnodeUnmounted,
+          ref: viewRef,
+        })
+      );
+      return slots.default
+        ? slots.default({ Component: component, route })
+        : component;
+    };
   },
-})
+});
 ```
 
 RouterView 组件也是基于 composition API 实现的，我们重点看它的渲染部分，由于 setup 函数的返回值是一个函数，那这个函数就是它的渲染函数。
@@ -88,128 +97,128 @@ matchedRouteRef 一个计算属性，在不考虑 prop 传入 route 的情况下
 
 我们还是通过示例的方式来说明，我们对前面的示例稍做修改，加上嵌套路由的场景：
 
-复制代码
-
-```
-import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
-const Home = { template: '<div>Home</div>' }
+```js
+import { createApp } from "vue";
+import { createRouter, createWebHashHistory } from "vue-router";
+const Home = { template: "<div>Home</div>" };
 const About = {
   template: `<div>About
   <router-link to="/about/user">Go User</router-link>
   <router-view></router-view>
-  </div>`
-}
+  </div>`,
+};
 const User = {
-  template: '<div>User</div>,'
-}
+  template: "<div>User</div>,",
+};
 const routes = [
-  { path: '/', component: Home },
+  { path: "/", component: Home },
   {
-    path: '/about',
+    path: "/about",
     component: About,
     children: [
       {
-        path: 'user',
-        component: User
-      }
-    ]
-  }
-]
+        path: "user",
+        component: User,
+      },
+    ],
+  },
+];
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
-})
-const app = createApp({})
-app.use(router)
-app.mount('#app')
+  routes,
+});
+const app = createApp({});
+app.use(router);
+app.mount("#app");
 ```
 
 它和前面示例的区别在于，我们在 About 路由组件中又嵌套了一个 RouterView 组件，然后对 routes 数组中 path 为 /about 的路径配置扩展了 children 属性，对应的就是 About 组件嵌套路由的配置。
 
 当我们执行 createRouter 函数创建路由的时候，内部会执行如下代码来创建一个 matcher 对象：
 
-复制代码
-
-```
-const matcher = createRouterMatcher(options.routes, options)
+```js
+const matcher = createRouterMatcher(options.routes, options);
 ```
 
 执行了 createRouterMatcher 函数，并传入 routes 路径配置数组，它的目的就是根据路径配置对象创建一个路由的匹配对象，再来看它的实现：
 
-复制代码
-
-```
+```js
 function createRouterMatcher(routes, globalOptions) {
-  const matchers = []
-  const matcherMap = new Map()
-  globalOptions = mergeOptions({ strict: false, end: true, sensitive: false }, globalOptions)
+  const matchers = [];
+  const matcherMap = new Map();
+  globalOptions = mergeOptions(
+    { strict: false, end: true, sensitive: false },
+    globalOptions
+  );
 
   function addRoute(record, parent, originalRecord) {
-    let isRootAdd = !originalRecord
-    let mainNormalizedRecord = normalizeRouteRecord(record)
-    mainNormalizedRecord.aliasOf = originalRecord && originalRecord.record
-    const options = mergeOptions(globalOptions, record)
-    const normalizedRecords = [
-      mainNormalizedRecord,
-    ]
-    let matcher
-    let originalMatcher
+    let isRootAdd = !originalRecord;
+    let mainNormalizedRecord = normalizeRouteRecord(record);
+    mainNormalizedRecord.aliasOf = originalRecord && originalRecord.record;
+    const options = mergeOptions(globalOptions, record);
+    const normalizedRecords = [mainNormalizedRecord];
+    let matcher;
+    let originalMatcher;
     for (const normalizedRecord of normalizedRecords) {
-      let { path } = normalizedRecord
-      if (parent && path[0] !== '/') {
-        let parentPath = parent.record.path
-        let connectingSlash = parentPath[parentPath.length - 1] === '/' ? '' : '/'
+      let { path } = normalizedRecord;
+      if (parent && path[0] !== "/") {
+        let parentPath = parent.record.path;
+        let connectingSlash =
+          parentPath[parentPath.length - 1] === "/" ? "" : "/";
         normalizedRecord.path =
-          parent.record.path + (path && connectingSlash + path)
+          parent.record.path + (path && connectingSlash + path);
       }
-      matcher = createRouteRecordMatcher(normalizedRecord, parent, options)
-      if ( parent && path[0] === '/')
-        checkMissingParamsInAbsolutePath(matcher, parent)
+      matcher = createRouteRecordMatcher(normalizedRecord, parent, options);
+      if (parent && path[0] === "/")
+        checkMissingParamsInAbsolutePath(matcher, parent);
       if (originalRecord) {
-        originalRecord.alias.push(matcher)
+        originalRecord.alias.push(matcher);
         {
-          checkSameParams(originalRecord, matcher)
+          checkSameParams(originalRecord, matcher);
         }
-      }
-      else {
-        originalMatcher = originalMatcher || matcher
-        if (originalMatcher !== matcher)
-          originalMatcher.alias.push(matcher)
+      } else {
+        originalMatcher = originalMatcher || matcher;
+        if (originalMatcher !== matcher) originalMatcher.alias.push(matcher);
         if (isRootAdd && record.name && !isAliasRecord(matcher))
-          removeRoute(record.name)
+          removeRoute(record.name);
       }
-      if ('children' in mainNormalizedRecord) {
-        let children = mainNormalizedRecord.children
+      if ("children" in mainNormalizedRecord) {
+        let children = mainNormalizedRecord.children;
         for (let i = 0; i < children.length; i++) {
-          addRoute(children[i], matcher, originalRecord && originalRecord.children[i])
+          addRoute(
+            children[i],
+            matcher,
+            originalRecord && originalRecord.children[i]
+          );
         }
       }
-      originalRecord = originalRecord || matcher
-      insertMatcher(matcher)
+      originalRecord = originalRecord || matcher;
+      insertMatcher(matcher);
     }
     return originalMatcher
       ? () => {
-        removeRoute(originalMatcher)
-      }
-      : noop
+          removeRoute(originalMatcher);
+        }
+      : noop;
   }
 
   function insertMatcher(matcher) {
-    let i = 0
-    while (i < matchers.length &&
-    comparePathParserScore(matcher, matchers[i]) >= 0)
-      i++
-    matchers.splice(i, 0, matcher)
+    let i = 0;
+    while (
+      i < matchers.length &&
+      comparePathParserScore(matcher, matchers[i]) >= 0
+    )
+      i++;
+    matchers.splice(i, 0, matcher);
     if (matcher.record.name && !isAliasRecord(matcher))
-      matcherMap.set(matcher.record.name, matcher)
+      matcherMap.set(matcher.record.name, matcher);
   }
 
   // 定义其它一些辅助函数
 
   // 添加初始路径
-  routes.forEach(route => addRoute(route))
-  return { addRoute, resolve, removeRoute, getRoutes, getRecordMatcher }
+  routes.forEach((route) => addRoute(route));
+  return { addRoute, resolve, removeRoute, getRoutes, getRecordMatcher };
 }
 ```
 
@@ -221,30 +230,30 @@ createRouterMatcher 函数内部定义了一个 matchers 数组和一些辅助�
 
 然后再执行 createRouteRecordMatcher 函数，传入标准化的 record 对象，我们再来看它的实现：
 
-复制代码
-
-```
+```js
 function createRouteRecordMatcher(record, parent, options) {
-  const parser = tokensToParser(tokenizePath(record.path), options)
+  const parser = tokensToParser(tokenizePath(record.path), options);
   {
-    const existingKeys = new Set()
+    const existingKeys = new Set();
     for (const key of parser.keys) {
       if (existingKeys.has(key.name))
-        warn(`Found duplicated params with name "${key.name}" for path "${record.path}". Only the last one will be available on "$route.params".`)
-      existingKeys.add(key.name)
+        warn(
+          `Found duplicated params with name "${key.name}" for path "${record.path}". Only the last one will be available on "$route.params".`
+        );
+      existingKeys.add(key.name);
     }
   }
   const matcher = assign(parser, {
     record,
     parent,
     children: [],
-    alias: []
-  })
+    alias: [],
+  });
   if (parent) {
     if (!matcher.record.aliasOf === !parent.record.aliasOf)
-      parent.children.push(matcher)
+      parent.children.push(matcher);
   }
-  return matcher
+  return matcher;
 }
 ```
 
@@ -260,64 +269,64 @@ function createRouteRecordMatcher(record, parent, options) {
 
 之前我们提到过，切换路径会执行 pushWithRedirect 方法，内部会执行一段代码：
 
-复制代码
-
-```
-const targetLocation = (pendingLocation = resolve(to))
+```js
+const targetLocation = (pendingLocation = resolve(to));
 ```
 
 这里会执行 resolve 函数解析生成 targetLocation，这个 targetLocation 最后也会在 finalizeNavigation 的时候赋值 currentRoute 更新当前路径。我们来看 resolve 函数的实现：
 
-复制代码
-
-```
+```js
 function resolve(location, currentLocation) {
-  let matcher
-  let params = {}
-  let path
-  let name
-  if ('name' in location && location.name) {
-    matcher = matcherMap.get(location.name)
+  let matcher;
+  let params = {};
+  let path;
+  let name;
+  if ("name" in location && location.name) {
+    matcher = matcherMap.get(location.name);
     if (!matcher)
       throw createRouterError(1 /* MATCHER_NOT_FOUND */, {
         location,
-      })
-    name = matcher.record.name
+      });
+    name = matcher.record.name;
     params = assign(
-      paramsFromLocation(currentLocation.params,
-        matcher.keys.filter(k => !k.optional).map(k => k.name)), location.params)
-    path = matcher.stringify(params)
-  }
-  else if ('path' in location) {
-    path = location.path
-    if ( !path.startsWith('/')) {
-      warn(`The Matcher cannot resolve relative paths but received "${path}". Unless you directly called \`matcher.resolve("${path}")\`, this is probably a bug in vue-router. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-router-next.`)
+      paramsFromLocation(
+        currentLocation.params,
+        matcher.keys.filter((k) => !k.optional).map((k) => k.name)
+      ),
+      location.params
+    );
+    path = matcher.stringify(params);
+  } else if ("path" in location) {
+    path = location.path;
+    if (!path.startsWith("/")) {
+      warn(
+        `The Matcher cannot resolve relative paths but received "${path}". Unless you directly called \`matcher.resolve("${path}")\`, this is probably a bug in vue-router. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-router-next.`
+      );
     }
-    matcher = matchers.find(m => m.re.test(path))
+    matcher = matchers.find((m) => m.re.test(path));
 
     if (matcher) {
-      params = matcher.parse(path)
-      name = matcher.record.name
+      params = matcher.parse(path);
+      name = matcher.record.name;
     }
-  }
-  else {
+  } else {
     matcher = currentLocation.name
       ? matcherMap.get(currentLocation.name)
-      : matchers.find(m => m.re.test(currentLocation.path))
+      : matchers.find((m) => m.re.test(currentLocation.path));
     if (!matcher)
       throw createRouterError(1 /* MATCHER_NOT_FOUND */, {
         location,
         currentLocation,
-      })
-    name = matcher.record.name
-    params = assign({}, currentLocation.params, location.params)
-    path = matcher.stringify(params)
+      });
+    name = matcher.record.name;
+    params = assign({}, currentLocation.params, location.params);
+    path = matcher.stringify(params);
   }
-  const matched = []
-  let parentMatcher = matcher
+  const matched = [];
+  let parentMatcher = matcher;
   while (parentMatcher) {
-    matched.unshift(parentMatcher.record)
-    parentMatcher = parentMatcher.parent
+    matched.unshift(parentMatcher.record);
+    parentMatcher = parentMatcher.parent;
   }
   return {
     name,
@@ -325,7 +334,7 @@ function resolve(location, currentLocation) {
     params,
     matched,
     meta: mergeMetaFields(matched),
-  }
+  };
 }
 ```
 
@@ -343,9 +352,7 @@ resolve 函数主要做的事情就是根据 location 的 name 或者 path 从�
 
 导航守卫主要是让用户在路径切换的生命周期中可以注入钩子函数，执行一些自己的逻辑，也可以取消和重定向导航，举个应用的例子：
 
-复制代码
-
-```
+```js
 router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' }) else {
     next()
@@ -361,72 +368,91 @@ router.beforeEach 传入的参数是一个函数，我们把这类函数就称�
 
 接下来，我们来看 navigate 函数的实现：
 
-复制代码
-
-```
+```js
 function navigate(to, from) {
-  let guards
-  const [leavingRecords, updatingRecords, enteringRecords,] = extractChangingRecords(to, from)
-  guards = extractComponentsGuards(leavingRecords.reverse(), 'beforeRouteLeave', to, from)
+  let guards;
+  const [leavingRecords, updatingRecords, enteringRecords] =
+    extractChangingRecords(to, from);
+  guards = extractComponentsGuards(
+    leavingRecords.reverse(),
+    "beforeRouteLeave",
+    to,
+    from
+  );
   for (const record of leavingRecords) {
     for (const guard of record.leaveGuards) {
-      guards.push(guardToPromiseFn(guard, to, from))
+      guards.push(guardToPromiseFn(guard, to, from));
     }
   }
-  const canceledNavigationCheck = checkCanceledNavigationAndReject.bind(null, to, from)
-  guards.push(canceledNavigationCheck)
-  return (runGuardQueue(guards)
+  const canceledNavigationCheck = checkCanceledNavigationAndReject.bind(
+    null,
+    to,
+    from
+  );
+  guards.push(canceledNavigationCheck);
+  return runGuardQueue(guards)
     .then(() => {
-      guards = []
+      guards = [];
       for (const guard of beforeGuards.list()) {
-        guards.push(guardToPromiseFn(guard, to, from))
+        guards.push(guardToPromiseFn(guard, to, from));
       }
-      guards.push(canceledNavigationCheck)
-      return runGuardQueue(guards)
+      guards.push(canceledNavigationCheck);
+      return runGuardQueue(guards);
     })
     .then(() => {
-      guards = extractComponentsGuards(updatingRecords, 'beforeRouteUpdate', to, from)
+      guards = extractComponentsGuards(
+        updatingRecords,
+        "beforeRouteUpdate",
+        to,
+        from
+      );
       for (const record of updatingRecords) {
         for (const guard of record.updateGuards) {
-          guards.push(guardToPromiseFn(guard, to, from))
+          guards.push(guardToPromiseFn(guard, to, from));
         }
       }
-      guards.push(canceledNavigationCheck)
-      return runGuardQueue(guards)
+      guards.push(canceledNavigationCheck);
+      return runGuardQueue(guards);
     })
     .then(() => {
-      guards = []
+      guards = [];
       for (const record of to.matched) {
         if (record.beforeEnter && from.matched.indexOf(record) < 0) {
           if (Array.isArray(record.beforeEnter)) {
             for (const beforeEnter of record.beforeEnter)
-              guards.push(guardToPromiseFn(beforeEnter, to, from))
-          }
-          else {
-            guards.push(guardToPromiseFn(record.beforeEnter, to, from))
+              guards.push(guardToPromiseFn(beforeEnter, to, from));
+          } else {
+            guards.push(guardToPromiseFn(record.beforeEnter, to, from));
           }
         }
       }
-      guards.push(canceledNavigationCheck)
-      return runGuardQueue(guards)
+      guards.push(canceledNavigationCheck);
+      return runGuardQueue(guards);
     })
     .then(() => {
-      to.matched.forEach(record => (record.enterCallbacks = {}))
-      guards = extractComponentsGuards(enteringRecords, 'beforeRouteEnter', to, from)
-      guards.push(canceledNavigationCheck)
-      return runGuardQueue(guards)
+      to.matched.forEach((record) => (record.enterCallbacks = {}));
+      guards = extractComponentsGuards(
+        enteringRecords,
+        "beforeRouteEnter",
+        to,
+        from
+      );
+      guards.push(canceledNavigationCheck);
+      return runGuardQueue(guards);
     })
     .then(() => {
-      guards = []
+      guards = [];
       for (const guard of beforeResolveGuards.list()) {
-        guards.push(guardToPromiseFn(guard, to, from))
+        guards.push(guardToPromiseFn(guard, to, from));
       }
-      guards.push(canceledNavigationCheck)
-      return runGuardQueue(guards)
+      guards.push(canceledNavigationCheck);
+      return runGuardQueue(guards);
     })
-    .catch(err => isNavigationFailure(err, 8 /* NAVIGATION_CANCELLED */)
-      ? err
-      : Promise.reject(err)))
+    .catch((err) =>
+      isNavigationFailure(err, 8 /* NAVIGATION_CANCELLED */)
+        ? err
+        : Promise.reject(err)
+    );
 }
 ```
 
@@ -434,11 +460,12 @@ function navigate(to, from) {
 
 然后通过 runGuardQueue 去执行这些 guards，来看它的实现：
 
-复制代码
-
-```
+```js
 function runGuardQueue(guards) {
-  return guards.reduce((promise, guard) => promise.then(() => guard()), Promise.resolve())
+  return guards.reduce(
+    (promise, guard) => promise.then(() => guard()),
+    Promise.resolve()
+  );
 }
 ```
 
@@ -448,63 +475,71 @@ function runGuardQueue(guards) {
 
 原来在把 guard 添加到 guards 数组前，都会执行 guardToPromiseFn 函数把普通函数 Promise 化，来看它的实现：
 
-复制代码
-
-```
-import { warn as warn$1 } from "vue/dist/vue"
+```js
+import { warn as warn$1 } from "vue/dist/vue";
 function guardToPromiseFn(guard, to, from, record, name) {
-  const enterCallbackArray = record &&
-    (record.enterCallbacks[name] = record.enterCallbacks[name] || [])
-  return () => new Promise((resolve, reject) => {
-    const next = (valid) => {
-      if (valid === false)
-        reject(createRouterError(4 /* NAVIGATION_ABORTED */, {
-          from,
-          to,
-        }))
-      else if (valid instanceof Error) {
-        reject(valid)
-      }
-      else if (isRouteLocation(valid)) {
-        reject(createRouterError(2 /* NAVIGATION_GUARD_REDIRECT */, {
-          from: to,
-          to: valid
-        }))
-      }
-      else {
-        if (enterCallbackArray &&
-          record.enterCallbacks[name] === enterCallbackArray &&
-          typeof valid === 'function')
-          enterCallbackArray.push(valid)
-        resolve()
-      }
-    }
-    const guardReturn = guard.call(record && record.instances[name], to, from, next )
-    let guardCall = Promise.resolve(guardReturn)
-    if (guard.length < 3)
-      guardCall = guardCall.then(next)
-    if (guard.length > 2) {
-      const message = `The "next" callback was never called inside of ${guard.name ? '"' + guard.name + '"' : ''}:\n${guard.toString()}\n. If you are returning a value instead of calling "next", make sure to remove the "next" parameter from your function.`
-      if (typeof guardReturn === 'object' && 'then' in guardReturn) {
-        guardCall = guardCall.then(resolvedValue => {
-          // @ts-ignore: _called is added at canOnlyBeCalledOnce
+  const enterCallbackArray =
+    record && (record.enterCallbacks[name] = record.enterCallbacks[name] || []);
+  return () =>
+    new Promise((resolve, reject) => {
+      const next = (valid) => {
+        if (valid === false)
+          reject(
+            createRouterError(4 /* NAVIGATION_ABORTED */, {
+              from,
+              to,
+            })
+          );
+        else if (valid instanceof Error) {
+          reject(valid);
+        } else if (isRouteLocation(valid)) {
+          reject(
+            createRouterError(2 /* NAVIGATION_GUARD_REDIRECT */, {
+              from: to,
+              to: valid,
+            })
+          );
+        } else {
+          if (
+            enterCallbackArray &&
+            record.enterCallbacks[name] === enterCallbackArray &&
+            typeof valid === "function"
+          )
+            enterCallbackArray.push(valid);
+          resolve();
+        }
+      };
+      const guardReturn = guard.call(
+        record && record.instances[name],
+        to,
+        from,
+        next
+      );
+      let guardCall = Promise.resolve(guardReturn);
+      if (guard.length < 3) guardCall = guardCall.then(next);
+      if (guard.length > 2) {
+        const message = `The "next" callback was never called inside of ${
+          guard.name ? '"' + guard.name + '"' : ""
+        }:\n${guard.toString()}\n. If you are returning a value instead of calling "next", make sure to remove the "next" parameter from your function.`;
+        if (typeof guardReturn === "object" && "then" in guardReturn) {
+          guardCall = guardCall.then((resolvedValue) => {
+            // @ts-ignore: _called is added at canOnlyBeCalledOnce
+            if (!next._called) {
+              warn$1(message);
+              return Promise.reject(new Error("Invalid navigation guard"));
+            }
+            return resolvedValue;
+          });
+        } else if (guardReturn !== undefined) {
           if (!next._called) {
-            warn$1(message)
-            return Promise.reject(new Error('Invalid navigation guard'))
+            warn$1(message);
+            reject(new Error("Invalid navigation guard"));
+            return;
           }
-          return resolvedValue
-        })
-      }
-      else if (guardReturn !== undefined) {
-        if (!next._called) {
-          warn$1(message)
-          reject(new Error('Invalid navigation guard'))
-          return
         }
       }
-    }
-    guardCall.catch(err => reject(err))
-  })
+      guardCall.catch((err) => reject(err));
+    });
 }
 ```
 
@@ -516,10 +551,8 @@ guardToPromiseFn 函数返回一个新的函数，这个函数内部会执行 gu
 
 有些时候我们写导航守卫不使用 next 函数，而是直接返回 true 或 false，这种情况则先执行如下代码：
 
-复制代码
-
-```
-guardCall = Promise.resolve(guardReturn)
+```js
+guardCall = Promise.resolve(guardReturn);
 ```
 
 把导航守卫的返回值 Promise 化，然后再执行 guardCall.then(next)，把导航守卫的返回值传给 next 函数。

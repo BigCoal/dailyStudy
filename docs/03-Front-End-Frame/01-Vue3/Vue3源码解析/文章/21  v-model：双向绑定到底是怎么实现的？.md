@@ -14,16 +14,28 @@ v-model 也不是可以作用到任意标签，它只能在一些特定的表单
 
 我们先看这个模板编译后生成的 render 函数：
 
-复制代码
-
-```
-import { vModelText as _vModelText, createVNode as _createVNode, withDirectives as _withDirectives, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+```js
+import {
+  vModelText as _vModelText,
+  createVNode as _createVNode,
+  withDirectives as _withDirectives,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return _withDirectives((_openBlock(), _createBlock("input", {
-    "onUpdate:modelValue": $event => (_ctx.searchText = $event)
-  }, null, 8 /* PROPS */, ["onUpdate:modelValue"])), [
-    [_vModelText, _ctx.searchText]
-  ])
+  return _withDirectives(
+    (_openBlock(),
+    _createBlock(
+      "input",
+      {
+        "onUpdate:modelValue": ($event) => (_ctx.searchText = $event),
+      },
+      null,
+      8 /* PROPS */,
+      ["onUpdate:modelValue"]
+    )),
+    [[_vModelText, _ctx.searchText]]
+  );
 }
 ```
 
@@ -31,64 +43,60 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 我们来看 vModelText 的实现：
 
-复制代码
-
-```
+```js
 const vModelText = {
   created(el, { value, modifiers: { lazy, trim, number } }, vnode) {
-    el.value = value == null ? '' : value
-    el._assign = getModelAssigner(vnode)
-    const castToNumber = number || el.type === 'number'
-    addEventListener(el, lazy ? 'change' : 'input', e => {
-      if (e.target.composing)
-        return
-      let domValue = el.value
+    el.value = value == null ? "" : value;
+    el._assign = getModelAssigner(vnode);
+    const castToNumber = number || el.type === "number";
+    addEventListener(el, lazy ? "change" : "input", (e) => {
+      if (e.target.composing) return;
+      let domValue = el.value;
       if (trim) {
-        domValue = domValue.trim()
+        domValue = domValue.trim();
+      } else if (castToNumber) {
+        domValue = toNumber(domValue);
       }
-      else if (castToNumber) {
-        domValue = toNumber(domValue)
-      }
-      el._assign(domValue)
-    })
+      el._assign(domValue);
+    });
     if (trim) {
-      addEventListener(el, 'change', () => {
-        el.value = el.value.trim()
-      })
+      addEventListener(el, "change", () => {
+        el.value = el.value.trim();
+      });
     }
     if (!lazy) {
-      addEventListener(el, 'compositionstart', onCompositionStart)
-      addEventListener(el, 'compositionend', onCompositionEnd)
+      addEventListener(el, "compositionstart", onCompositionStart);
+      addEventListener(el, "compositionend", onCompositionEnd);
     }
   },
   beforeUpdate(el, { value, modifiers: { trim, number } }, vnode) {
-    el._assign = getModelAssigner(vnode)
+    el._assign = getModelAssigner(vnode);
     if (document.activeElement === el) {
       if (trim && el.value.trim() === value) {
-        return
+        return;
       }
-      if ((number || el.type === 'number') && toNumber(el.value) === value) {
-        return
+      if ((number || el.type === "number") && toNumber(el.value) === value) {
+        return;
       }
     }
-    const newValue = value == null ? '' : value
+    const newValue = value == null ? "" : value;
     if (el.value !== newValue) {
-      el.value = newValue
+      el.value = newValue;
     }
-  }
-}
+  },
+};
 const getModelAssigner = (vnode) => {
-  const fn = vnode.props['onUpdate:modelValue']
-  return isArray(fn) ? value => invokeArrayFns(fn, value) : fn
-}
+  const fn = vnode.props["onUpdate:modelValue"];
+  return isArray(fn) ? (value) => invokeArrayFns(fn, value) : fn;
+};
 function onCompositionStart(e) {
-  e.target.composing = true
+  e.target.composing = true;
 }
 function onCompositionEnd(e) {
-  const target = e.target
+  const target = e.target;
   if (target.composing) {
-    target.composing = false
-    trigger(target, 'input')
+    target.composing = false;
+    trigger(target, "input");
   }
 }
 ```
@@ -125,10 +133,8 @@ created 函数首先把 v-model 绑定的值 value 赋值给 el.value，这个�
 
 前面我们的分析的是文本类型的 input，如果我们对示例稍加修改：
 
-复制代码
-
-```
-<input type="checkbox" v-model="searchText"/>
+```html
+<input type="checkbox" v-model="searchText" />
 ```
 
 你可以看到，编译的结果不同，调用的指令也不一样了，我希望你可以举一反三，去自学其他类型的表单元素的 v-model 实现。
@@ -137,25 +143,23 @@ created 函数首先把 v-model 绑定的值 value 赋值给 el.value，这个�
 
 接下来，我们来分析自定义组件上作用 v-model，看看它与表单的 v-model 有哪些不同。还是通过一个示例说明：
 
-复制代码
-
-```
-app.component('custom-input', {
-  props: ['modelValue'],
+```js
+app.component("custom-input", {
+  props: ["modelValue"],
   template: `
     <input v-model="value">
   `,
   computed: {
     value: {
       get() {
-        return this.modelValue
+        return this.modelValue;
       },
       set(value) {
-        this.$emit('update:modelValue', value)
-      }
-    }
-  }
-})
+        this.$emit("update:modelValue", value);
+      },
+    },
+  },
+});
 ```
 
 我们先通过 app.component 全局注册了一个 custom-input 自定义组件，内部我们使用了原生的 input 并使用了 v-model 指令实现数据的绑定。
@@ -166,24 +170,34 @@ app.component('custom-input', {
 
 接下来我们就可以在应用的其他的地方使用这个自定义组件了：
 
-复制代码
-
-```
-<custom-input v-model="searchText"/>
+```html
+<custom-input v-model="searchText" />
 ```
 
 我们来看一下这个模板编译后生成的 render 函数：
 
-复制代码
-
-```
-import { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+```js
+import {
+  resolveComponent as _resolveComponent,
+  createVNode as _createVNode,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_custom_input = _resolveComponent("custom-input")
-  return (_openBlock(), _createBlock(_component_custom_input, {
-    modelValue: _ctx.searchText,
-    "onUpdate:modelValue": $event => (_ctx.searchText = $event)
-  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"]))
+  const _component_custom_input = _resolveComponent("custom-input");
+  return (
+    _openBlock(),
+    _createBlock(
+      _component_custom_input,
+      {
+        modelValue: _ctx.searchText,
+        "onUpdate:modelValue": ($event) => (_ctx.searchText = $event),
+      },
+      null,
+      8 /* PROPS */,
+      ["modelValue", "onUpdate:modelValue"]
+    )
+  );
 }
 ```
 
@@ -191,24 +205,39 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 我们对示例稍做修改：
 
-复制代码
-
-```
-<custom-input :modelValue="searchText" @update:modelValue="$event=>{searchText = $event}"/>
+```html
+<custom-input
+  :modelValue="searchText"
+  @update:modelValue="$event=>{searchText = $event}"
+/>
 ```
 
 然后我们再来看它编译后生成的 render 函数：
 
-复制代码
-
-```
-import { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+```js
+import {
+  resolveComponent as _resolveComponent,
+  createVNode as _createVNode,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_custom_input = _resolveComponent("custom-input")
-  return (_openBlock(), _createBlock(_component_custom_input, {
-    modelValue: _ctx.searchText,
-    "onUpdate:modelValue": $event=>{_ctx.searchText = $event}
-  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"]))
+  const _component_custom_input = _resolveComponent("custom-input");
+  return (
+    _openBlock(),
+    _createBlock(
+      _component_custom_input,
+      {
+        modelValue: _ctx.searchText,
+        "onUpdate:modelValue": ($event) => {
+          _ctx.searchText = $event;
+        },
+      },
+      null,
+      8 /* PROPS */,
+      ["modelValue", "onUpdate:modelValue"]
+    )
+  );
 }
 ```
 
@@ -228,16 +257,28 @@ Vue.js 3.0 给组件的 v-model 提供了参数的方式，允许我们指定 pr
 
 然后我们再来看编译后的 render 函数：
 
-复制代码
-
-```
-import { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+```js
+import {
+  resolveComponent as _resolveComponent,
+  createVNode as _createVNode,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_custom_input = _resolveComponent("custom-input")
-  return (_openBlock(), _createBlock(_component_custom_input, {
-    text: _ctx.searchText,
-    "onUpdate:text": $event => (_ctx.searchText = $event)
-  }, null, 8 /* PROPS */, ["text", "onUpdate:text"]))
+  const _component_custom_input = _resolveComponent("custom-input");
+  return (
+    _openBlock(),
+    _createBlock(
+      _component_custom_input,
+      {
+        text: _ctx.searchText,
+        "onUpdate:text": ($event) => (_ctx.searchText = $event),
+      },
+      null,
+      8 /* PROPS */,
+      ["text", "onUpdate:text"]
+    )
+  );
 }
 ```
 
@@ -245,9 +286,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 显然，如果 v-model 支持了参数，那么我们就可以在一个组件上使用多个 v-model 了：
 
-复制代码
-
-```
+```html
 <ChildComponent v-model:title="pageTitle" v-model:content="pageContent" />
 ```
 
@@ -261,20 +300,23 @@ prop 的实现原理我们之前分析过，但自定义事件是如何派发的
 
 从前面的示例我们知道，子组件会执行`this.$emit('update:modelValue',value)`方法派发自定义事件，$emit 内部执行了 emit 方法，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function emit(instance, event, ...args) {
-  const props = instance.vnode.props || EMPTY_OBJ
-  let handlerName = `on${capitalize(event)}`
-  let handler = props[handlerName]
+  const props = instance.vnode.props || EMPTY_OBJ;
+  let handlerName = `on${capitalize(event)}`;
+  let handler = props[handlerName];
 
-  if (!handler && event.startsWith('update:')) {
-    handlerName = `on${capitalize(hyphenate(event))}`
-    handler = props[handlerName]
+  if (!handler && event.startsWith("update:")) {
+    handlerName = `on${capitalize(hyphenate(event))}`;
+    handler = props[handlerName];
   }
   if (handler) {
-    callWithAsyncErrorHandling(handler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args)
+    callWithAsyncErrorHandling(
+      handler,
+      instance,
+      6 /* COMPONENT_EVENT_HANDLER */,
+      args
+    );
   }
 }
 ```

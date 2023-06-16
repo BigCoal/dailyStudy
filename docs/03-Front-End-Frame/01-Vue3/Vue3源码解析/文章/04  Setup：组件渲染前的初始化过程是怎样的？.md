@@ -4,31 +4,29 @@ Vue.js 3.0 允许我们在编写组件的时候添加一个 setup 启动函数�
 
 我们先通过一段代码认识它，在这里编写一个 button 组件：
 
-复制代码
-
-```
+```html
 <template>
   <button @click="increment">
     Count is: {{ state.count }}, double is: {{ state.double }}
   </button>
 </template>
 <script>
-import { reactive, computed } from 'vue'
-export default {
-  setup() {
-    const state = reactive({
-      count: 0,
-      double: computed(() => state.count * 2)
-    })
-    function increment() {
-      state.count++
-    }
-    return {
-      state,
-      increment
-    }
-  }
-}
+  import { reactive, computed } from "vue";
+  export default {
+    setup() {
+      const state = reactive({
+        count: 0,
+        double: computed(() => state.count * 2),
+      });
+      function increment() {
+        state.count++;
+      }
+      return {
+        state,
+        increment,
+      };
+    },
+  };
 </script>
 ```
 
@@ -50,29 +48,46 @@ export default {
 
 其中渲染 vnode 的过程主要就是在挂载组件：
 
-复制代码
-
-```
-const mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
+```js
+const mountComponent = (
+  initialVNode,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
   // 创建组件实例
-  const instance = (initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense))
+  const instance = (initialVNode.component = createComponentInstance(
+    initialVNode,
+    parentComponent,
+    parentSuspense
+  ));
   // 设置组件实例
-  setupComponent(instance)
+  setupComponent(instance);
   // 设置并运行带副作用的渲染函数
-  setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized)
-}
+  setupRenderEffect(
+    instance,
+    initialVNode,
+    container,
+    anchor,
+    parentSuspense,
+    isSVG,
+    optimized
+  );
+};
 ```
 
 可以看到，这段挂载组件的代码主要做了三件事情：创建组件实例、设置组件实例和设置并运行带副作用的渲染函数。前两个流程就跟我们今天提到的问题息息相关，所以这一节课我们将重点分析它们。
 
 先看**创建组件实例**的流程，我们要关注 createComponentInstance 方法的实现：
 
-复制代码
-
-```
-function createComponentInstance (vnode, parent, suspense) {
+```js
+function createComponentInstance(vnode, parent, suspense) {
   // 继承父组件实例上的 appContext，如果是根组件，则直接从根 vnode 中取。
-  const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
+  const appContext =
+    (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
     // 组件唯一 id
     uid: uid++,
@@ -165,15 +180,15 @@ function createComponentInstance (vnode, parent, suspense) {
     // 生命周期 error captured
     ec: null,
     // 派发事件方法
-    emit: null
-  }
+    emit: null,
+  };
   // 初始化渲染上下文
-  instance.ctx = { _: instance }
+  instance.ctx = { _: instance };
   // 初始化根组件指针
-  instance.root = parent ? parent.root : instance
+  instance.root = parent ? parent.root : instance;
   // 初始化派发事件方法
-  instance.emit = emit.bind(null, instance)
-  return instance
+  instance.emit = emit.bind(null, instance);
+  return instance;
 }
 ```
 
@@ -185,22 +200,20 @@ Vue.js 2.x 使用 new Vue 来初始化一个组件的实例，到了 Vue.js 3.0�
 
 接着是**组件实例的设置流程**，对 setup 函数的处理就在这里完成，我们来看一下 setupComponent 方法的实现：
 
-复制代码
-
-```
-function setupComponent (instance, isSSR = false) {
-  const { props, children, shapeFlag } = instance.vnode
+```js
+function setupComponent(instance, isSSR = false) {
+  const { props, children, shapeFlag } = instance.vnode;
   // 判断是否是一个有状态的组件
-  const isStateful = shapeFlag & 4
+  const isStateful = shapeFlag & 4;
   // 初始化 props
-  initProps(instance, props, isStateful, isSSR)
+  initProps(instance, props, isStateful, isSSR);
   // 初始化 插槽
-  initSlots(instance, children)
+  initSlots(instance, children);
   // 设置有状态的组件实例
   const setupResult = isStateful
     ? setupStatefulComponent(instance, isSSR)
-    : undefined
-  return setupResult
+    : undefined;
+  return setupResult;
 }
 ```
 
@@ -208,29 +221,31 @@ function setupComponent (instance, isSSR = false) {
 
 接下来我们要关注到 setupStatefulComponent 函数，它主要做了三件事：创建渲染上下文代理、判断处理 setup 函数和完成组件实例设置。它代码如下所示：
 
-复制代码
-
-```
-function setupStatefulComponent (instance, isSSR) {
-  const Component = instance.type
+```js
+function setupStatefulComponent(instance, isSSR) {
+  const Component = instance.type;
   // 创建渲染代理的属性访问缓存
-  instance.accessCache = {}
+  instance.accessCache = {};
   // 创建渲染上下文代理
-  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers)
+  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
   // 判断处理 setup 函数
-  const { setup } = Component
+  const { setup } = Component;
   if (setup) {
     // 如果 setup 函数带参数，则创建一个 setupContext
     const setupContext = (instance.setupContext =
-      setup.length > 1 ? createSetupContext(instance) : null)
+      setup.length > 1 ? createSetupContext(instance) : null);
     // 执行 setup 函数，获取结果
-    const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [instance.props, setupContext])
+    const setupResult = callWithErrorHandling(
+      setup,
+      instance,
+      0 /* SETUP_FUNCTION */,
+      [instance.props, setupContext]
+    );
     // 处理 setup 执行结果
-    handleSetupResult(instance, setupResult)
-  }
-  else {
+    handleSetupResult(instance, setupResult);
+  } else {
     // 完成组件实例设置
-    finishComponentSetup(instance)
+    finishComponentSetup(instance);
   }
 }
 ```
@@ -241,18 +256,16 @@ function setupStatefulComponent (instance, isSSR) {
 
 其实在 Vue.js 2.x 中，也有类似的数据代理逻辑，比如 props 求值后的数据，实际上存储在 this.\_props 上，而 data 中定义的数据存储在 this.\_data 上。举个例子：
 
-复制代码
-
-```
+```html
 <template>
   <p>{{ msg }}</p>
 </template>
 <script>
-export default {
-  data() {
-    msg: 1
-  }
-}
+  export default {
+    data() {
+      msg: 1;
+    },
+  };
 </script>
 ```
 
@@ -264,121 +277,120 @@ export default {
 
 当我们**访问 instance.ctx 渲染上下文中的属性**时，就会**进入 get 函数**。我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 const PublicInstanceProxyHandlers = {
-  get ({ _: instance }, key) {
-    const { ctx, setupState, data, props, accessCache, type, appContext } = instance
-    if (key[0] !== '$') {
+  get({ _: instance }, key) {
+    const { ctx, setupState, data, props, accessCache, type, appContext } =
+      instance;
+    if (key[0] !== "$") {
       // setupState / data / props / ctx
       // 渲染代理的属性访问缓存中
-      const n = accessCache[key]
+      const n = accessCache[key];
       if (n !== undefined) {
         // 从缓存中取
         switch (n) {
-          case 0: /* SETUP */
-            return setupState[key]
-          case 1 :/* DATA */
-            return data[key]
-          case 3 :/* CONTEXT */
-            return ctx[key]
-          case 2: /* PROPS */
-            return props[key]
+          case 0 /* SETUP */:
+            return setupState[key];
+          case 1 /* DATA */:
+            return data[key];
+          case 3 /* CONTEXT */:
+            return ctx[key];
+          case 2 /* PROPS */:
+            return props[key];
         }
-      }
-      else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-        accessCache[key] = 0
+      } else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
+        accessCache[key] = 0;
         // 从 setupState 中取数据
-        return setupState[key]
-      }
-      else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-        accessCache[key] = 1
+        return setupState[key];
+      } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+        accessCache[key] = 1;
         // 从 data 中取数据
-        return data[key]
-      }
-      else if (
+        return data[key];
+      } else if (
         type.props &&
-        hasOwn(normalizePropsOptions(type.props)[0], key)) {
-        accessCache[key] = 2
+        hasOwn(normalizePropsOptions(type.props)[0], key)
+      ) {
+        accessCache[key] = 2;
         // 从 props 中取数据
-        return props[key]
-      }
-      else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-        accessCache[key] = 3
+        return props[key];
+      } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+        accessCache[key] = 3;
         // 从 ctx 中取数据
-        return ctx[key]
-      }
-      else {
+        return ctx[key];
+      } else {
         // 都取不到
-        accessCache[key] = 4
+        accessCache[key] = 4;
       }
     }
-    const publicGetter = publicPropertiesMap[key]
-    let cssModule, globalProperties
+    const publicGetter = publicPropertiesMap[key];
+    let cssModule, globalProperties;
     // 公开的 $xxx 属性或方法
     if (publicGetter) {
-      return publicGetter(instance)
-    }
-    else if (
+      return publicGetter(instance);
+    } else if (
       // css 模块，通过 vue-loader 编译的时候注入
       (cssModule = type.__cssModules) &&
-      (cssModule = cssModule[key])) {
-      return cssModule
-    }
-    else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+      (cssModule = cssModule[key])
+    ) {
+      return cssModule;
+    } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
       // 用户自定义的属性，也用 `$` 开头
-      accessCache[key] = 3
-      return ctx[key]
-    }
-    else if (
+      accessCache[key] = 3;
+      return ctx[key];
+    } else if (
       // 全局定义的属性
       ((globalProperties = appContext.config.globalProperties),
-        hasOwn(globalProperties, key))) {
-      return globalProperties[key]
-    }
-    else if ((process.env.NODE_ENV !== 'production') &&
-      currentRenderingInstance && key.indexOf('__v') !== 0) {
-      if (data !== EMPTY_OBJ && key[0] === '$' && hasOwn(data, key)) {
+      hasOwn(globalProperties, key))
+    ) {
+      return globalProperties[key];
+    } else if (
+      process.env.NODE_ENV !== "production" &&
+      currentRenderingInstance &&
+      key.indexOf("__v") !== 0
+    ) {
+      if (data !== EMPTY_OBJ && key[0] === "$" && hasOwn(data, key)) {
         // 如果在 data 中定义的数据以 $ 开头，会报警告，因为 $ 是保留字符，不会做代理
-        warn(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved ` +
-          `character and is not proxied on the render context.`)
-      }
-      else {
+        warn(
+          `Property ${JSON.stringify(
+            key
+          )} must be accessed via $data because it starts with a reserved ` +
+            `character and is not proxied on the render context.`
+        );
+      } else {
         // 在模板中使用的变量如果没有定义，报警告
-        warn(`Property ${JSON.stringify(key)} was accessed during render ` +
-          `but is not defined on instance.`)
+        warn(
+          `Property ${JSON.stringify(key)} was accessed during render ` +
+            `but is not defined on instance.`
+        );
       }
     }
-  }
-}
+  },
+};
 ```
 
 可以看到，函数首先判断 key 不以 $ 开头的情况，这部分数据可能是 setupState、data、props、ctx 中的一种，其中 data、props 我们已经很熟悉了；setupState 就是 setup 函数返回的数据，稍后我们会详细说；ctx 包括了计算属性、组件方法和用户自定义的一些数据。
 
 如果 key 不以 $ 开头，那么就依次判断 setupState、data、props、ctx 中是否包含这个 key，如果包含就返回对应值。**注意这个判断顺序很重要**，**在 key 相同时它会决定数据获取的优先级**，举个例子：
 
-复制代码
-
-```
+```html
 <template>
   <p>{{msg}}</p>
 </template>
 <script>
-  import { ref } from 'vue'
+  import { ref } from "vue";
   export default {
     data() {
       return {
-        msg: 'msg from data'
-      }
+        msg: "msg from data",
+      };
     },
     setup() {
-      const msg = ref('msg from setup')
+      const msg = ref("msg from setup");
       return {
-        msg
-      }
-    }
-  }
+        msg,
+      };
+    },
+  };
 </script>
 ```
 
@@ -390,73 +402,72 @@ const PublicInstanceProxyHandlers = {
 
 接下来是 set 代理过程，当我们**修改 instance.ctx 渲染上下文中的属性**的时候，就会**进入 set 函数**。我们来看一下 set 函数的实现：
 
-复制代码
-
-```
+```js
 const PublicInstanceProxyHandlers = {
-  set ({ _: instance }, key, value) {
-    const { data, setupState, ctx } = instance
+  set({ _: instance }, key, value) {
+    const { data, setupState, ctx } = instance;
     if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
       // 给 setupState 赋值
-      setupState[key] = value
-    }
-    else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+      setupState[key] = value;
+    } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
       // 给 data 赋值
-      data[key] = value
-    }
-    else if (key in instance.props) {
+      data[key] = value;
+    } else if (key in instance.props) {
       // 不能直接给 props 赋值
-      (process.env.NODE_ENV !== 'production') &&
-      warn(`Attempting to mutate prop "${key}". Props are readonly.`, instance)
-      return false
+      process.env.NODE_ENV !== "production" &&
+        warn(
+          `Attempting to mutate prop "${key}". Props are readonly.`,
+          instance
+        );
+      return false;
     }
-    if (key[0] === '$' && key.slice(1) in instance) {
+    if (key[0] === "$" && key.slice(1) in instance) {
       // 不能给 Vue 内部以 $ 开头的保留属性赋值
-      (process.env.NODE_ENV !== 'production') &&
-      warn(`Attempting to mutate public property "${key}". ` +
-        `Properties starting with $ are reserved and readonly.`, instance)
-      return false
-    }
-    else {
+      process.env.NODE_ENV !== "production" &&
+        warn(
+          `Attempting to mutate public property "${key}". ` +
+            `Properties starting with $ are reserved and readonly.`,
+          instance
+        );
+      return false;
+    } else {
       // 用户自定义数据赋值
-      ctx[key] = value
+      ctx[key] = value;
     }
-    return true
-  }
-}
+    return true;
+  },
+};
 ```
 
 结合代码来看，函数主要做的事情就是对渲染上下文 instance.ctx 中的属性赋值，它实际上是代理到对应的数据类型中去完成赋值操作的。这里仍然要注意顺序问题，和 get 一样，优先判断 setupState，然后是 data，接着是 props。
 
 我们对之前的例子做点修改，添加一个方法：
 
-复制代码
-
-```
+```html
 <template>
   <p>{{ msg }}</p>
   <button @click="random">Random msg</button>
 </template>
 <script>
-  import { ref } from 'vue'
+  import { ref } from "vue";
   export default {
     data() {
       return {
-        msg: 'msg from data'
-      }
+        msg: "msg from data",
+      };
     },
     setup() {
-      const msg = ref('msg from setup')
+      const msg = ref("msg from setup");
       return {
-        msg
-      }
+        msg,
+      };
     },
     methods: {
       random() {
-        this.msg = Math.random()
-      }
-    }
-  }
+        this.msg = Math.random();
+      },
+    },
+  };
 </script>
 ```
 
@@ -466,48 +477,43 @@ const PublicInstanceProxyHandlers = {
 
 如果是用户自定义的数据，比如在 created 生命周期内定义的数据，它仅用于组件上下文的共享，如下所示：
 
-复制代码
-
-```
+```js
 export default {
   created() {
-    this.userMsg = 'msg from user'
-  }
-}
+    this.userMsg = "msg from user";
+  },
+};
 ```
 
 当执行 this.userMsg 赋值的时候，会触发 set 函数，最终 userMsg 会被保留到 ctx 中。
 
 最后是 has 代理过程，当我们**判断属性是否存在于 instance.ctx 渲染上下文中**时，就**会进入 has 函数**，这个在平时项目中用的比较少，同样来举个例子，当执行 created 钩子函数中的 'msg' in this 时，就会触发 has 函数。
 
-复制代码
-
-```
+```js
 export default {
-  created () {
-    console.log('msg' in this)
-  }
-}
+  created() {
+    console.log("msg" in this);
+  },
+};
 ```
 
 下面我们来看一下 has 函数的实现：
 
-复制代码
-
-```
+```js
 const PublicInstanceProxyHandlers = {
-  has
-    ({ _: { data, setupState, accessCache, ctx, type, appContext } }, key) {
+  has({ _: { data, setupState, accessCache, ctx, type, appContext } }, key) {
     // 依次判断
-    return (accessCache[key] !== undefined ||
+    return (
+      accessCache[key] !== undefined ||
       (data !== EMPTY_OBJ && hasOwn(data, key)) ||
       (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) ||
       (type.props && hasOwn(normalizePropsOptions(type.props)[0], key)) ||
       hasOwn(ctx, key) ||
       hasOwn(publicPropertiesMap, key) ||
-      hasOwn(appContext.config.globalProperties, key))
-  }
-}
+      hasOwn(appContext.config.globalProperties, key)
+    );
+  },
+};
 ```
 
 这个函数的实现很简单，依次判断 key 是否存在于 accessCache、data、setupState、props 、用户数据、公开属性以及全局属性中，然后返回结果。
@@ -518,19 +524,22 @@ const PublicInstanceProxyHandlers = {
 
 我们看一下整个逻辑涉及的代码：
 
-复制代码
-
-```
+```js
 // 判断处理 setup 函数
-const { setup } = Component
+const { setup } = Component;
 if (setup) {
   // 如果 setup 函数带参数，则创建一个 setupContext
   const setupContext = (instance.setupContext =
-    setup.length > 1 ? createSetupContext(instance) : null)
+    setup.length > 1 ? createSetupContext(instance) : null);
   // 执行 setup 函数获取结果
-  const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [instance.props, setupContext])
+  const setupResult = callWithErrorHandling(
+    setup,
+    instance,
+    0 /* SETUP_FUNCTION */,
+    [instance.props, setupContext]
+  );
   // 处理 setup 执行结果
-  handleSetupResult(instance, setupResult)
+  handleSetupResult(instance, setupResult);
 }
 ```
 
@@ -538,18 +547,14 @@ if (setup) {
 
 首先**判断 setup 函数的参数长度**，**如果大于 1**，**则创建 setupContext 上下文**。
 
-复制代码
-
-```
+```js
 const setupContext = (instance.setupContext =
-    setup.length > 1 ? createSetupContext(instance) : null)
+  setup.length > 1 ? createSetupContext(instance) : null);
 ```
 
 举个例子，我们有个 HelloWorld 子组件，如下：
 
-复制代码
-
-```
+```html
 <template>
   <p>{{ msg }}</p>
   <button @click="onClick">Toggle</button>
@@ -557,44 +562,42 @@ const setupContext = (instance.setupContext =
 <script>
   export default {
     props: {
-      msg: String
+      msg: String,
     },
-    setup (props, { emit }) {
-      function onClick () {
-        emit('toggle')
+    setup(props, { emit }) {
+      function onClick() {
+        emit("toggle");
       }
       return {
-        onClick
-      }
-    }
-  }
+        onClick,
+      };
+    },
+  };
 </script>
 ```
 
 我们在父组件引用这个组件：
 
-复制代码
-
-```
+```html
 <template>
   <HelloWorld @toggle="toggle" :msg="msg"></HelloWorld>
 </template>
 <script>
-  import { ref } from 'vue'
+  import { ref } from "vue";
   import HelloWorld from "./components/HelloWorld";
   export default {
     components: { HelloWorld },
-    setup () {
-      const msg = ref('Hello World')
-      function toggle () {
-        msg.value = msg.value === 'Hello World' ? 'Hello Vue' : 'Hello World'
+    setup() {
+      const msg = ref("Hello World");
+      function toggle() {
+        msg.value = msg.value === "Hello World" ? "Hello Vue" : "Hello World";
       }
       return {
         toggle,
-        msg
-      }
-    }
-  }
+        msg,
+      };
+    },
+  };
 </script>
 ```
 
@@ -602,15 +605,13 @@ const setupContext = (instance.setupContext =
 
 下面我们来看一下用 createSetupContext 函数来创建 setupContext：
 
-复制代码
-
-```
-function createSetupContext (instance) {
+```js
+function createSetupContext(instance) {
   return {
     attrs: instance.attrs,
     slots: instance.slots,
-    emit: instance.emit
-  }
+    emit: instance.emit,
+  };
 }
 ```
 
@@ -620,26 +621,26 @@ function createSetupContext (instance) {
 
 我们通过下面这行代码来**执行 setup 函数并获取结果**：
 
-复制代码
-
-```
-const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [instance.props, setupContext])
+```js
+const setupResult = callWithErrorHandling(
+  setup,
+  instance,
+  0 /* SETUP_FUNCTION */,
+  [instance.props, setupContext]
+);
 ```
 
 我们具体来看一下 callWithErrorHandling 函数的实现：
 
-复制代码
-
-```
-function callWithErrorHandling (fn, instance, type, args) {
-  let res
+```js
+function callWithErrorHandling(fn, instance, type, args) {
+  let res;
   try {
-    res = args ? fn(...args) : fn()
+    res = args ? fn(...args) : fn();
+  } catch (err) {
+    handleError(err, instance, type);
   }
-  catch (err) {
-    handleError(err, instance, type)
-  }
-  return res
+  return res;
 }
 ```
 
@@ -647,27 +648,22 @@ function callWithErrorHandling (fn, instance, type, args) {
 
 执行 setup 函数并拿到了返回的结果，那么接下来就要**用 handleSetupResult 函数来处理结果**。
 
-复制代码
-
-```
-handleSetupResult(instance, setupResult)
+```js
+handleSetupResult(instance, setupResult);
 ```
 
 我们详细看一下 handleSetupResult 函数的实现：
 
-复制代码
-
-```
+```js
 function handleSetupResult(instance, setupResult) {
   if (isFunction(setupResult)) {
     // setup 返回渲染函数
-    instance.render = setupResult
-  }
-  else if (isObject(setupResult)) {
+    instance.render = setupResult;
+  } else if (isObject(setupResult)) {
     // 把 setup 返回结果变成响应式
-    instance.setupState = reactive(setupResult)
+    instance.setupState = reactive(setupResult);
   }
-  finishComponentSetup(instance)
+  finishComponentSetup(instance);
 }
 ```
 
@@ -675,27 +671,25 @@ function handleSetupResult(instance, setupResult) {
 
 另外 setup 不仅仅支持返回一个对象，也可以返回一个函数作为组件的渲染函数。我们可以改写前面的示例，来看一下这时的情况：
 
-复制代码
-
-```
+```html
 <script>
-  import { h } from 'vue'
+  import { h } from "vue";
   export default {
     props: {
-      msg: String
+      msg: String,
     },
-    setup (props, { emit }) {
-      function onClick () {
-        emit('toggle')
+    setup(props, { emit }) {
+      function onClick() {
+        emit("toggle");
       }
       return (ctx) => {
         return [
-          h('p', null, ctx.msg),
-          h('button', { onClick: onClick }, 'Toggle')
-        ]
-      }
-    }
-  }
+          h("p", null, ctx.msg),
+          h("button", { onClick: onClick }, "Toggle"),
+        ];
+      };
+    },
+  };
 </script>
 ```
 
@@ -709,45 +703,46 @@ function handleSetupResult(instance, setupResult) {
 
 接下来我们来看一下 finishComponentSetup 函数的实现：
 
-复制代码
-
-```
-function finishComponentSetup (instance) {
-  const Component = instance.type
+```js
+function finishComponentSetup(instance) {
+  const Component = instance.type;
   // 对模板或者渲染函数的标准化
   if (!instance.render) {
     if (compile && Component.template && !Component.render) {
       // 运行时编译
       Component.render = compile(Component.template, {
-        isCustomElement: instance.appContext.config.isCustomElement || NO
-      })
-      Component.render._rc = true
+        isCustomElement: instance.appContext.config.isCustomElement || NO,
+      });
+      Component.render._rc = true;
     }
-    if ((process.env.NODE_ENV !== 'production') && !Component.render) {
+    if (process.env.NODE_ENV !== "production" && !Component.render) {
       if (!compile && Component.template) {
         // 只编写了 template 但使用了 runtime-only 的版本
-        warn(`Component provided template option but ` +
-          `runtime compilation is not supported in this build of Vue.` +
-          (` Configure your bundler to alias "vue" to "vue/dist/vue.esm-bundler.js".`
-          ) /* should not happen */)
-      }
-      else {
+        warn(
+          `Component provided template option but ` +
+            `runtime compilation is not supported in this build of Vue.` +
+            ` Configure your bundler to alias "vue" to "vue/dist/vue.esm-bundler.js".` /* should not happen */
+        );
+      } else {
         // 既没有写 render 函数，也没有写 template 模板
-        warn(`Component is missing template or render function.`)
+        warn(`Component is missing template or render function.`);
       }
     }
     // 组件对象的 render 函数赋值给 instance
-    instance.render = (Component.render || NOOP)
+    instance.render = Component.render || NOOP;
     if (instance.render._rc) {
       // 对于使用 with 块的运行时编译的渲染函数，使用新的渲染上下文的代理
-      instance.withProxy = new Proxy(instance.ctx, RuntimeCompiledPublicInstanceProxyHandlers)
+      instance.withProxy = new Proxy(
+        instance.ctx,
+        RuntimeCompiledPublicInstanceProxyHandlers
+      );
     }
   }
   // 兼容 Vue.js 2.x Options API
   {
-    currentInstance = instance
-    applyOptions(instance, Component)
-    currentInstance = null
+    currentInstance = instance;
+    applyOptions(instance, Component);
+    currentInstance = null;
   }
 }
 ```
@@ -768,12 +763,10 @@ runtime-only 和 runtime-compiled 的主要区别在于是否注册了这个 com
 
 在 Vue.js 3.0 中，compile 方法是通过外部注册的：
 
-复制代码
-
-```
+```js
 let compile;
 function registerRuntimeCompiler(_compile) {
-    compile = _compile;
+  compile = _compile;
 }
 ```
 
@@ -787,26 +780,32 @@ function registerRuntimeCompiler(_compile) {
 
 另外对于使用 with 块运行时编译的渲染函数，渲染上下文的代理是 RuntimeCompiledPublicInstanceProxyHandlers，它是在之前渲染上下文代理 PublicInstanceProxyHandlers 的基础上进行的扩展，主要对 has 函数的实现做了优化：
 
-复制代码
-
-```
+```js
 const RuntimeCompiledPublicInstanceProxyHandlers = {
   ...PublicInstanceProxyHandlers,
   get(target, key) {
     if (key === Symbol.unscopables) {
-      return
+      return;
     }
-    return PublicInstanceProxyHandlers.get(target, key, target)
+    return PublicInstanceProxyHandlers.get(target, key, target);
   },
   has(_, key) {
     // 如果 key 以 _ 开头或者 key 在全局变量白名单内，则 has 为 false
-    const has = key[0] !== '_' && !isGloballyWhitelisted(key)
-    if ((process.env.NODE_ENV !== 'production') && !has && PublicInstanceProxyHandlers.has(_, key)) {
-      warn(`Property ${JSON.stringify(key)} should not start with _ which is a reserved prefix for Vue internals.`)
+    const has = key[0] !== "_" && !isGloballyWhitelisted(key);
+    if (
+      process.env.NODE_ENV !== "production" &&
+      !has &&
+      PublicInstanceProxyHandlers.has(_, key)
+    ) {
+      warn(
+        `Property ${JSON.stringify(
+          key
+        )} should not start with _ which is a reserved prefix for Vue internals.`
+      );
     }
-    return has
-  }
-}
+    return has;
+  },
+};
 ```
 
 这里如果 key 以 \_ 开头，或者 key 在全局变量的白名单内，则 has 为 false，此时则直接命中警告，不用再进行之前那一系列的判断了。
@@ -817,19 +816,42 @@ const RuntimeCompiledPublicInstanceProxyHandlers = {
 
 我们知道 Vue.js 2.x 是通过组件对象的方式去描述一个组件，之前我们也说过，Vue.js 3.0 仍然支持 Vue.js 2.x Options API 的写法，这主要就是通过 applyOptions 方法实现的。
 
-复制代码
-
-```
-function applyOptions(instance, options, deferredData = [], deferredWatch = [], asMixin = false) {
+```js
+function applyOptions(
+  instance,
+  options,
+  deferredData = [],
+  deferredWatch = [],
+  asMixin = false
+) {
   const {
     // 组合
-    mixins, extends: extendsOptions,
+    mixins,
+    extends: extendsOptions,
     // 数组状态
-    props: propsOptions, data: dataOptions, computed: computedOptions, methods, watch: watchOptions, provide: provideOptions, inject: injectOptions,
+    props: propsOptions,
+    data: dataOptions,
+    computed: computedOptions,
+    methods,
+    watch: watchOptions,
+    provide: provideOptions,
+    inject: injectOptions,
     // 组件和指令
-    components, directives,
+    components,
+    directives,
     // 生命周期
-    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeUnmount, unmounted, renderTracked, renderTriggered, errorCaptured } = options;
+    beforeMount,
+    mounted,
+    beforeUpdate,
+    updated,
+    activated,
+    deactivated,
+    beforeUnmount,
+    unmounted,
+    renderTracked,
+    renderTriggered,
+    errorCaptured,
+  } = options;
 
   // instance.proxy 作为 this
   const publicThis = instance.proxy;

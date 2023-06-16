@@ -8,9 +8,7 @@
 
 假设我们有这样一个 dialog 组件，用按钮来管理一个 dialog：
 
-复制代码
-
-```
+```html
 <template>
   <div v-show="visible" class="dialog">
     <div class="dialog-body">
@@ -23,21 +21,24 @@
   export default {
     data() {
       return {
-        visible: false
-      }
+        visible: false,
+      };
     },
     methods: {
       show() {
-        this.visible = true
-      }
-    }
-  }
+        this.visible = true;
+      },
+    },
+  };
 </script>
 <style>
   .dialog {
     position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    background-color: rgba(0,0,0,.5);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,25 +59,23 @@
 
 然后我们去使用这个组件：
 
-复制代码
-
-```
+```html
 <template>
   <button @click="showDialog">Show dialog</button>
-  <Dialog ref="dialog"></Dialog>
+  <dialog ref="dialog"></dialog>
 </template>
 <script>
-  import Dialog from './components/dialog'
+  import Dialog from "./components/dialog";
   export default {
     components: {
-      Dialog
+      Dialog,
     },
     methods: {
       showDialog() {
-        this.$refs.dialog.show()
-      }
-    }
-  }
+        this.$refs.dialog.show();
+      },
+    },
+  };
 </script>
 ```
 
@@ -88,27 +87,25 @@
 
 而 Vue.js 3.0 把这一能力内置到内核中，提供了一个内置组件 Teleport，它可以轻松帮助我们实现上述需求：
 
-复制代码
-
-```
+```html
 <template>
   <button @click="showDialog">Show dialog</button>
   <teleport to="body">
-    <Dialog ref="dialog"></Dialog>
+    <dialog ref="dialog"></dialog>
   </teleport>
 </template>
 <script>
-  import Dialog from './components/dialog'
+  import Dialog from "./components/dialog";
   export default {
     components: {
-      Dialog
+      Dialog,
     },
     methods: {
       showDialog() {
-        this.$refs.dialog.show()
-      }
-    }
-  }
+        this.$refs.dialog.show();
+      },
+    },
+  };
 </script>
 ```
 
@@ -120,33 +117,59 @@ Teleport 组件使用起来非常简单，套在想要在别处渲染的组件�
 
 对于这类内置组件，Vue.js 从编译阶段就做了特殊处理，我们先来看一下前面示例模板编译后的结果：
 
-复制代码
-
-```
-import { createVNode as _createVNode, resolveComponent as _resolveComponent, Teleport as _Teleport, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+```js
+import {
+  createVNode as _createVNode,
+  resolveComponent as _resolveComponent,
+  Teleport as _Teleport,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_Dialog = _resolveComponent("Dialog")
-  return (_openBlock(), _createBlock("template", null, [
-    _createVNode("button", { onClick: _ctx.showDialog }, "Show dialog", 8 /* PROPS */, ["onClick"]),
-    (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
-      _createVNode(_component_Dialog, { ref: "dialog" }, null, 512 /* NEED_PATCH */)
-    ]))
-  ]))
+  const _component_Dialog = _resolveComponent("Dialog");
+  return (
+    _openBlock(),
+    _createBlock("template", null, [
+      _createVNode(
+        "button",
+        { onClick: _ctx.showDialog },
+        "Show dialog",
+        8 /* PROPS */,
+        ["onClick"]
+      ),
+      (_openBlock(),
+      _createBlock(_Teleport, { to: "body" }, [
+        _createVNode(
+          _component_Dialog,
+          { ref: "dialog" },
+          null,
+          512 /* NEED_PATCH */
+        ),
+      ])),
+    ])
+  );
 }
 ```
 
 可以看到，对于 teleport 标签，它是直接创建了 Teleport 内置组件，我们接下来来看它的实现：
 
-复制代码
-
-```
+```js
 const Teleport = {
   __isTeleport: true,
-  process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized, internals) {
+  process(
+    n1,
+    n2,
+    container,
+    anchor,
+    parentComponent,
+    parentSuspense,
+    isSVG,
+    optimized,
+    internals
+  ) {
     if (n1 == null) {
       // 创建逻辑
-    }
-    else {
+    } else {
       // 更新逻辑
     }
   },
@@ -154,8 +177,8 @@ const Teleport = {
     // 删除逻辑
   },
   move: moveTeleport,
-  hydrate: hydrateTeleport
-}
+  hydrate: hydrateTeleport,
+};
 ```
 
 Teleport 组件的实现就是一个对象，对外提供了几个方法。其中 process 方法负责组件的创建和更新逻辑，remove 方法负责组件的删除逻辑，接下来我们就从这三个方面来分析 Teleport 的实现原理。
@@ -164,87 +187,122 @@ Teleport 组件的实现就是一个对象，对外提供了几个方法。其�
 
 回顾组件创建的过程，会经历 patch 阶段，我们来回顾它的实现：
 
-复制代码
-
-```
-const patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, optimized = false) => {
+```js
+const patch = (
+  n1,
+  n2,
+  container,
+  anchor = null,
+  parentComponent = null,
+  parentSuspense = null,
+  isSVG = false,
+  optimized = false
+) => {
   if (n1 && !isSameVNodeType(n1, n2)) {
     // 如果存在新旧节点, 且新旧节点类型不同，则销毁旧节点
   }
-  const { type, shapeFlag } = n2
+  const { type, shapeFlag } = n2;
   switch (type) {
     case Text:
       // 处理文本节点
-      break
+      break;
     case Comment:
       // 处理注释节点
-      break
+      break;
     case Static:
       // 处理静态节点
-      break
+      break;
     case Fragment:
       // 处理 Fragment 元素
-      break
+      break;
     default:
       if (shapeFlag & 1 /* ELEMENT */) {
         // 处理普通 DOM 元素
-      }
-      else if (shapeFlag & 6 /* COMPONENT */) {
+      } else if (shapeFlag & 6 /* COMPONENT */) {
         // 处理组件
-      }
-      else if (shapeFlag & 64 /* TELEPORT */) {
+      } else if (shapeFlag & 64 /* TELEPORT */) {
         // 处理 TELEPORT
-        type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized, internals);
-      }
-      else if (shapeFlag & 128 /* SUSPENSE */) {
+        type.process(
+          n1,
+          n2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          isSVG,
+          optimized,
+          internals
+        );
+      } else if (shapeFlag & 128 /* SUSPENSE */) {
         // 处理 SUSPENSE
       }
   }
-}
+};
 ```
 
 可以看到，在 patch 阶段，会判断如果 type 是一个 Teleport 组件，则会执行它的 process 方法，接下来我们来看 process 方法关于 Teleport 组件创建部分的逻辑：
 
-复制代码
-
-```
-function process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized, internals) {
-  const { mc: mountChildren, pc: patchChildren, pbc: patchBlockChildren, o: { insert, querySelector, createText, createComment } } = internals
-  const disabled = isTeleportDisabled(n2.props)
-  const { shapeFlag, children } = n2
+```js
+function process(
+  n1,
+  n2,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized,
+  internals
+) {
+  const {
+    mc: mountChildren,
+    pc: patchChildren,
+    pbc: patchBlockChildren,
+    o: { insert, querySelector, createText, createComment },
+  } = internals;
+  const disabled = isTeleportDisabled(n2.props);
+  const { shapeFlag, children } = n2;
   if (n1 == null) {
     // 在主视图里插入注释节点或者空白文本节点
-    const placeholder = (n2.el = (process.env.NODE_ENV !== 'production')
-      ? createComment('teleport start')
-      : createText(''))
-    const mainAnchor = (n2.anchor = (process.env.NODE_ENV !== 'production')
-      ? createComment('teleport end')
-      : createText(''))
-    insert(placeholder, container, anchor)
-    insert(mainAnchor, container, anchor)
+    const placeholder = (n2.el =
+      process.env.NODE_ENV !== "production"
+        ? createComment("teleport start")
+        : createText(""));
+    const mainAnchor = (n2.anchor =
+      process.env.NODE_ENV !== "production"
+        ? createComment("teleport end")
+        : createText(""));
+    insert(placeholder, container, anchor);
+    insert(mainAnchor, container, anchor);
     // 获取目标移动的 DOM 节点
-    const target = (n2.target = resolveTarget(n2.props, querySelector))
-    const targetAnchor = (n2.targetAnchor = createText(''))
+    const target = (n2.target = resolveTarget(n2.props, querySelector));
+    const targetAnchor = (n2.targetAnchor = createText(""));
     if (target) {
-      insert(targetAnchor, target)
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
+      insert(targetAnchor, target);
+    } else if (process.env.NODE_ENV !== "production") {
       // 查找不到 target 则报警告
-      warn('Invalid Teleport target on mount:', target, `(${typeof target})`)
+      warn("Invalid Teleport target on mount:", target, `(${typeof target})`);
     }
     const mount = (container, anchor) => {
       if (shapeFlag & 16 /* ARRAY_CHILDREN */) {
         // 挂载子节点
-        mountChildren(children, container, anchor, parentComponent, parentSuspense, isSVG, optimized)
+        mountChildren(
+          children,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          isSVG,
+          optimized
+        );
       }
-    }
+    };
     if (disabled) {
       // disabled 情况就在原先的位置挂载
-      mount(container, mainAnchor)
-    }
-    else if (target) {
+      mount(container, mainAnchor);
+    } else if (target) {
       // 挂载到 target 的位置
-      mount(target, targetAnchor)
+      mount(target, targetAnchor);
     }
   }
 }
@@ -264,64 +322,91 @@ Teleport 组件创建部分主要分为三个步骤，**第一步在主视图里
 
 当然，Teleport 包裹的子节点渲染后并不是一成不变的，当组件发生更新的时候，仍然会执行 patch 逻辑走到 Teleport 的 process 方法，去处理 Teleport 组件的更新，我们来看一下这部分的实现：
 
-复制代码
-
-```
-function process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized, internals) {
-  const { mc: mountChildren, pc: patchChildren, pbc: patchBlockChildren, o: { insert, querySelector, createText, createComment } } = internals
-  const disabled = isTeleportDisabled(n2.props)
-  const { shapeFlag, children } = n2
+```js
+function process(
+  n1,
+  n2,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized,
+  internals
+) {
+  const {
+    mc: mountChildren,
+    pc: patchChildren,
+    pbc: patchBlockChildren,
+    o: { insert, querySelector, createText, createComment },
+  } = internals;
+  const disabled = isTeleportDisabled(n2.props);
+  const { shapeFlag, children } = n2;
   if (n1 == null) {
     // 创建逻辑
-  }
-  else {
-    n2.el = n1.el
-    const mainAnchor = (n2.anchor = n1.anchor)
-    const target = (n2.target = n1.target)
-    const targetAnchor = (n2.targetAnchor = n1.targetAnchor)
+  } else {
+    n2.el = n1.el;
+    const mainAnchor = (n2.anchor = n1.anchor);
+    const target = (n2.target = n1.target);
+    const targetAnchor = (n2.targetAnchor = n1.targetAnchor);
     // 之前是不是 disabled 状态
-    const wasDisabled = isTeleportDisabled(n1.props)
-    const currentContainer = wasDisabled ? container : target
-    const currentAnchor = wasDisabled ? mainAnchor : targetAnchor
+    const wasDisabled = isTeleportDisabled(n1.props);
+    const currentContainer = wasDisabled ? container : target;
+    const currentAnchor = wasDisabled ? mainAnchor : targetAnchor;
     // 更新子节点
     if (n2.dynamicChildren) {
-      patchBlockChildren(n1.dynamicChildren, n2.dynamicChildren, currentContainer, parentComponent, parentSuspense, isSVG)
+      patchBlockChildren(
+        n1.dynamicChildren,
+        n2.dynamicChildren,
+        currentContainer,
+        parentComponent,
+        parentSuspense,
+        isSVG
+      );
       if (n2.shapeFlag & 16 /* ARRAY_CHILDREN */) {
-        const oldChildren = n1.children
-        const children = n2.children
+        const oldChildren = n1.children;
+        const children = n2.children;
         for (let i = 0; i < children.length; i++) {
           if (!children[i].el) {
-            children[i].el = oldChildren[i].el
+            children[i].el = oldChildren[i].el;
           }
         }
       }
-    }
-    else if (!optimized) {
-      patchChildren(n1, n2, currentContainer, currentAnchor, parentComponent, parentSuspense, isSVG)
+    } else if (!optimized) {
+      patchChildren(
+        n1,
+        n2,
+        currentContainer,
+        currentAnchor,
+        parentComponent,
+        parentSuspense,
+        isSVG
+      );
     }
     if (disabled) {
       if (!wasDisabled) {
         // enabled -> disabled
         // 把子节点移动回主容器
-        moveTeleport(n2, container, mainAnchor, internals, 1 /* TOGGLE */)
+        moveTeleport(n2, container, mainAnchor, internals, 1 /* TOGGLE */);
       }
-    }
-    else {
+    } else {
       if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
         // 目标元素改变
-        const nextTarget = (n2.target = resolveTarget(n2.props, querySelector))
+        const nextTarget = (n2.target = resolveTarget(n2.props, querySelector));
         if (nextTarget) {
           // 移动到新的目标元素
-          moveTeleport(n2, nextTarget, null, internals, 0 /* TARGET_CHANGE */)
+          moveTeleport(n2, nextTarget, null, internals, 0 /* TARGET_CHANGE */);
+        } else if (process.env.NODE_ENV !== "production") {
+          warn(
+            "Invalid Teleport target on update:",
+            target,
+            `(${typeof target})`
+          );
         }
-        else if ((process.env.NODE_ENV !== 'production')) {
-          warn('Invalid Teleport target on update:', target, `(${typeof target})`)
-        }
-      }
-      else if (wasDisabled) {
+      } else if (wasDisabled) {
         // disabled -> enabled
         // 移动到目标元素位置
-        moveTeleport(n2, target, targetAnchor, internals, 1 /* TOGGLE */)
+        moveTeleport(n2, target, targetAnchor, internals, 1 /* TOGGLE */);
       }
     }
   }
@@ -340,9 +425,7 @@ Teleport 组件更新无非就是做几件事情：更新子节点，处理 disa
 
 前面我们学过，当组件移除的时候会执行 unmount 方法，它的内部会判断如果移除的组件是一个 Teleport 组件，就会执行组件的 remove 方法：
 
-复制代码
-
-```
+```js
 if (shapeFlag & 64 /* TELEPORT */) {
   vnode.type.remove(vnode, internals);
 }
@@ -353,15 +436,13 @@ if (doRemove) {
 
 我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function remove(vnode, { r: remove, o: { remove: hostRemove } }) {
-  const { shapeFlag, children, anchor } = vnode
-  hostRemove(anchor)
+  const { shapeFlag, children, anchor } = vnode;
+  hostRemove(anchor);
   if (shapeFlag & 16 /* ARRAY_CHILDREN */) {
     for (let i = 0; i < children.length; i++) {
-      remove(children[i])
+      remove(children[i]);
     }
   }
 }

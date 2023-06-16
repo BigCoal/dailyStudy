@@ -6,95 +6,90 @@
 
 我们先来看它的实现：
 
-复制代码
-
-```
+```js
 // 生成创建 VNode 树的表达式
 if (ast.codegenNode) {
   genNode(ast.codegenNode, context);
-}
-else {
+} else {
   push(`null`);
 }
 ```
 
 前面我们在转换过程中给根节点添加了 codegenNode，所以接下来就是通过 genNode 生成创建 VNode 树的表达式，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function genNode(node, context) {
   if (shared.isString(node)) {
-    context.push(node)
-    return
+    context.push(node);
+    return;
   }
   if (shared.isSymbol(node)) {
-    context.push(context.helper(node))
-    return
+    context.push(context.helper(node));
+    return;
   }
   switch (node.type) {
     case 1 /* ELEMENT */:
     case 9 /* IF */:
     case 11 /* FOR */:
-      genNode(node.codegenNode, context)
-      break
+      genNode(node.codegenNode, context);
+      break;
     case 2 /* TEXT */:
-      genText(node, context)
-      break
+      genText(node, context);
+      break;
     case 4 /* SIMPLE_EXPRESSION */:
-      genExpression(node, context)
-      break
+      genExpression(node, context);
+      break;
     case 5 /* INTERPOLATION */:
-      genInterpolation(node, context)
-      break
+      genInterpolation(node, context);
+      break;
     case 12 /* TEXT_CALL */:
-      genNode(node.codegenNode, context)
-      break
+      genNode(node.codegenNode, context);
+      break;
     case 8 /* COMPOUND_EXPRESSION */:
-      genCompoundExpression(node, context)
-      break
+      genCompoundExpression(node, context);
+      break;
     case 3 /* COMMENT */:
-      break
+      break;
     case 13 /* VNODE_CALL */:
-      genVNodeCall(node, context)
-      break
+      genVNodeCall(node, context);
+      break;
     case 14 /* JS_CALL_EXPRESSION */:
-      genCallExpression(node, context)
-      break
+      genCallExpression(node, context);
+      break;
     case 15 /* JS_OBJECT_EXPRESSION */:
-      genObjectExpression(node, context)
-      break
+      genObjectExpression(node, context);
+      break;
     case 17 /* JS_ARRAY_EXPRESSION */:
-      genArrayExpression(node, context)
-      break
+      genArrayExpression(node, context);
+      break;
     case 18 /* JS_FUNCTION_EXPRESSION */:
-      genFunctionExpression(node, context)
-      break
+      genFunctionExpression(node, context);
+      break;
     case 19 /* JS_CONDITIONAL_EXPRESSION */:
-      genConditionalExpression(node, context)
-      break
+      genConditionalExpression(node, context);
+      break;
     case 20 /* JS_CACHE_EXPRESSION */:
-      genCacheExpression(node, context)
-      break
+      genCacheExpression(node, context);
+      break;
     // SSR only types
     case 21 /* JS_BLOCK_STATEMENT */:
-      genNodeList(node.body, context, true, false)
-      break
+      genNodeList(node.body, context, true, false);
+      break;
     case 22 /* JS_TEMPLATE_LITERAL */:
-      genTemplateLiteral(node, context)
-      break
+      genTemplateLiteral(node, context);
+      break;
     case 23 /* JS_IF_STATEMENT */:
-      genIfStatement(node, context)
-      break
+      genIfStatement(node, context);
+      break;
     case 24 /* JS_ASSIGNMENT_EXPRESSION */:
-      genAssignmentExpression(node, context)
-      break
+      genAssignmentExpression(node, context);
+      break;
     case 25 /* JS_SEQUENCE_EXPRESSION */:
-      genSequenceExpression(node, context)
-      break
+      genSequenceExpression(node, context);
+      break;
     case 26 /* JS_RETURN_STATEMENT */:
-      genReturnStatement(node, context)
-      break
+      genReturnStatement(node, context);
+      break;
   }
 }
 ```
@@ -103,9 +98,7 @@ genNode 主要的思路就是根据不同的节点类型，生成不同的代码
 
 现在，我们来看一下根节点 codegenNode 的值：
 
-复制代码
-
-```
+```js
 {
   type: 13, /* VNODE_CALL */
   tag: "div",
@@ -125,40 +118,48 @@ genNode 主要的思路就是根据不同的节点类型，生成不同的代码
 
 由于根节点的 codegenNode 类型是 13，也就是一个 VNodeCall，所以会执行 genVNodeCall 生成创建 VNode 节点的表达式代码，它的实现如下 :
 
-复制代码
-
-```
+```js
 function genVNodeCall(node, context) {
-  const { push, helper, pure } = context
-  const { tag, props, children, patchFlag, dynamicProps, directives, isBlock, disableTracking } = node
+  const { push, helper, pure } = context;
+  const {
+    tag,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    directives,
+    isBlock,
+    disableTracking,
+  } = node;
   if (directives) {
-    push(helper(WITH_DIRECTIVES) + `(`)
+    push(helper(WITH_DIRECTIVES) + `(`);
   }
   if (isBlock) {
-    push(`(${helper(OPEN_BLOCK)}(${disableTracking ? `true` : ``}), `)
+    push(`(${helper(OPEN_BLOCK)}(${disableTracking ? `true` : ``}), `);
   }
   if (pure) {
-    push(PURE_ANNOTATION)
+    push(PURE_ANNOTATION);
   }
-  push(helper(isBlock ? CREATE_BLOCK : CREATE_VNODE) + `(`, node)
-  genNodeList(genNullableArgs([tag, props, children, patchFlag, dynamicProps]), context)
-  push(`)`)
+  push(helper(isBlock ? CREATE_BLOCK : CREATE_VNODE) + `(`, node);
+  genNodeList(
+    genNullableArgs([tag, props, children, patchFlag, dynamicProps]),
+    context
+  );
+  push(`)`);
   if (isBlock) {
-    push(`)`)
+    push(`)`);
   }
   if (directives) {
-    push(`, `)
-    genNode(directives, context)
-    push(`)`)
+    push(`, `);
+    genNode(directives, context);
+    push(`)`);
   }
 }
 ```
 
 根据我们的示例来看，directives 没定义，不用处理，isBlock 为 true，disableTracking 为 false，那么生成如下打开 Block 的代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -175,9 +176,7 @@ export function render(_ctx, _cache) {
 
 因为这里 isBlock 为 true，所以生成如下代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -190,24 +189,22 @@ export function render(_ctx, _cache) {
 
 生成了一个\_createBlock 的函数调用后，下面就需要生成函数的参数，通过如下代码生成：
 
-复制代码
-
-```
-genNodeList(genNullableArgs([tag, props, children, patchFlag, dynamicProps]), context)
+```js
+genNodeList(
+  genNullableArgs([tag, props, children, patchFlag, dynamicProps]),
+  context
+);
 ```
 
 依据代码的执行顺序，我们先来看 genNullableArgs 的实现：
 
-复制代码
-
-```
+```js
 function genNullableArgs(args) {
-  let i = args.length
+  let i = args.length;
   while (i--) {
-    if (args[i] != null)
-      break
+    if (args[i] != null) break;
   }
-  return args.slice(0, i + 1).map(arg => arg || `null`)
+  return args.slice(0, i + 1).map((arg) => arg || `null`);
 }
 ```
 
@@ -219,29 +216,24 @@ genNullableArgs 传入的参数数组依次是 tag、props、children、patchFla
 
 因此接下来，我们再通过 genNodeList 来生成参数相关的代码，来看一下它的实现：
 
-复制代码
-
-```
+```js
 function genNodeList(nodes, context, multilines = false, comma = true) {
-  const { push, newline } = context
+  const { push, newline } = context;
   for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i]
+    const node = nodes[i];
     if (shared.isString(node)) {
-      push(node)
-    }
-    else if (shared.isArray(node)) {
-      genNodeListAsArray(node, context)
-    }
-    else {
-      genNode(node, context)
+      push(node);
+    } else if (shared.isArray(node)) {
+      genNodeListAsArray(node, context);
+    } else {
+      genNode(node, context);
     }
     if (i < nodes.length - 1) {
       if (multilines) {
-        comma && push(',')
-        newline()
-      }
-      else {
-        comma && push(', ')
+        comma && push(",");
+        newline();
+      } else {
+        comma && push(", ");
       }
     }
   }
@@ -252,37 +244,35 @@ genNodeList 就是通过遍历 nodes，拿到每一个 node，然后判断 node 
 
 我们还是根据示例代码走完这个流程，此时 nodes 的值如下：
 
-复制代码
-
-```
-['div', {
-  type: 4, /* SIMPLE_EXPRESSION */
-  content: '_hoisted_1',
-  isConstant: true,
-  isStatic: false,
-  hoisted: {
-    // 对象表达式节点
+```js
+[
+  "div",
+  {
+    type: 4 /* SIMPLE_EXPRESSION */,
+    content: "_hoisted_1",
+    isConstant: true,
+    isStatic: false,
+    hoisted: {
+      // 对象表达式节点
     },
   },
   [
     {
-      type: 9, /* IF */
+      type: 9 /* IF */,
       branches: [
         // v-if 解析出的 2 个分支对象
       ],
       codegenNode: {
         // 代码生成节点
-      }
-    }
-  ]
-]
+      },
+    },
+  ],
+];
 ```
 
 接下来我们依据 nodes 的值继续生成代码，首先 nodes 第一个元素的值是 'div' 字符串，根据前面的逻辑，直接把字符串添加到代码上即可，由于 multilines 为 false，comma 为 true，因此生成如下代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -295,20 +285,16 @@ export function render(_ctx, _cache) {
 
 接下来看 nodes 第二个元素，它代表的是 vnode 的属性 props，是一个简单的对象表达式，就会递归执行 genNode，进一步执行 genExpression，来看一下它的实现：
 
-复制代码
-
-```
+```js
 function genExpression(node, context) {
-  const { content, isStatic } = node
-  context.push(isStatic ? JSON.stringify(content) : content, node)
+  const { content, isStatic } = node;
+  context.push(isStatic ? JSON.stringify(content) : content, node);
 }
 ```
 
 这里 genExpression 非常简单，就是往代码中添加 content 的内容。此时 node 中的 content 值是 \_hoisted_1，再回到 genNodeList，由于 multilines 为 false，comma 为 true，因此生成如下代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -321,16 +307,15 @@ export function render(_ctx, _cache) {
 
 接下来我们再看 nodes 第三个元素，它代表的是子节点 chidren，是一个数组，那么会执行 genNodeListAsArray，来看它的实现：
 
-复制代码
-
-```
+```js
 function genNodeListAsArray(nodes, context) {
-  const multilines = nodes.length > 3 || nodes.some(n => isArray(n) || !isText$1(n))
-  context.push(`[`)
-  multilines && context.indent()
+  const multilines =
+    nodes.length > 3 || nodes.some((n) => isArray(n) || !isText$1(n));
+  context.push(`[`);
+  multilines && context.indent();
   genNodeList(nodes, context, multilines);
-  multilines && context.deindent()
-  context.push(`]`)
+  multilines && context.deindent();
+  context.push(`]`);
 }
 ```
 
@@ -338,27 +323,23 @@ genNodeListAsArray 主要是把一个 node 列表生成一个类似数组形式�
 
 那么针对我们的示例，此时参数 nodes 的值如下：
 
-复制代码
-
-```
+```js
 [
   {
-    type: 9, /* IF */
+    type: 9 /* IF */,
     branches: [
       // v-if 解析出的 2 个分支对象
     ],
     codegenNode: {
       // 代码生成节点
-    }
-  }
-]
+    },
+  },
+];
 ```
 
 它是一个长度为 1 的数组，但是这个数组元素的类型是一个对象，所以 multilines 为 true。那么在执行 genNodeList 之前，生成的代码是这样的：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -371,9 +352,7 @@ export function render(_ctx, _cache) {
 
 接下来就是递归执行 genNodeList 的过程，由于 nodes 数组只有一个对象类型的元素，则执行 genNode，并且这个对象的类型是 IF 表达式，回顾 genNode 的实现，此时会执行到`genNode(node.codegenNode, context)`，也就是取节点的 codegenNode，进一步执行 genNode，我们来看一下这个 codegenNode：
 
-复制代码
-
-```
+```js
 {
   type: 19, /* JS_CONDITIONAL_EXPRESSION */
   consequent: {
@@ -423,53 +402,48 @@ export function render(_ctx, _cache) {
 
 genNode 遇到条件表达式节点会执行 genConditionalExpression，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function genConditionalExpression(node, context) {
-  const { test, consequent, alternate, newline: needNewline } = node
-  const { push, indent, deindent, newline } = context
+  const { test, consequent, alternate, newline: needNewline } = node;
+  const { push, indent, deindent, newline } = context;
   // 生成条件表达式
   if (test.type === 4 /* SIMPLE_EXPRESSION */) {
-    const needsParens = !isSimpleIdentifier(test.content)
-    needsParens && push(`(`)
-    genExpression(test, context)
-    needsParens && push(`)`)
-  }
-  else {
-    push(`(`)
-    genNode(test, context)
-    push(`)`)
+    const needsParens = !isSimpleIdentifier(test.content);
+    needsParens && push(`(`);
+    genExpression(test, context);
+    needsParens && push(`)`);
+  } else {
+    push(`(`);
+    genNode(test, context);
+    push(`)`);
   }
   // 换行加缩进
-  needNewline && indent()
-  context.indentLevel++
-  needNewline || push(` `)
+  needNewline && indent();
+  context.indentLevel++;
+  needNewline || push(` `);
   // 生成主逻辑代码
-  push(`? `)
-  genNode(consequent, context)
-  context.indentLevel--
-  needNewline && newline()
-  needNewline || push(` `)
+  push(`? `);
+  genNode(consequent, context);
+  context.indentLevel--;
+  needNewline && newline();
+  needNewline || push(` `);
   // 生成备选逻辑代码
-  push(`: `)
-  const isNested = alternate.type === 19 /* JS_CONDITIONAL_EXPRESSION */
+  push(`: `);
+  const isNested = alternate.type === 19; /* JS_CONDITIONAL_EXPRESSION */
   if (!isNested) {
-    context.indentLevel++
+    context.indentLevel++;
   }
-  genNode(alternate, context)
+  genNode(alternate, context);
   if (!isNested) {
-    context.indentLevel--
+    context.indentLevel--;
   }
-  needNewline && deindent(true /* without newline */)
+  needNewline && deindent(true /* without newline */);
 }
 ```
 
 genConditionalExpression 的主要目的就是生成条件表达式代码，所以首先它会生成逻辑测试的代码。对于示例，我们这里是一个简单表达式节点，所以生成的代码是这样的：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -483,9 +457,7 @@ export function render(_ctx, _cache) {
 
 接下来就是生成一些换行和缩进，紧接着生成主逻辑代码，也就是把 consequent 这个 vnode 调用节点通过 genNode 转换生成代码，这又是一个递归过程，其中的细节我就不再赘述了，执行完后会生成如下代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -502,9 +474,7 @@ export function render(_ctx, _cache) {
 
 需要注意的是，**alternate 对应的节点的 isBlock 属性是 true**，**所以会生成创建 Block 相关的代码**，最终生成的代码如下：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -524,9 +494,7 @@ export function render(_ctx, _cache) {
 
 接下来我们回到 genNodeListAsArray 函数，处理完 children，那么下面就会减少缩进，并添加闭合的中括号，就会生成如下的代码：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -547,9 +515,7 @@ export function render(_ctx, _cache) {
 
 genNodeListAsArray 处理完子节点后，回到 genNodeList，发现所有 nodes 也处理完了，则回到 genVNodeCall 函数，接下来的逻辑就是补齐函数调用的右括号，此时生成的代码是这样的：
 
-复制代码
-
-```
+```js
 import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
 const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
@@ -570,25 +536,49 @@ export function render(_ctx, _cache) {
 
 那么至此，根节点 vnode 树的表达式就创建好了。我们再回到 generate 函数，接下来就需要添加右括号 “}” 来闭合渲染函数，最终生成如下代码：
 
-复制代码
-
-```
-import { resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
-const _hoisted_1 = { class: "app" }
-const _hoisted_2 = { key: 1 }
-const _hoisted_3 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED */)
-const _hoisted_4 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED */)
+```js
+import {
+  resolveComponent as _resolveComponent,
+  createVNode as _createVNode,
+  createCommentVNode as _createCommentVNode,
+  toDisplayString as _toDisplayString,
+  openBlock as _openBlock,
+  createBlock as _createBlock,
+} from "vue";
+const _hoisted_1 = { class: "app" };
+const _hoisted_2 = { key: 1 };
+const _hoisted_3 = /*#__PURE__*/ _createVNode(
+  "p",
+  null,
+  "static",
+  -1 /* HOISTED */
+);
+const _hoisted_4 = /*#__PURE__*/ _createVNode(
+  "p",
+  null,
+  "static",
+  -1 /* HOISTED */
+);
 export function render(_ctx, _cache) {
-  const _component_hello = _resolveComponent("hello")
-  return (_openBlock(), _createBlock("div", _hoisted_1, [
-    (_ctx.flag)
-      ? _createVNode(_component_hello, { key: 0 })
-      : (_openBlock(), _createBlock("div", _hoisted_2, [
-          _createVNode("p", null, "hello " + _toDisplayString(_ctx.msg + _ctx.test), 1 /* TEXT */),
-          _hoisted_3,
-          _hoisted_4
-        ]))
-  ]))
+  const _component_hello = _resolveComponent("hello");
+  return (
+    _openBlock(),
+    _createBlock("div", _hoisted_1, [
+      _ctx.flag
+        ? _createVNode(_component_hello, { key: 0 })
+        : (_openBlock(),
+          _createBlock("div", _hoisted_2, [
+            _createVNode(
+              "p",
+              null,
+              "hello " + _toDisplayString(_ctx.msg + _ctx.test),
+              1 /* TEXT */
+            ),
+            _hoisted_3,
+            _hoisted_4,
+          ])),
+    ])
+  );
 }
 ```
 
@@ -604,11 +594,9 @@ export function render(_ctx, _cache) {
 
 首先，我们来看一下 openBlock 的实现：
 
-复制代码
-
-```
-const blockStack = []
-let currentBlock = null
+```js
+const blockStack = [];
+let currentBlock = null;
 function openBlock(disableTracking = false) {
   blockStack.push((currentBlock = disableTracking ? null : []));
 }
@@ -622,17 +610,15 @@ openBlock 的实现很简单，往当前 blockStack push 一个新的 Block，�
 
 那么动态 vnode 节点是什么时候被收集的呢？其实是在 createVNode 阶段，我们来回顾一下它的实现：
 
-复制代码
-
-```
-function createVNode(type, props = null
-,children = null) {
+```js
+function createVNode(type, props = null, children = null) {
   // 处理 props 相关逻辑，标准化 class 和 style
   // 对 vnode 类型信息编码
   // 创建 vnode 对象
   // 标准化子节点，把不同数据类型的 children 转成数组或者文本类型。
   // 添加动态 vnode 节点到 currentBlock 中
-  if (shouldTrack > 0 &&
+  if (
+    shouldTrack > 0 &&
     !isBlockNode &&
     currentBlock &&
     patchFlag !== 32 /* HYDRATE_EVENTS */ &&
@@ -640,11 +626,12 @@ function createVNode(type, props = null
       shapeFlag & 128 /* SUSPENSE */ ||
       shapeFlag & 64 /* TELEPORT */ ||
       shapeFlag & 4 /* STATEFUL_COMPONENT */ ||
-      shapeFlag & 2 /* FUNCTIONAL_COMPONENT */)) {
+      shapeFlag & 2) /* FUNCTIONAL_COMPONENT */
+  ) {
     currentBlock.push(vnode);
   }
 
-  return vnode
+  return vnode;
 }
 ```
 
@@ -652,48 +639,63 @@ function createVNode(type, props = null
 
 我们接着来看 createBlock 的实现：
 
-复制代码
-
-```
+```js
 function createBlock(type, props, children, patchFlag, dynamicProps) {
-  const vnode = createVNode(type, props, children, patchFlag, dynamicProps, true /* isBlock: 阻止这个 block 收集自身 */)
+  const vnode = createVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    true /* isBlock: 阻止这个 block 收集自身 */
+  );
   // 在 vnode 上保留当前 Block 收集的动态子节点
-  vnode.dynamicChildren = currentBlock || EMPTY_ARR
-  blockStack.pop()
+  vnode.dynamicChildren = currentBlock || EMPTY_ARR;
+  blockStack.pop();
   // 当前 Block 恢复到父 Block
-  currentBlock = blockStack[blockStack.length - 1] || null
+  currentBlock = blockStack[blockStack.length - 1] || null;
   // 节点本身作为父 Block 收集的子节点
   if (currentBlock) {
-    currentBlock.push(vnode)
+    currentBlock.push(vnode);
   }
-  return vnode
+  return vnode;
 }
 ```
 
 这时候你可能会好奇，为什么要设计 openBlock 和 createBlock 两个函数呢？比如下面这个函数`render()`：
 
-复制代码
-
-```
+```js
 function render() {
-  return (openBlock(),createBlock('div', null, [/*...*/]))
+  return (
+    openBlock(),
+    createBlock("div", null, [
+      /*...*/
+    ])
+  );
 }
 ```
 
 为什么不把 openBlock 和 createBlock 放在一个函数中执行呢，像下面这样：
 
-复制代码
-
-```
+```js
 function render() {
-  return (createBlock('div', null, [/*...*/]))
+  return createBlock("div", null, [
+    /*...*/
+  ]);
 }
 function createBlock(type, props, children, patchFlag, dynamicProps) {
-  openBlock()
+  openBlock();
   // 创建 vnode
-  const vnode = createVNode(type, props, children, patchFlag, dynamicProps, true)
+  const vnode = createVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    true
+  );
   // ...
-  return vnode
+  return vnode;
 }
 ```
 
@@ -713,24 +715,51 @@ Block Tree 的构造过程我们搞清楚了，那么接下来我们就来看它
 
 我们之前分析过，在 patch 阶段更新节点元素的时候，会执行 patchElement 函数，我们再来回顾一下它的实现：
 
-复制代码
-
-```
-const patchElement = (n1, n2, parentComponent, parentSuspense, isSVG, optimized) => {
-  const el = (n2.el = n1.el)
-  const oldProps = (n1 && n1.props) || EMPTY_OBJ
-  const newProps = n2.props || EMPTY_OBJ
+```js
+const patchElement = (
+  n1,
+  n2,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  const el = (n2.el = n1.el);
+  const oldProps = (n1 && n1.props) || EMPTY_OBJ;
+  const newProps = n2.props || EMPTY_OBJ;
   // 更新 props
-  patchProps(el, n2, oldProps, newProps, parentComponent, parentSuspense, isSVG)
-  const areChildrenSVG = isSVG && n2.type !== 'foreignObject'
+  patchProps(
+    el,
+    n2,
+    oldProps,
+    newProps,
+    parentComponent,
+    parentSuspense,
+    isSVG
+  );
+  const areChildrenSVG = isSVG && n2.type !== "foreignObject";
   // 更新子节点
   if (n2.dynamicChildren) {
-    patchBlockChildren(n1.dynamicChildren, n2.dynamicChildren, currentContainer, parentComponent, parentSuspense, isSVG);
+    patchBlockChildren(
+      n1.dynamicChildren,
+      n2.dynamicChildren,
+      currentContainer,
+      parentComponent,
+      parentSuspense,
+      isSVG
+    );
+  } else if (!optimized) {
+    patchChildren(
+      n1,
+      n2,
+      currentContainer,
+      currentAnchor,
+      parentComponent,
+      parentSuspense,
+      isSVG
+    );
   }
-  else if (!optimized) {
-    patchChildren(n1, n2, currentContainer, currentAnchor, parentComponent, parentSuspense, isSVG);
-  }
-}
+};
 ```
 
 我们在前面组件更新的章节分析过这个流程，在分析子节点更新的部分，当时并没有考虑到优化的场景，所以只分析了全量比对更新的场景。
@@ -739,13 +768,18 @@ const patchElement = (n1, n2, parentComponent, parentSuspense, isSVG, optimized)
 
 我们来看一下它的实现：
 
-复制代码
-
-```
-const patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, isSVG) => {
+```js
+const patchBlockChildren = (
+  oldChildren,
+  newChildren,
+  fallbackContainer,
+  parentComponent,
+  parentSuspense,
+  isSVG
+) => {
   for (let i = 0; i < newChildren.length; i++) {
-    const oldVNode = oldChildren[i]
-    const newVNode = newChildren[i]
+    const oldVNode = oldChildren[i];
+    const newVNode = newChildren[i];
     // 确定待更新节点的容器
     const container =
       // 对于 Fragment，我们需要提供正确的父容器
@@ -755,12 +789,20 @@ const patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentC
       // 组件的情况，我们也需要提供一个父容器
       oldVNode.shapeFlag & 6 /* COMPONENT */
         ? hostParentNode(oldVNode.el)
-        :
-        // 在其他情况下，父容器实际上并没有被使用，所以这里只传递 Block 元素即可
-        fallbackContainer
-    patch(oldVNode, newVNode, container, null, parentComponent, parentSuspense, isSVG, true)
+        : // 在其他情况下，父容器实际上并没有被使用，所以这里只传递 Block 元素即可
+          fallbackContainer;
+    patch(
+      oldVNode,
+      newVNode,
+      container,
+      null,
+      parentComponent,
+      parentSuspense,
+      isSVG,
+      true
+    );
   }
-}
+};
 ```
 
 patchBlockChildren 的实现很简单，遍历新的动态子节点数组，拿到对应的新旧动态子节点，并执行 patch 更新子节点即可。

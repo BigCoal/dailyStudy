@@ -14,19 +14,15 @@
 
 注意，为了让 Vue.js 可以在线编译模板，你需要在根目录下配置 vue.config.js，并且设置 runtimeCompiler 为 true：
 
-复制代码
-
-```
+```js
 module.exports = {
-  runtimeCompiler: true
-}
+  runtimeCompiler: true,
+};
 ```
 
 然后我们修改页面的 HTML 模板，加上如下代码：
 
-复制代码
-
-```
+```html
 <div id="app">
   <h1>Hello App!</h1>
   <p>
@@ -47,31 +43,28 @@ RouterLink 和 RouterView 的具体实现，我们会放到后面去分析。
 
 有了模板之后，我们接下来看如何初始化路由：
 
-复制代码
-
-```
-import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+```js
+import { createApp } from "vue";
+import { createRouter, createWebHashHistory } from "vue-router";
 // 1. 定义路由组件
-const Home = { template: '<div>Home</div>' }
-const About = { template: '<div>About</div>' }
+const Home = { template: "<div>Home</div>" };
+const About = { template: "<div>About</div>" };
 // 2. 定义路由配置，每个路径映射一个路由视图组件
 const routes = [
-  { path: '/', component: Home },
-  { path: '/about', component: About },
-]
+  { path: "/", component: Home },
+  { path: "/about", component: About },
+];
 // 3. 创建路由实例，可以指定路由模式，传入路由配置对象
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 // 4. 创建 app 实例
-const app = createApp({
-})
+const app = createApp({});
 // 5. 在挂载页面 之前先安装路由
-app.use(router)
+app.use(router);
 // 6. 挂载页面
-app.mount('#app')
+app.mount("#app");
 ```
 
 可以看到，路由的初始化过程很简单，首先需要定义一个路由配置，这个配置主要用于描述路径和组件的映射关系，即什么路径下 RouterView 应该渲染什么路由组件。
@@ -90,9 +83,7 @@ app.mount('#app')
 
 Vue Router 提供了一个 createRouter API，你可以通过它来创建一个路由对象，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function createRouter(options) {
   // 定义一些辅助方法和变量
 
@@ -120,9 +111,9 @@ function createRouter(options) {
     isReady,
     install(app) {
       // 安装路由函数
-    }
-  }
-  return router
+    },
+  };
+  return router;
 }
 ```
 
@@ -134,53 +125,53 @@ function createRouter(options) {
 
 Vue Router 作为 Vue 的插件，当我们执行 app.use(router) 的时候，实际上就是在执行 router 的 install 方法来安装路由，并把 app 作为参数传入，来看它的定义：
 
-复制代码
-
-```
+```js
 const router = {
   install(app) {
-    const router = this
+    const router = this;
     // 注册路由组件
-    app.component('RouterLink', RouterLink)
-    app.component('RouterView', RouterView)
+    app.component("RouterLink", RouterLink);
+    app.component("RouterView", RouterView);
     // 全局配置定义 $router 和 $route
-    app.config.globalProperties.$router = router
-    Object.defineProperty(app.config.globalProperties, '$route', {
+    app.config.globalProperties.$router = router;
+    Object.defineProperty(app.config.globalProperties, "$route", {
       get: () => unref(currentRoute),
-    })
+    });
     // 在浏览器端初始化导航
-    if (isBrowser &&
+    if (
+      isBrowser &&
       !started &&
-      currentRoute.value === START_LOCATION_NORMALIZED) {
+      currentRoute.value === START_LOCATION_NORMALIZED
+    ) {
       // see above
-      started = true
-      push(routerHistory.location).catch(err => {
-        warn('Unexpected error when starting the router:', err)
-      })
+      started = true;
+      push(routerHistory.location).catch((err) => {
+        warn("Unexpected error when starting the router:", err);
+      });
     }
     // 路径变成响应式
-    const reactiveRoute = {}
+    const reactiveRoute = {};
     for (let key in START_LOCATION_NORMALIZED) {
-      reactiveRoute[key] = computed(() => currentRoute.value[key])
+      reactiveRoute[key] = computed(() => currentRoute.value[key]);
     }
     // 全局注入 router 和 reactiveRoute
-    app.provide(routerKey, router)
-    app.provide(routeLocationKey, reactive(reactiveRoute))
-    let unmountApp = app.unmount
-    installedApps.add(app)
+    app.provide(routerKey, router);
+    app.provide(routeLocationKey, reactive(reactiveRoute));
+    let unmountApp = app.unmount;
+    installedApps.add(app);
     // 应用卸载的时候，需要做一些路由清理工作
     app.unmount = function () {
-      installedApps.delete(app)
+      installedApps.delete(app);
       if (installedApps.size < 1) {
-        removeHistoryListener()
-        currentRoute.value = START_LOCATION_NORMALIZED
-        started = false
-        ready = false
+        removeHistoryListener();
+        currentRoute.value = START_LOCATION_NORMALIZED;
+        started = false;
+        ready = false;
       }
-      unmountApp.call(this, arguments)
-    }
-  }
-}
+      unmountApp.call(this, arguments);
+    };
+  },
+};
 ```
 
 路由的安装的过程我们需要记住以下两件事情。
@@ -198,61 +189,64 @@ const router = {
 
 首先，我们需要维护当前的路径 currentRoute，可以给它一个初始值 START_LOCATION_NORMALIZED，如下：
 
-复制代码
-
-```
+```js
 const START_LOCATION_NORMALIZED = {
-  path: '/',
+  path: "/",
   name: undefined,
   params: {},
   query: {},
-  hash: '',
-  fullPath: '/',
+  hash: "",
+  fullPath: "/",
   matched: [],
   meta: {},
-  redirectedFrom: undefined
-}
+  redirectedFrom: undefined,
+};
 ```
 
 可以看到，路径对象包含了非常丰富的路径信息，具体含义我就不在这多说了，你可以参考[官方文档](https://next.router.vuejs.org/api/#meta-3)。
 
 路由想要发生变化，就是通过改变路径完成的，路由对象提供了很多改变路径的方法，比如 router.push、router.replace，它们的底层最终都是通过 pushWithRedirect 完成路径的切换，我们来看一下它的实现：
 
-复制代码
-
-```
+```js
 function pushWithRedirect(to, redirectedFrom) {
-  const targetLocation = (pendingLocation = resolve(to))
-  const from = currentRoute.value
-  const data = to.state
-  const force = to.force
-  const replace = to.replace === true
-  const toLocation = targetLocation
-  toLocation.redirectedFrom = redirectedFrom
-  let failure
+  const targetLocation = (pendingLocation = resolve(to));
+  const from = currentRoute.value;
+  const data = to.state;
+  const force = to.force;
+  const replace = to.replace === true;
+  const toLocation = targetLocation;
+  toLocation.redirectedFrom = redirectedFrom;
+  let failure;
   if (!force && isSameRouteLocation(stringifyQuery$1, from, targetLocation)) {
-    failure = createRouterError(16 /* NAVIGATION_DUPLICATED */, { to: toLocation, from })
-    handleScroll(from, from, true, false)
+    failure = createRouterError(16 /* NAVIGATION_DUPLICATED */, {
+      to: toLocation,
+      from,
+    });
+    handleScroll(from, from, true, false);
   }
   return (failure ? Promise.resolve(failure) : navigate(toLocation, from))
     .catch((error) => {
-      if (isNavigationFailure(error, 4 /* NAVIGATION_ABORTED */ |
-        8 /* NAVIGATION_CANCELLED */ |
-        2 /* NAVIGATION_GUARD_REDIRECT */)) {
-        return error
+      if (
+        isNavigationFailure(
+          error,
+          4 /* NAVIGATION_ABORTED */ |
+            8 /* NAVIGATION_CANCELLED */ |
+            2 /* NAVIGATION_GUARD_REDIRECT */
+        )
+      ) {
+        return error;
       }
-      return triggerError(error)
+      return triggerError(error);
     })
     .then((failure) => {
       if (failure) {
         // 处理错误
+      } else {
+        failure = finalizeNavigation(toLocation, from, true, replace, data);
       }
-      else {
-        failure = finalizeNavigation(toLocation, from, true, replace, data)
-      }
-      triggerAfterEach(toLocation, from, failure)
-      return failure
-    })
+      triggerAfterEach(toLocation, from, failure);
+      return failure;
+    });
 }
 ```
 
@@ -260,26 +254,28 @@ function pushWithRedirect(to, redirectedFrom) {
 
 得到新的目标路径后，接下来执行 navigate 方法，它实际上是执行路由切换过程中的一系列导航守卫函数，我们后续会介绍。navigate 成功后，会执行 finalizeNavigation 完成导航，在这里完成真正的路径切换，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function finalizeNavigation(toLocation, from, isPush, replace, data) {
-  const error = checkCanceledNavigation(toLocation, from)
-  if (error)
-    return error
-  const isFirstNavigation = from === START_LOCATION_NORMALIZED
-  const state = !isBrowser ? {} : history.state
+  const error = checkCanceledNavigation(toLocation, from);
+  if (error) return error;
+  const isFirstNavigation = from === START_LOCATION_NORMALIZED;
+  const state = !isBrowser ? {} : history.state;
   if (isPush) {
     if (replace || isFirstNavigation)
-      routerHistory.replace(toLocation.fullPath, assign({
-        scroll: isFirstNavigation && state && state.scroll,
-      }, data))
-    else
-      routerHistory.push(toLocation.fullPath, data)
+      routerHistory.replace(
+        toLocation.fullPath,
+        assign(
+          {
+            scroll: isFirstNavigation && state && state.scroll,
+          },
+          data
+        )
+      );
+    else routerHistory.push(toLocation.fullPath, data);
   }
-  currentRoute.value = toLocation
-  handleScroll(toLocation, from, isPush, isFirstNavigation)
-  markAsReady()
+  currentRoute.value = toLocation;
+  handleScroll(toLocation, from, isPush, isFirstNavigation);
+  markAsReady();
 }
 ```
 
@@ -289,32 +285,38 @@ function finalizeNavigation(toLocation, from, isPush, replace, data) {
 
 在我们创建 router 对象的时候，会创建一个 history 对象，前面提到 Vue Router 支持三种模式，这里我们重点分析 HTML5 的 history 的模式：
 
-复制代码
-
-```
+```js
 function createWebHistory(base) {
-  base = normalizeBase(base)
-  const historyNavigation = useHistoryStateNavigation(base)
-  const historyListeners = useHistoryListeners(base, historyNavigation.state, historyNavigation.location, historyNavigation.replace)
-  function go(delta, triggerListeners = true) {
-    if (!triggerListeners)
-      historyListeners.pauseListeners()
-    history.go(delta)
-  }
-  const routerHistory = assign({
-    // it's overridden right after
-    location: '',
+  base = normalizeBase(base);
+  const historyNavigation = useHistoryStateNavigation(base);
+  const historyListeners = useHistoryListeners(
     base,
-    go,
-    createHref: createHref.bind(null, base),
-  }, historyNavigation, historyListeners)
-  Object.defineProperty(routerHistory, 'location', {
+    historyNavigation.state,
+    historyNavigation.location,
+    historyNavigation.replace
+  );
+  function go(delta, triggerListeners = true) {
+    if (!triggerListeners) historyListeners.pauseListeners();
+    history.go(delta);
+  }
+  const routerHistory = assign(
+    {
+      // it's overridden right after
+      location: "",
+      base,
+      go,
+      createHref: createHref.bind(null, base),
+    },
+    historyNavigation,
+    historyListeners
+  );
+  Object.defineProperty(routerHistory, "location", {
     get: () => historyNavigation.location.value,
-  })
-  Object.defineProperty(routerHistory, 'state', {
+  });
+  Object.defineProperty(routerHistory, "state", {
     get: () => historyNavigation.state.value,
-  })
-  return routerHistory
+  });
+  return routerHistory;
 }
 ```
 
@@ -322,70 +324,88 @@ function createWebHistory(base) {
 
 其中，路径切换主要通过 historyNavigation 来完成的，它是 useHistoryStateNavigation 函数的返回值，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function useHistoryStateNavigation(base) {
-  const { history, location } = window
+  const { history, location } = window;
   let currentLocation = {
     value: createCurrentLocation(base, location),
-  }
-  let historyState = { value: history.state }
+  };
+  let historyState = { value: history.state };
   if (!historyState.value) {
-    changeLocation(currentLocation.value, {
-      back: null,
-      current: currentLocation.value,
-      forward: null,
-      position: history.length - 1,
-      replaced: true,
-      scroll: null,
-    }, true)
+    changeLocation(
+      currentLocation.value,
+      {
+        back: null,
+        current: currentLocation.value,
+        forward: null,
+        position: history.length - 1,
+        replaced: true,
+        scroll: null,
+      },
+      true
+    );
   }
   function changeLocation(to, state, replace) {
-    const url = createBaseLocation() +
+    const url =
+      createBaseLocation() +
       // preserve any existing query when base has a hash
-      (base.indexOf('#') > -1 && location.search
-        ? location.pathname + location.search + '#'
+      (base.indexOf("#") > -1 && location.search
+        ? location.pathname + location.search + "#"
         : base) +
-      to
+      to;
     try {
-      history[replace ? 'replaceState' : 'pushState'](state, '', url)
-      historyState.value = state
-    }
-    catch (err) {
-      warn('Error with push/replace State', err)
-      location[replace ? 'replace' : 'assign'](url)
+      history[replace ? "replaceState" : "pushState"](state, "", url);
+      historyState.value = state;
+    } catch (err) {
+      warn("Error with push/replace State", err);
+      location[replace ? "replace" : "assign"](url);
     }
   }
   function replace(to, data) {
-    const state = assign({}, history.state, buildState(historyState.value.back,
-      // keep back and forward entries but override current position
-      to, historyState.value.forward, true), data, { position: historyState.value.position })
-    changeLocation(to, state, true)
-    currentLocation.value = to
+    const state = assign(
+      {},
+      history.state,
+      buildState(
+        historyState.value.back,
+        // keep back and forward entries but override current position
+        to,
+        historyState.value.forward,
+        true
+      ),
+      data,
+      { position: historyState.value.position }
+    );
+    changeLocation(to, state, true);
+    currentLocation.value = to;
   }
   function push(to, data) {
-    const currentState = assign({},
-      historyState.value, history.state, {
-        forward: to,
-        scroll: computeScrollPosition(),
-      })
-    if ( !history.state) {
-      warn(`history.state seems to have been manually replaced without preserving the necessary values. Make sure to preserve existing history state if you are manually calling history.replaceState:\n\n` +
-        `history.replaceState(history.state, '', url)\n\n` +
-        `You can find more information at https://next.router.vuejs.org/guide/migration/#usage-of-history-state.`)
+    const currentState = assign({}, historyState.value, history.state, {
+      forward: to,
+      scroll: computeScrollPosition(),
+    });
+    if (!history.state) {
+      warn(
+        `history.state seems to have been manually replaced without preserving the necessary values. Make sure to preserve existing history state if you are manually calling history.replaceState:\n\n` +
+          `history.replaceState(history.state, '', url)\n\n` +
+          `You can find more information at https://next.router.vuejs.org/guide/migration/#usage-of-history-state.`
+      );
     }
-    changeLocation(currentState.current, currentState, true)
-    const state = assign({}, buildState(currentLocation.value, to, null), { position: currentState.position + 1 }, data)
-    changeLocation(to, state, false)
-    currentLocation.value = to
+    changeLocation(currentState.current, currentState, true);
+    const state = assign(
+      {},
+      buildState(currentLocation.value, to, null),
+      { position: currentState.position + 1 },
+      data
+    );
+    changeLocation(to, state, false);
+    currentLocation.value = to;
   }
   return {
     location: currentLocation,
     state: historyState,
     push,
-    replace
-  }
+    replace,
+  };
 }
 ```
 
@@ -397,31 +417,28 @@ push 和 replace 方法内部都是执行了 changeLocation 方法，该函数�
 
 History 变化的监听主要是通过 historyListeners 来完成的，它是 useHistoryListeners 函数的返回值，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function useHistoryListeners(base, historyState, currentLocation, replace) {
-  let listeners = []
-  let teardowns = []
-  let pauseState = null
-  const popStateHandler = ({ state, }) => {
-    const to = createCurrentLocation(base, location)
-    const from = currentLocation.value
-    const fromState = historyState.value
-    let delta = 0
+  let listeners = [];
+  let teardowns = [];
+  let pauseState = null;
+  const popStateHandler = ({ state }) => {
+    const to = createCurrentLocation(base, location);
+    const from = currentLocation.value;
+    const fromState = historyState.value;
+    let delta = 0;
     if (state) {
-      currentLocation.value = to
-      historyState.value = state
+      currentLocation.value = to;
+      historyState.value = state;
       if (pauseState && pauseState === from) {
-        pauseState = null
-        return
+        pauseState = null;
+        return;
       }
-      delta = fromState ? state.position - fromState.position : 0
+      delta = fromState ? state.position - fromState.position : 0;
+    } else {
+      replace(to);
     }
-    else {
-      replace(to)
-    }
-    listeners.forEach(listener => {
+    listeners.forEach((listener) => {
       listener(currentLocation.value, from, {
         delta,
         type: NavigationType.pop,
@@ -430,42 +447,42 @@ function useHistoryListeners(base, historyState, currentLocation, replace) {
             ? NavigationDirection.forward
             : NavigationDirection.back
           : NavigationDirection.unknown,
-      })
-    })
-  }
+      });
+    });
+  };
   function pauseListeners() {
-    pauseState = currentLocation.value
+    pauseState = currentLocation.value;
   }
   function listen(callback) {
-    listeners.push(callback)
+    listeners.push(callback);
     const teardown = () => {
-      const index = listeners.indexOf(callback)
-      if (index > -1)
-        listeners.splice(index, 1)
-    }
-    teardowns.push(teardown)
-    return teardown
+      const index = listeners.indexOf(callback);
+      if (index > -1) listeners.splice(index, 1);
+    };
+    teardowns.push(teardown);
+    return teardown;
   }
   function beforeUnloadListener() {
-    const { history } = window
-    if (!history.state)
-      return
-    history.replaceState(assign({}, history.state, { scroll: computeScrollPosition() }), '')
+    const { history } = window;
+    if (!history.state) return;
+    history.replaceState(
+      assign({}, history.state, { scroll: computeScrollPosition() }),
+      ""
+    );
   }
   function destroy() {
-    for (const teardown of teardowns)
-      teardown()
-    teardowns = []
-    window.removeEventListener('popstate', popStateHandler)
-    window.removeEventListener('beforeunload', beforeUnloadListener)
+    for (const teardown of teardowns) teardown();
+    teardowns = [];
+    window.removeEventListener("popstate", popStateHandler);
+    window.removeEventListener("beforeunload", beforeUnloadListener);
   }
-  window.addEventListener('popstate', popStateHandler)
-  window.addEventListener('beforeunload', beforeUnloadListener)
+  window.addEventListener("popstate", popStateHandler);
+  window.addEventListener("beforeunload", beforeUnloadListener);
   return {
     pauseListeners,
     listen,
-    destroy
-  }
+    destroy,
+  };
 }
 ```
 
@@ -477,62 +494,58 @@ function useHistoryListeners(base, historyState, currentLocation, replace) {
 
 在 finalizeNavigation 的最后，会执行 markAsReady 方法，我们来看它的实现：
 
-复制代码
-
-```
+```js
 function markAsReady(err) {
-  if (ready)
-    return
-  ready = true
-  setupListeners()
+  if (ready) return;
+  ready = true;
+  setupListeners();
   readyHandlers
     .list()
-    .forEach(([resolve, reject]) => (err ? reject(err) : resolve()))
-  readyHandlers.reset()
+    .forEach(([resolve, reject]) => (err ? reject(err) : resolve()));
+  readyHandlers.reset();
 }
 ```
 
 markAsReady 内部会执行 setupListeners 函数初始化侦听器，且保证只初始化一次。我们再接着来看 setupListeners 的实现：
 
-复制代码
-
-```
+```js
 function setupListeners() {
   removeHistoryListener = routerHistory.listen((to, _from, info) => {
-    const toLocation = resolve(to)
-    pendingLocation = toLocation
-    const from = currentRoute.value
+    const toLocation = resolve(to);
+    pendingLocation = toLocation;
+    const from = currentRoute.value;
     if (isBrowser) {
-      saveScrollPosition(getScrollKey(from.fullPath, info.delta), computeScrollPosition())
+      saveScrollPosition(
+        getScrollKey(from.fullPath, info.delta),
+        computeScrollPosition()
+      );
     }
     navigate(toLocation, from)
       .catch((error) => {
-        if (isNavigationFailure(error, 4 /* NAVIGATION_ABORTED */ | 8 /* NAVIGATION_CANCELLED */)) {
-          return error
+        if (
+          isNavigationFailure(
+            error,
+            4 /* NAVIGATION_ABORTED */ | 8 /* NAVIGATION_CANCELLED */
+          )
+        ) {
+          return error;
         }
         if (isNavigationFailure(error, 2 /* NAVIGATION_GUARD_REDIRECT */)) {
-          if (info.delta)
-            routerHistory.go(-info.delta, false)
-          pushWithRedirect(error.to, toLocation
-          ).catch(noop)
+          if (info.delta) routerHistory.go(-info.delta, false);
+          pushWithRedirect(error.to, toLocation).catch(noop);
           // avoid the then branch
-          return Promise.reject()
+          return Promise.reject();
         }
-        if (info.delta)
-          routerHistory.go(-info.delta, false)
-        return triggerError(error)
+        if (info.delta) routerHistory.go(-info.delta, false);
+        return triggerError(error);
       })
       .then((failure) => {
-        failure =
-          failure ||
-          finalizeNavigation(
-            toLocation, from, false)
-        if (failure && info.delta)
-          routerHistory.go(-info.delta, false)
-        triggerAfterEach(toLocation, from, failure)
+        failure = failure || finalizeNavigation(toLocation, from, false);
+        if (failure && info.delta) routerHistory.go(-info.delta, false);
+        triggerAfterEach(toLocation, from, failure);
       })
-      .catch(noop)
-  })
+      .catch(noop);
+  });
 }
 ```
 

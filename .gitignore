@@ -2,3 +2,5 @@ node_modules
 .DS_Store
 .temp
 .cache
+dist
+dist.zip

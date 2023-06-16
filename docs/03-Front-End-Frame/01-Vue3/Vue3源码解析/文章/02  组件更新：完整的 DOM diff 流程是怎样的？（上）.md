@@ -145,9 +145,7 @@ function isSameVNodeType(n1, n2) {
 
 如何**处理组件**的呢？举个例子，我们在父组件 App 中里引入了 Hello 组件：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
     <p>This is an app.</p>
@@ -173,9 +171,7 @@ function isSameVNodeType(n1, n2) {
 
 Hello 组件中是 `<div>` 包裹着一个 `<p>` 标签， 如下所示：
 
-复制代码
-
-```
+```html
 <template>
   <div class="hello">
     <p>Hello, {{msg}}</p>
@@ -184,9 +180,9 @@ Hello 组件中是 `<div>` 包裹着一个 `<p>` 标签， 如下所示：
 <script>
   export default {
     props: {
-      msg: String
-    }
-  }
+      msg: String,
+    },
+  };
 </script>
 ```
 
@@ -196,35 +192,40 @@ Hello 组件中是 `<div>` 包裹着一个 `<p>` 标签， 如下所示：
 
 和渲染过程类似，更新过程也是一个树的深度优先遍历过程，更新完当前节点后，就会遍历更新它的子节点，因此在遍历的过程中会遇到 hello 这个组件 vnode 节点，就会执行到 processComponent 处理逻辑中，我们再来看一下它的实现，我们重点关注一下组件更新的相关逻辑：
 
-复制代码
-
-```
-const processComponent = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
+```js
+const processComponent = (
+  n1,
+  n2,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
   if (n1 == null) {
     // 挂载组件
-  }
-  else {
+  } else {
     // 更新子组件
-    updateComponent(n1, n2, parentComponent, optimized)
+    updateComponent(n1, n2, parentComponent, optimized);
   }
-}
+};
 const updateComponent = (n1, n2, parentComponent, optimized) => {
-  const instance = (n2.component = n1.component)
+  const instance = (n2.component = n1.component);
   // 根据新旧子组件 vnode 判断是否需要更新子组件
   if (shouldUpdateComponent(n1, n2, parentComponent, optimized)) {
     // 新的子组件 vnode 赋值给 instance.next
-    instance.next = n2
+    instance.next = n2;
     // 子组件也可能因为数据变化被添加到更新队列里了，移除它们防止对一个子组件重复更新
-    invalidateJob(instance.update)
+    invalidateJob(instance.update);
     // 执行子组件的副作用渲染函数
-    instance.update()
-  }
-  else {
+    instance.update();
+  } else {
     // 不需要更新，只复制属性
-    n2.component = n1.component
-    n2.el = n1.el
+    n2.component = n1.component;
+    n2.el = n1.el;
   }
-}
+};
 ```
 
 可以看到，processComponent 主要通过执行 updateComponent 函数来更新子组件，updateComponent 函数在更新子组件的时候，会先执行 shouldUpdateComponent 函数，根据新旧子组件 vnode 来判断是否需要更新子组件。这里你只需要知道，在 shouldUpdateComponent 函数的内部，主要是通过检测和对比组件 vnode 中的 props、chidren、dirs、transiton 等属性，来决定子组件是否需要更新。
@@ -237,33 +238,30 @@ const updateComponent = (n1, n2, parentComponent, optimized) => {
 
 再回到副作用渲染函数中，有了前面的讲解，我们再看组件更新的这部分代码，就能很好地理解它的逻辑了：
 
-复制代码
-
-```
+```js
 // 更新组件
-let { next, vnode } = instance
+let { next, vnode } = instance;
 // next 表示新的组件 vnode
 if (next) {
   // 更新组件 vnode 节点信息
-  updateComponentPreRender(instance, next, optimized)
-}
-else {
-  next = vnode
+  updateComponentPreRender(instance, next, optimized);
+} else {
+  next = vnode;
 }
 const updateComponentPreRender = (instance, nextVNode, optimized) => {
   // 新组件 vnode 的 component 属性指向组件实例
-  nextVNode.component = instance
+  nextVNode.component = instance;
   // 旧组件 vnode 的 props 属性
-  const prevProps = instance.vnode.props
+  const prevProps = instance.vnode.props;
   // 组件实例的 vnode 属性指向新的组件 vnode
-  instance.vnode = nextVNode
+  instance.vnode = nextVNode;
   // 清空 next 属性，为了下一次重新渲染准备
-  instance.next = null
+  instance.next = null;
   // 更新 props
-  updateProps(instance, nextVNode.props, prevProps, optimized)
+  updateProps(instance, nextVNode.props, prevProps, optimized);
   // 更新 插槽
-  updateSlots(instance, nextVNode.children)
-}
+  updateSlots(instance, nextVNode.children);
+};
 ```
 
 结合上面的代码，我们在更新组件的 DOM 前，需要先更新组件 vnode 节点信息，包括更改组件实例的 vnode 指针、更新 props 和更新插槽等一系列操作，因为组件在稍后执行 renderComponentRoot 时会重新渲染新的子树 vnode ，它依赖了更新后的组件 vnode 中的 props 和 slots 等数据。
@@ -280,9 +278,7 @@ const updateComponentPreRender = (instance, nextVNode, optimized) => {
 
 我们再来看如何处理普通元素，我把之前的示例稍加修改，将其中的 Hello 组件删掉，如下所示：
 
-复制代码
-
-```
+```html
 <template>
   <div class="app">
     <p>This is {{msg}}.</p>
@@ -293,15 +289,15 @@ const updateComponentPreRender = (instance, nextVNode, optimized) => {
   export default {
     data() {
       return {
-        msg: 'Vue'
-      }
+        msg: "Vue",
+      };
     },
     methods: {
       toggle() {
-        this.msg = 'Vue'? 'World': 'Vue'
-      }
-    }
-  }
+        this.msg = "Vue" ? "World" : "Vue";
+      },
+    },
+  };
 </script>
 ```
 
@@ -309,29 +305,58 @@ const updateComponentPreRender = (instance, nextVNode, optimized) => {
 
 App 组件的根节点是 div 标签，重新渲染的子树 vnode 节点是一个普通元素的 vnode，所以应该先走 processElement 逻辑，我们来看这个函数的实现：
 
-复制代码
-
-```
-const processElement = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  isSVG = isSVG || n2.type === 'svg'
+```js
+const processElement = (
+  n1,
+  n2,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  isSVG = isSVG || n2.type === "svg";
   if (n1 == null) {
     // 挂载元素
-  }
-  else {
+  } else {
     // 更新元素
-    patchElement(n1, n2, parentComponent, parentSuspense, isSVG, optimized)
+    patchElement(n1, n2, parentComponent, parentSuspense, isSVG, optimized);
   }
-}
-const patchElement = (n1, n2, parentComponent, parentSuspense, isSVG, optimized) => {
-  const el = (n2.el = n1.el)
-  const oldProps = (n1 && n1.props) || EMPTY_OBJ
-  const newProps = n2.props || EMPTY_OBJ
+};
+const patchElement = (
+  n1,
+  n2,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  const el = (n2.el = n1.el);
+  const oldProps = (n1 && n1.props) || EMPTY_OBJ;
+  const newProps = n2.props || EMPTY_OBJ;
   // 更新 props
-  patchProps(el, n2, oldProps, newProps, parentComponent, parentSuspense, isSVG)
-  const areChildrenSVG = isSVG && n2.type !== 'foreignObject'
+  patchProps(
+    el,
+    n2,
+    oldProps,
+    newProps,
+    parentComponent,
+    parentSuspense,
+    isSVG
+  );
+  const areChildrenSVG = isSVG && n2.type !== "foreignObject";
   // 更新子节点
-  patchChildren(n1, n2, el, null, parentComponent, parentSuspense, areChildrenSVG)
-}
+  patchChildren(
+    n1,
+    n2,
+    el,
+    null,
+    parentComponent,
+    parentSuspense,
+    areChildrenSVG
+  );
+};
 ```
 
 可以看到，更新元素的过程主要做两件事情：更新 props 和更新子节点。其实这是很好理解的，因为一个 DOM 节点元素就是由它自身的一些属性和子节点构成的。
@@ -340,51 +365,72 @@ const patchElement = (n1, n2, parentComponent, parentSuspense, isSVG, optimized)
 
 其次是更新子节点，我们来看一下这里的 patchChildren 函数的实现：
 
-复制代码
-
-```
-const patchChildren = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized = false) => {
-  const c1 = n1 && n1.children
-  const prevShapeFlag = n1 ? n1.shapeFlag : 0
-  const c2 = n2.children
-  const { shapeFlag } = n2
+```js
+const patchChildren = (
+  n1,
+  n2,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized = false
+) => {
+  const c1 = n1 && n1.children;
+  const prevShapeFlag = n1 ? n1.shapeFlag : 0;
+  const c2 = n2.children;
+  const { shapeFlag } = n2;
   // 子节点有 3 种可能情况：文本、数组、空
   if (shapeFlag & 8 /* TEXT_CHILDREN */) {
     if (prevShapeFlag & 16 /* ARRAY_CHILDREN */) {
       // 数组 -> 文本，则删除之前的子节点
-      unmountChildren(c1, parentComponent, parentSuspense)
+      unmountChildren(c1, parentComponent, parentSuspense);
     }
     if (c2 !== c1) {
       // 文本对比不同，则替换为新文本
-      hostSetElementText(container, c2)
+      hostSetElementText(container, c2);
     }
-  }
-  else {
+  } else {
     if (prevShapeFlag & 16 /* ARRAY_CHILDREN */) {
       // 之前的子节点是数组
       if (shapeFlag & 16 /* ARRAY_CHILDREN */) {
         // 新的子节点仍然是数组，则做完整地 diff
-        patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, optimized)
-      }
-      else {
+        patchKeyedChildren(
+          c1,
+          c2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          isSVG,
+          optimized
+        );
+      } else {
         // 数组 -> 空，则仅仅删除之前的子节点
-        unmountChildren(c1, parentComponent, parentSuspense, true)
+        unmountChildren(c1, parentComponent, parentSuspense, true);
       }
-    }
-    else {
+    } else {
       // 之前的子节点是文本节点或者为空
       // 新的子节点是数组或者为空
       if (prevShapeFlag & 8 /* TEXT_CHILDREN */) {
         // 如果之前子节点是文本，则把它清空
-        hostSetElementText(container, '')
+        hostSetElementText(container, "");
       }
       if (shapeFlag & 16 /* ARRAY_CHILDREN */) {
         // 如果新的子节点是数组，则挂载新子节点
-        mountChildren(c2, container, anchor, parentComponent, parentSuspense, isSVG, optimized)
+        mountChildren(
+          c2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          isSVG,
+          optimized
+        );
       }
     }
   }
-}
+};
 ```
 
 对于一个元素的子节点 vnode 可能会有三种情况：纯文本、vnode 数组和空。那么根据排列组合对于新旧子节点来说就有九种情况，我们可以通过三张图来表示。

@@ -194,16 +194,23 @@ const patchKeyedChildren = (
 
 首先要判断新子节点是否有剩余的情况，如果满足则添加新子节点，实现代码如下：
 
-复制代码
-
-```
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+```js
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 3, e2 = 4
   // (a b) c d
@@ -217,16 +224,24 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   // i = 2, e1 = 1, e2 = 2
   if (i > e1) {
     if (i <= e2) {
-      const nextPos = e2 + 1
-      const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor
+      const nextPos = e2 + 1;
+      const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor;
       while (i <= e2) {
         // 挂载新节点
-        patch(null, c2[i], container, anchor, parentComponent, parentSuspense, isSVG)
-        i++
+        patch(
+          null,
+          c2[i],
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          isSVG
+        );
+        i++;
       }
     }
   }
-}
+};
 ```
 
 如果索引 i 大于尾部索引 e1 且 i 小于 e2，那么从索引 i 开始到索引 e2 之间，我们直接挂载新子树这部分的节点。
@@ -241,16 +256,23 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 如果不满足添加新节点的情况，我就要接着判断旧子节点是否有剩余，如果满足则删除旧子节点，实现代码如下：
 
-复制代码
-
-```
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+```js
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 4, e2 = 3
   // (a b) c d e
@@ -270,11 +292,11 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   else if (i > e2) {
     while (i <= e1) {
       // 删除节点
-      unmount(c1[i], parentComponent, parentSuspense, true)
-      i++
+      unmount(c1[i], parentComponent, parentSuspense, true);
+      i++;
     }
   }
-}
+};
 ```
 
 如果索引 i 大于尾部索引 e2，那么从索引 i 开始到索引 e1 之间，我们直接删除旧子树这部分的节点。
@@ -303,9 +325,7 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 我们再通过例子来演示存在未知子序列的情况，假设一个按照字母表排列的列表：
 
-复制代码
-
-```
+```html
 <ul>
   <li key="a">a</li>
   <li key="b">b</li>
@@ -320,9 +340,7 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 然后我们打乱之前的顺序得到一个新列表：
 
-复制代码
-
-```
+```html
 <ul>
   <li key="a">a</li>
   <li key="b">b</li>
@@ -363,11 +381,9 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 那么什么时候需要移动呢，就是当子节点排列顺序发生变化的时候，举个简单的例子具体看一下：
 
-复制代码
-
-```
-var prev = [1, 2, 3, 4, 5, 6]
-var next = [1, 3, 2, 6, 4, 5]
+```js
+var prev = [1, 2, 3, 4, 5, 6];
+var next = [1, 3, 2, 6, 4, 5];
 ```
 
 可以看到，从 prev 变成 next，数组里的一些元素的顺序发生了变化，我们可以把子节点类比为元素，现在问题就简化为我们如何用最少的移动使元素顺序从 prev 变化为 next 。
@@ -396,16 +412,23 @@ var next = [1, 3, 2, 6, 4, 5]
 
 我们根据 key 建立新子序列的索引图，实现如下：
 
-复制代码
-
-```
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+```js
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 7, e2 = 7
   // (a b) c d e f g h
@@ -418,16 +441,16 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   // 4. 普通序列删除多余的旧节点，不满足
   // i = 2, e1 = 4, e2 = 5
   // 旧子序列开始索引，从 i 开始记录
-  const s1 = i
+  const s1 = i;
   // 新子序列开始索引，从 i 开始记录
-  const s2 = i //
+  const s2 = i; //
   // 5.1 根据 key 建立新子序列的索引图
-  const keyToNewIndexMap = new Map()
+  const keyToNewIndexMap = new Map();
   for (i = s2; i <= e2; i++) {
-    const nextChild = c2[i]
-    keyToNewIndexMap.set(nextChild.key, i)
+    const nextChild = c2[i];
+    keyToNewIndexMap.set(nextChild.key, i);
   }
-}
+};
 ```
 
 新旧子序列是从 i 开始的，所以我们先用 s1、s2 分别作为新旧子序列的开始索引，接着建立一个 keyToNewIndexMap 的 Map<key, index> 结构，遍历新子序列，把节点的 key 和 index 添加到这个 Map 中，注意我们这里假设所有节点都是有 key 标识的。
@@ -442,16 +465,23 @@ keyToNewIndexMap 存储的就是新子序列中每个节点在新子序列中的
 
 接下来，我们就需要遍历旧子序列，有相同的节点就通过 patch 更新，并且移除那些不在新子序列中的节点，同时找出是否有需要移动的节点，我们来看一下这部分逻辑的实现：
 
-复制代码
-
-```
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+```js
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 7, e2 = 7
   // (a b) c d e f g h
@@ -464,56 +494,62 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   // 4. 普通序列删除多余的旧节点，不满足
   // i = 2, e1 = 4, e2 = 5
   // 旧子序列开始索引，从 i 开始记录
-  const s1 = i
+  const s1 = i;
   // 新子序列开始索引，从 i 开始记录
-  const s2 = i
+  const s2 = i;
   // 5.1 根据 key 建立新子序列的索引图
   // 5.2 正序遍历旧子序列，找到匹配的节点更新，删除不在新子序列中的节点，判断是否有移动节点
   // 新子序列已更新节点的数量
-  let patched = 0
+  let patched = 0;
   // 新子序列待更新节点的数量，等于新子序列的长度
-  const toBePatched = e2 - s2 + 1
+  const toBePatched = e2 - s2 + 1;
   // 是否存在要移动的节点
-  let moved = false
+  let moved = false;
   // 用于跟踪判断是否有节点移动
-  let maxNewIndexSoFar = 0
+  let maxNewIndexSoFar = 0;
   // 这个数组存储新子序列中的元素在旧子序列节点的索引，用于确定最长递增子序列
-  const newIndexToOldIndexMap = new Array(toBePatched)
+  const newIndexToOldIndexMap = new Array(toBePatched);
   // 初始化数组，每个元素的值都是 0
   // 0 是一个特殊的值，如果遍历完了仍有元素的值为 0，则说明这个新节点没有对应的旧节点
-  for (i = 0; i < toBePatched; i++)
-    newIndexToOldIndexMap[i] = 0
+  for (i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0;
   // 正序遍历旧子序列
   for (i = s1; i <= e1; i++) {
     // 拿到每一个旧子序列节点
-    const prevChild = c1[i]
+    const prevChild = c1[i];
     if (patched >= toBePatched) {
       // 所有新的子序列节点都已经更新，剩余的节点删除
-      unmount(prevChild, parentComponent, parentSuspense, true)
-      continue
+      unmount(prevChild, parentComponent, parentSuspense, true);
+      continue;
     }
     // 查找旧子序列中的节点在新子序列中的索引
-    let newIndex = keyToNewIndexMap.get(prevChild.key)
+    let newIndex = keyToNewIndexMap.get(prevChild.key);
     if (newIndex === undefined) {
       // 找不到说明旧子序列已经不存在于新子序列中，则删除该节点
-      unmount(prevChild, parentComponent, parentSuspense, true)
-    }
-    else {
+      unmount(prevChild, parentComponent, parentSuspense, true);
+    } else {
       // 更新新子序列中的元素在旧子序列中的索引，这里加 1 偏移，是为了避免 i 为 0 的特殊情况，影响对后续最长递增子序列的求解
-      newIndexToOldIndexMap[newIndex - s2] = i + 1
+      newIndexToOldIndexMap[newIndex - s2] = i + 1;
       // maxNewIndexSoFar 始终存储的是上次求值的 newIndex，如果不是一直递增，则说明有移动
       if (newIndex >= maxNewIndexSoFar) {
-        maxNewIndexSoFar = newIndex
-      }
-      else {
-        moved = true
+        maxNewIndexSoFar = newIndex;
+      } else {
+        moved = true;
       }
       // 更新新旧子序列中匹配的节点
-      patch(prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, isSVG, optimized)
-      patched++
+      patch(
+        prevChild,
+        c2[newIndex],
+        container,
+        null,
+        parentComponent,
+        parentSuspense,
+        isSVG,
+        optimized
+      );
+      patched++;
     }
   }
-}
+};
 ```
 
 我们建立了一个 newIndexToOldIndexMap 的数组，来存储新子序列节点的索引和旧子序列节点的索引之间的映射关系，用于确定最长递增子序列，这个数组的长度为新子序列的长度，每个元素的初始值设为 0， 它是一个特殊的值，如果遍历完了仍有元素的值为 0，则说明遍历旧子序列的过程中没有处理过这个节点，这个节点是新添加的。
@@ -538,16 +574,23 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 接下来，就到了处理未知子序列的最后一个流程，移动和挂载新节点，我们来看一下这部分逻辑的实现：
 
-复制代码
-
-```
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+```js
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 6, e2 = 7
   // (a b) c d e f g
@@ -560,39 +603,45 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   // 4. 普通序列删除多余的节点，不满足
   // i = 2, e1 = 4, e2 = 5
   // 旧子节点开始索引，从 i 开始记录
-  const s1 = i
+  const s1 = i;
   // 新子节点开始索引，从 i 开始记录
-  const s2 = i //
+  const s2 = i; //
   // 5.1 根据 key 建立新子序列的索引图
   // 5.2 正序遍历旧子序列，找到匹配的节点更新，删除不在新子序列中的节点，判断是否有移动节点
   // 5.3 移动和挂载新节点
   // 仅当节点移动时生成最长递增子序列
   const increasingNewIndexSequence = moved
     ? getSequence(newIndexToOldIndexMap)
-    : EMPTY_ARR
-  let j = increasingNewIndexSequence.length - 1
+    : EMPTY_ARR;
+  let j = increasingNewIndexSequence.length - 1;
   // 倒序遍历以便我们可以使用最后更新的节点作为锚点
   for (i = toBePatched - 1; i >= 0; i--) {
-    const nextIndex = s2 + i
-    const nextChild = c2[nextIndex]
+    const nextIndex = s2 + i;
+    const nextChild = c2[nextIndex];
     // 锚点指向上一个更新的节点，如果 nextIndex 超过新子节点的长度，则指向 parentAnchor
-    const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor
+    const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
     if (newIndexToOldIndexMap[i] === 0) {
       // 挂载新的子节点
-      patch(null, nextChild, container, anchor, parentComponent, parentSuspense, isSVG)
-    }
-    else if (moved) {
+      patch(
+        null,
+        nextChild,
+        container,
+        anchor,
+        parentComponent,
+        parentSuspense,
+        isSVG
+      );
+    } else if (moved) {
       // 没有最长递增子序列（reverse 的场景）或者当前的节点索引不在最长递增子序列中，需要移动
       if (j < 0 || i !== increasingNewIndexSequence[j]) {
-        move(nextChild, container, anchor, 2)
-      }
-      else {
+        move(nextChild, container, anchor, 2);
+      } else {
         // 倒序递增子序列
-        j--
+        j--;
       }
     }
   }
-}
+};
 ```
 
 我们前面已经判断了是否移动，如果 moved 为 true 就通过 getSequence(newIndexToOldIndexMap) 计算最长递增子序列，这部分算法我会放在后文详细介绍。
@@ -631,64 +680,59 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 
 了解了算法的大致思想后，接下来我们看一下源码实现：
 
-复制代码
-
-```
-function getSequence (arr) {
-  const p = arr.slice()
-  const result = [0]
-  let i, j, u, v, c
-  const len = arr.length
+```js
+function getSequence(arr) {
+  const p = arr.slice();
+  const result = [0];
+  let i, j, u, v, c;
+  const len = arr.length;
   for (i = 0; i < len; i++) {
-    const arrI = arr[i]
+    const arrI = arr[i];
     if (arrI !== 0) {
-      j = result[result.length - 1]
+      j = result[result.length - 1];
       if (arr[j] < arrI) {
         // 存储在 result 更新前的最后一个索引的值
-        p[i] = j
-        result.push(i)
-        continue
+        p[i] = j;
+        result.push(i);
+        continue;
       }
-      u = 0
-      v = result.length - 1
+      u = 0;
+      v = result.length - 1;
       // 二分搜索，查找比 arrI 小的节点，更新 result 的值
       while (u < v) {
-        c = ((u + v) / 2) | 0
+        c = ((u + v) / 2) | 0;
         if (arr[result[c]] < arrI) {
-          u = c + 1
-        }
-        else {
-          v = c
+          u = c + 1;
+        } else {
+          v = c;
         }
       }
       if (arrI < arr[result[u]]) {
         if (u > 0) {
-          p[i] = result[u - 1]
+          p[i] = result[u - 1];
         }
-        result[u] = i
+        result[u] = i;
       }
     }
   }
-  u = result.length
-  v = result[u - 1]
+  u = result.length;
+  v = result[u - 1];
 
   // 回溯数组 p，找到最终的索引
   while (u-- > 0) {
-    result[u] = v
-    v = p[v]
+    result[u] = v;
+    v = p[v];
   }
-  return result
+  return result;
 }
 ```
 
 其中 result 存储的是长度为 i 的递增子序列最小末尾值的索引。比如我们上述例子的第九步，在对数组 p 回溯之前， result 值就是 [1, 3, 4, 7, 9] ，这不是最长递增子序列，它只是存储的对应长度递增子序列的最小末尾。因此在整个遍历过程中会额外用一个数组 p，来存储在每次更新 result 前最后一个索引的值，并且它的 key 是这次要更新的 result 值：
 
-复制代码
-
-```
-j = result[result.length - 1]
-p[i] = j
-result.push(i)
+```js
+j = result[result.length - 1];
+p[i] = j;
+result.push(i);
 ```
 
 可以看到，result 添加的新值 i 是作为 p 存储 result 最后一个值 j 的 key。上述例子遍历后 p 的结果如图所示：

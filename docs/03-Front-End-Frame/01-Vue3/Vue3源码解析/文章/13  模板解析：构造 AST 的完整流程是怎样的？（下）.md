@@ -10,9 +10,7 @@
 
 最后，我们来看元素节点的解析过程，它会解析模板中的标签节点，举个例子：
 
-复制代码
-
-```
+```html
 <div class="app">
   <hello :msg="msg"></hello>
 </div>
@@ -20,59 +18,56 @@
 
 相对于前面三种类型的解析过程，元素节点的解析过程应该是最复杂的了，即当前代码 s 是以 < 开头，并且后面跟着字母，说明它是一个标签的开头，则走到元素节点的解析处理逻辑，我们来看 parseElement 的实现：
 
-复制代码
-
-```
+```js
 function parseElement(context, ancestors) {
   // 是否在 pre 标签内
-  const wasInPre = context.inPre
+  const wasInPre = context.inPre;
   // 是否在 v-pre 指令内
-  const wasInVPre = context.inVPre
+  const wasInVPre = context.inVPre;
   // 获取当前元素的父标签节点
-  const parent = last(ancestors)
+  const parent = last(ancestors);
   // 解析开始标签，生成一个标签节点，并前进代码到开始标签后
-  const element = parseTag(context, 0 /* Start */, parent)
+  const element = parseTag(context, 0 /* Start */, parent);
   // 是否在 pre 标签的边界
-  const isPreBoundary = context.inPre && !wasInPre
+  const isPreBoundary = context.inPre && !wasInPre;
   // 是否在 v-pre 指令的边界
-  const isVPreBoundary = context.inVPre && !wasInVPre
+  const isVPreBoundary = context.inVPre && !wasInVPre;
   if (element.isSelfClosing || context.options.isVoidTag(element.tag)) {
     // 如果是自闭和标签，直接返回标签节点
-    return element
+    return element;
   }
   // 下面是处理子节点的逻辑
   // 先把标签节点添加到 ancestors，入栈
-  ancestors.push(element)
-  const mode = context.options.getTextMode(element, parent)
+  ancestors.push(element);
+  const mode = context.options.getTextMode(element, parent);
   // 递归解析子节点，传入 ancestors
-  const children = parseChildren(context, mode, ancestors)
+  const children = parseChildren(context, mode, ancestors);
   // ancestors 出栈
-  ancestors.pop()
+  ancestors.pop();
   // 添加到 children 属性中
-  element.children = children
+  element.children = children;
   // 结束标签
   if (startsWithEndTagOpen(context.source, element.tag)) {
     // 解析结束标签，并前进代码到结束标签后
-    parseTag(context, 1 /* End */, parent)
-  }
-  else {
+    parseTag(context, 1 /* End */, parent);
+  } else {
     emitError(context, 24 /* X_MISSING_END_TAG */, 0, element.loc.start);
-    if (context.source.length === 0 && element.tag.toLowerCase() === 'script') {
+    if (context.source.length === 0 && element.tag.toLowerCase() === "script") {
       const first = children[0];
-      if (first && startsWith(first.loc.source, '<!--')) {
-        emitError(context, 8 /* EOF_IN_SCRIPT_HTML_COMMENT_LIKE_TEXT */)
+      if (first && startsWith(first.loc.source, "<!--")) {
+        emitError(context, 8 /* EOF_IN_SCRIPT_HTML_COMMENT_LIKE_TEXT */);
       }
     }
   }
   // 更新标签节点的代码位置，结束位置到结束标签后
-  element.loc = getSelection(context, element.loc.start)
+  element.loc = getSelection(context, element.loc.start);
   if (isPreBoundary) {
-    context.inPre = false
+    context.inPre = false;
   }
   if (isVPreBoundary) {
-    context.inVPre = false
+    context.inVPre = false;
   }
-  return element
+  return element;
 }
 ```
 
@@ -80,12 +75,10 @@ function parseElement(context, ancestors) {
 
 首先，我们来看解析开始标签的过程。主要通过 parseTag 方法来解析并创建一个标签节点，来看它的实现原理：
 
-复制代码
-
-```
+```js
 function parseTag(context, type, parent) {
   // 标签打开
-  const start = getCursor(context)
+  const start = getCursor(context);
   // 匹配标签文本结束的位置
   const match = /^<\/?([a-z][^\t\r\n\f />]*)/i.exec(context.source);
   const tag = match[1];
@@ -104,23 +97,24 @@ function parseTag(context, type, parent) {
     context.inPre = true;
   }
   // 检查属性中有没有 v-pre 指令
-  if (!context.inVPre &&
-    props.some(p => p.type === 7 /* DIRECTIVE */ && p.name === 'pre')) {
+  if (
+    !context.inVPre &&
+    props.some((p) => p.type === 7 /* DIRECTIVE */ && p.name === "pre")
+  ) {
     context.inVPre = true;
     // 重置 context
     extend(context, cursor);
     context.source = currentSource;
     // 重新解析属性，并把 v-pre 过滤了
-    props = parseAttributes(context, type).filter(p => p.name !== 'v-pre');
+    props = parseAttributes(context, type).filter((p) => p.name !== "v-pre");
   }
   // 标签闭合
   let isSelfClosing = false;
   if (context.source.length === 0) {
     emitError(context, 9 /* EOF_IN_TAG */);
-  }
-  else {
+  } else {
     // 判断是否自闭合标签
-    isSelfClosing = startsWith(context.source, '/>');
+    isSelfClosing = startsWith(context.source, "/>");
     if (type === 1 /* End */ && isSelfClosing) {
       // 结束标签不应该是自闭和标签
       emitError(context, 4 /* END_TAG_WITH_TRAILING_SOLIDUS */);
@@ -128,30 +122,35 @@ function parseTag(context, type, parent) {
     // 前进代码到闭合标签后
     advanceBy(context, isSelfClosing ? 2 : 1);
   }
-  let tagType = 0 /* ELEMENT */;
+  let tagType = 0; /* ELEMENT */
   const options = context.options;
   // 接下来判断标签类型，是组件、插槽还是模板
   if (!context.inVPre && !options.isCustomElement(tag)) {
     // 判断是否有 is 属性
-    const hasVIs = props.some(p => p.type === 7 /* DIRECTIVE */ && p.name === 'is');
+    const hasVIs = props.some(
+      (p) => p.type === 7 /* DIRECTIVE */ && p.name === "is"
+    );
     if (options.isNativeTag && !hasVIs) {
-      if (!options.isNativeTag(tag))
-        tagType = 1 /* COMPONENT */;
-    }
-    else if (hasVIs ||
+      if (!options.isNativeTag(tag)) tagType = 1 /* COMPONENT */;
+    } else if (
+      hasVIs ||
       isCoreComponent(tag) ||
       (options.isBuiltInComponent && options.isBuiltInComponent(tag)) ||
       /^[A-Z]/.test(tag) ||
-      tag === 'component') {
+      tag === "component"
+    ) {
       tagType = 1 /* COMPONENT */;
     }
-    if (tag === 'slot') {
+    if (tag === "slot") {
       tagType = 2 /* SLOT */;
-    }
-    else if (tag === 'template' &&
-      props.some(p => {
-        return (p.type === 7 /* DIRECTIVE */ && isSpecialTemplateDirective(p.name));
-      })) {
+    } else if (
+      tag === "template" &&
+      props.some((p) => {
+        return (
+          p.type === 7 /* DIRECTIVE */ && isSpecialTemplateDirective(p.name)
+        );
+      })
+    ) {
       tagType = 3 /* TEMPLATE */;
     }
   }
@@ -164,7 +163,7 @@ function parseTag(context, type, parent) {
     isSelfClosing,
     children: [],
     loc: getSelection(context, start),
-    codegenNode: undefined
+    codegenNode: undefined,
   };
 }
 ```
@@ -191,9 +190,7 @@ parseTag 最终返回的值就是一个描述标签节点的对象，其中 type
 
 在前面的解析过程中，有些时候我们会遇到空白字符的情况，比如前面的例子：
 
-复制代码
-
-```
+```html
 <div class="app">
   <hello :msg="msg"></hello>
 </div>
@@ -203,68 +200,67 @@ div 标签到下一行会有一个换行符，hello 标签前面也有空白字�
 
 我们先来看一下空白字符管理相关逻辑代码：
 
-复制代码
-
-```
+```js
 function parseChildren(context, mode, ancestors) {
-  const parent = last(ancestors)
-  const ns = parent ? parent.ns : 0 /* HTML */
-  const nodes = []
+  const parent = last(ancestors);
+  const ns = parent ? parent.ns : 0; /* HTML */
+  const nodes = [];
 
   // 自顶向下分析代码，生成 nodes
 
-  let removedWhitespace = false
+  let removedWhitespace = false;
   if (mode !== 2 /* RAWTEXT */) {
     if (!context.inPre) {
       for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i]
+        const node = nodes[i];
         if (node.type === 2 /* TEXT */) {
           if (!/[^\t\r\n\f ]/.test(node.content)) {
             // 匹配空白字符
-            const prev = nodes[i - 1]
-            const next = nodes[i + 1]
+            const prev = nodes[i - 1];
+            const next = nodes[i + 1];
             // 如果空白字符是开头或者结尾节点
             // 或者空白字符与注释节点相连
             // 或者空白字符在两个元素之间并包含换行符
             // 那么这些空白字符节点都应该被移除
-            if (!prev ||
+            if (
+              !prev ||
               !next ||
               prev.type === 3 /* COMMENT */ ||
               next.type === 3 /* COMMENT */ ||
               (prev.type === 1 /* ELEMENT */ &&
                 next.type === 1 /* ELEMENT */ &&
-                /[\r\n]/.test(node.content))) {
-              removedWhitespace = true
-              nodes[i] = null
-            }
-            else {
+                /[\r\n]/.test(node.content))
+            ) {
+              removedWhitespace = true;
+              nodes[i] = null;
+            } else {
               // 否则压缩这些空白字符到一个空格
-              node.content = ' '
+              node.content = " ";
             }
-          }
-          else {
+          } else {
             // 替换内容中的空白空间到一个空格
-            node.content = node.content.replace(/[\t\r\n\f ]+/g, ' ')
+            node.content = node.content.replace(/[\t\r\n\f ]+/g, " ");
           }
-        }
-        else if (!(process.env.NODE_ENV !== 'production') && node.type === 3 /* COMMENT */) {
+        } else if (
+          !(process.env.NODE_ENV !== "production") &&
+          node.type === 3 /* COMMENT */
+        ) {
           // 生产环境移除注释节点
-          removedWhitespace = true
-          nodes[i] = null
+          removedWhitespace = true;
+          nodes[i] = null;
         }
       }
-    }
-    else if (parent && context.options.isPreTag(parent.tag)) {
+    } else if (parent && context.options.isPreTag(parent.tag)) {
       // 根据 HTML 规范删除前导换行符
-      const first = nodes[0]
+      const first = nodes[0];
       if (first && first.type === 2 /* TEXT */) {
-        first.content = first.content.replace(/^\r?\n/, '')
+        first.content = first.content.replace(/^\r?\n/, "");
       }
     }
   }
 
   // 过滤空白字符节点
-  return removedWhitespace ? nodes.filter(Boolean) : nodes
+  return removedWhitespace ? nodes.filter(Boolean) : nodes;
 }
 ```
 
@@ -278,9 +274,7 @@ function parseChildren(context, mode, ancestors) {
 
 子节点解析完毕，baseParse 过程就剩最后一步创建 AST 根节点了，我们来看一下 createRoot 的实现：
 
-复制代码
-
-```
+```js
 function createRoot(children, loc = locStub) {
   return {
     type: 0 /* ROOT */,
@@ -293,8 +287,8 @@ function createRoot(children, loc = locStub) {
     cached: 0,
     temps: 0,
     codegenNode: undefined,
-    loc
-  }
+    loc,
+  };
 }
 ```
 
