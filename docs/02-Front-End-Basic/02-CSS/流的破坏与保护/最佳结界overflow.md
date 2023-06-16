@@ -5,7 +5,7 @@
 则当子元素内容超出容器宽度高度限制的时候，剪裁的边界是 `border box` 的内边缘，而非 `padding box` 的内边缘
 
 在 overflow 属性中有一个很经典的不兼容问题，即 Chrome 浏览器下，如果容器可滚动（假设是垂直滚动），则 padding-bottom 也算在滚动尺寸之内，IE 和 Firefox 浏览器忽略 padding-bottom。所以我们在实际项目开发的时候，要尽量避免滚动容器设置 padding-bottom 值，除了样式表现不一致外，还会导致 scrollHeight 值不一样
-![image](../../assets/css/float/overflow1.png)
+![image](../assets/float/overflow1.png)
 
 ## 了解 overflow-x 和 overflow-y
 
@@ -215,13 +215,13 @@ document.querySelector("input").focus();
 
 当点击 a 标签时，滚动行为由内而外的触发，先触发 `.box` 容器的锚点定位，滚动到底部，再触发 `.con` 的锚点定位，“底部标题”和浏览器窗口的上边缘对齐
 
-![image](../../assets/css/float/overflow2.png)
+![image](../assets/float/overflow2.png)
 
 overflow:hidden 也是可以滚动的，只是没有滚动条，在表现上无法滚动而已，如果发生锚点定位，或者改变 scrollTop 的值，就会发生滚动行为，根据这种特性我们可以实现很多效果
 
 实例一：实现选项卡
 
-![image](../../assets/css/float/overflow3.png)
+![image](../assets/float/overflow3.png)
 
 ```html
 <style>

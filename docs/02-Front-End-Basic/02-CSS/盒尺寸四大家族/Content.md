@@ -256,7 +256,7 @@ img { content: url(1.jpg); } <img />
 ```
 
 应用 2:辅助实现两端对齐（text-align:justify）
-![image](../../assets/css/css-world/content2.png)
+![image](../assets/css-world/content2.png)
 
 ```html
 <style>
@@ -289,7 +289,7 @@ img { content: url(1.jpg); } <img />
 </div>
 ```
 
-![image](../../assets/css/css-world/content1.png)
+![image](../assets/css-world/content1.png)
 
 ```html
 <style>
@@ -421,7 +421,7 @@ css 不常用的两个属性 `open-quote(开启的符号)` 和 `close-quote(关�
 <p class="answer">因为直接使用字符更干脆！</p>
 ```
 
-![image](../../assets/css/css-world/content3.png)
+![image](../assets/css-world/content3.png)
 
 ### content attr 属性值内容生成
 
@@ -478,7 +478,7 @@ img::after {
 - counters 方法
 
 counters()是一个嵌套计数器，返回表示指定计数器当前值的连接字符串，例如可以下图目录效果
-![image](../../assets/css/css-world/content4.png)
+![image](../assets/css-world/content4.png)
 
 > 语法：counter(name,string) name 为计数器名，string 为子序列号连接字符串
 

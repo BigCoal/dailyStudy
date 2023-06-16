@@ -43,7 +43,7 @@ BFC 的结界特性最重要的用途其实不是去 margin 重叠或者是清�
 
 `.animal` 会形成 BFC，根据特性，内部元素不会影响外部元素，则会形成下图右侧部分的自适应布局，右侧元素自动填满除了浮动元素以外的剩余空间，这种自适应布局要比纯流体自适应布局更加的智能，当图片大小变化的时候，右侧的内容区域会自适应流动
 
-![image](../../assets/css/float/bfc1.png)
+![image](../assets/float/bfc1.png)
 
 实际项目开发的时候，图片和文字不可能靠这么近，如果想要保持合适的间距，那也很简单，如果元素是左浮动，则浮动元素可以设置 margin-right 成透明 border-right 或 paddingright；又或者右侧 BFC 元素设置成透明 border-left 或者 padding-left，但不包括 margin-left，因为如果想要使用 margin-left，则其值必须是浮动元素的宽度加间隙的大小，就变成动态不可控的了，无法大规模复用。
 
@@ -71,15 +71,19 @@ BFC 形成自适应布局的条件:
 - float:left
 
   浮动元素有包裹性和破坏性，失去了元素本身的流体自适应性，因此无法实现自动实现自动填满容器的自适应布局
+
 - position:absolute
 
   脱离文档流有些严重，和非定位元素很难一起玩
+
 - overflow:hidden
 
   这个可以，唯一的问题就是容器盒子外的东西可能会被隐藏掉，一定程度上限制了这种特性的大规模使用
+
 - display:inline-block
 
   display:inline-block 会让元素尺寸包裹收缩，完全就不是我们想要的 block 水平的流动特性。只能是一声叹息舍弃掉！然而，峰回路转，世事难料。大家应该知道，IE6 和 IE7 浏览器下，block 水平的元素设置 display:inline-block 元素还是 block 水平，也就是还是会自适应容器的可用宽度显示。
+
   ```css
   .float-left {
     float: left;
@@ -88,9 +92,11 @@ BFC 形成自适应布局的条件:
     display: inline-block;
   }
   ```
+
 - display:table-cell
 
   它会跟随内部元素的宽度显示，看样子也是不合适的命。但是，单元格有一个非常神奇的特性，就是宽度值设置得再大，实际宽度也不会超过表格容器的宽度。所以我们可以把 BFC 元素的宽度设置的很大
+
   ```css
   .float-left {
     float: left;

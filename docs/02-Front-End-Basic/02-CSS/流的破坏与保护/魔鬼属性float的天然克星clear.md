@@ -35,7 +35,7 @@ clear 属性值：
 </div>
 ```
 
-![image](../../assets/css/float/clear1.png)
+![image](../assets/float/clear1.png)
 示例 2:右侧抗浮动
 
 ```html
@@ -58,7 +58,7 @@ clear 属性值：
 </div>
 ```
 
-![image](../../assets/css/float/clear2.png)
+![image](../assets/float/clear2.png)
 
 而针对于 `float: right` 和 `float: left` 都可以用 `clear:both` 进行替换,所以基本上 right 和 left 两个属性是没有作用的
 
@@ -104,7 +104,7 @@ clear 属性只有块级元素才有效的，而::after 等伪元素默认都是
 </div>
 ```
 
-![image](../../assets/css/float/clear3.png)
+![image](../assets/float/clear3.png)
 
 由于 clear:both 的作用本质是让自己不和 float 元素在一行显示，并不是真正意义上的清除浮动，因此 float 元素一些不好的特性依然存在，主要有以下两点：
 
@@ -135,6 +135,6 @@ clear 属性只有块级元素才有效的，而::after 等伪元素默认都是
 <div>虽然你很帅，但是我对你不感兴趣。</div>
 ```
 
-![image](../../assets/css/float/clear4.png)
+![image](../assets/float/clear4.png)
 
 由此可见，clear:both 只能在一定程度上消除浮动的影响，要想完美地去除浮动元素的影响，还需要使用其他 CSS 声明。

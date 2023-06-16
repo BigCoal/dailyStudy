@@ -4,7 +4,7 @@
 
 在各种内联相关模型中，凡是涉及垂直方向的排版或者对齐的，都离不开最基本的`基线`（baseline）。例如，`line-height` 行高的定义就是两`基线`的间距，`vertical-align` 的`默认值`就是`基线`，`小写字母 x` 的下边缘（线）就是我们的`基线`。
 
-![image](../../assets/css/inline-flow/x1.png)
+![image](../assets/inline-flow/x1.png)
 
 各种元素基线位置：
 
@@ -18,7 +18,7 @@
 
 `x-height`指的是小写字母 x 的高度。也就是基线和等分线（mean line）（也称作中线，midline）之间的距离。如下图
 
-![image](../../assets/css/inline-flow/x2.png)
+![image](../assets/inline-flow/x2.png)
 
 - ascender height: 上下线高度。
 - cap height: 大写字母高度。
@@ -31,7 +31,7 @@ x-height 的作用：
 
 由于不同的字体在行内盒子中的位置是不一样的，比如，“微软雅黑”就是一个字符下沉比较明显的字体，所有字符的基线位置都比其他字体要偏下一点儿。除非 x 的位置在中间，才能和行内盒子`容器中分线`等分，否则 `vertical-align:middle` 并不可以绝对的垂直居中对齐
 
-![image](../../assets/css/inline-flow/vertical11.png)
+![image](../assets/inline-flow/vertical11.png)
 
 ## 字母 x 与 CSS 中的 ex
 

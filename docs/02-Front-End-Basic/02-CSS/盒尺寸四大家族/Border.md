@@ -25,7 +25,7 @@ border 默认值设置为 `medium` 的原因是因为 `border-style:double` 至�
 5. border-style:double
    双线边框表现规则：双线宽度永远相等，中间间隔+1。不同值下的表现如下表
 
-   ![image](../../assets/css/css-world/border1.png)
+   ![image](../assets/css-world/border1.png)
 
    从表可以看出，当边框宽度是 1px 和 2px 的时候，其表现和 `border-style:solid` 是一模一样的
 
@@ -40,12 +40,12 @@ border 默认值设置为 `medium` 的原因是因为 `border-style:double` 至�
    }
    ```
 
-   ![image](../../assets/css/css-world/border2.png)
+   ![image](../assets/css-world/border2.png)
 
 6. 其他 border-style 属性
    `inset`（内凹）、`outset`（外凸）、`groove`（沟槽）、`ridge`（山脊）风格老土过时，且兼容性惨不忍睹。因此，它们没有任何实用价值
 
-   ![image](../../assets/css/css-world/border3.png)
+   ![image](../assets/css-world/border3.png)
 
 ## border-color 和 color
 
@@ -89,7 +89,7 @@ div {
 }
 ```
 
-![image](../../assets/css/css-world/border4.png)
+![image](../assets/css-world/border4.png)
 
 ## border 与图形构建
 
@@ -104,7 +104,7 @@ div {
 }
 ```
 
-![image](../../assets/css/css-world/border5.png)
+![image](../assets/css-world/border5.png)
 
 当我们把宽度从 10 变成 0 时，便会生成 4 个三角形，利用 border 的这种特性我们可以实现各种各样的三角形特效
 
@@ -117,17 +117,17 @@ div {
 }
 ```
 
-![image](../../assets/css/css-world/border6.png)
+![image](../assets/css-world/border6.png)
 
 利用三角形生成各种气泡效果
-![image](../../assets/css/css-world/border7.png)
+![image](../assets/css-world/border7.png)
 
-> 只要是与三角形或者梯形相关的图形，都可以使用border属性来模拟
+> 只要是与三角形或者梯形相关的图形，都可以使用 border 属性来模拟
 
 ## border 等高布局
 
 在前面章节我们已经说过 `margin` 实现等高布局，下面我们来实现下 `border` 版本
-![image](../../assets/css/css-world/border8.png)
+![image](../assets/css-world/border8.png)
 
 ```css
 .box {

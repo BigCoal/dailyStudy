@@ -19,7 +19,7 @@ exp:
 <!--最终表现如下图上面部分-->
 ```
 
-![image](../../assets/css/inline-flow/line1.png)
+![image](../assets/inline-flow/line1.png)
 
 ```html
 <!--最终表现如上图下面部分-->
@@ -68,7 +68,7 @@ exp:
 <!--最终表现如下图下面部分-->
 ```
 
-![image](../../assets/css/inline-flow/lin2.png)
+![image](../assets/inline-flow/lin2.png)
 
 ## line-height 行距与设计师
 
@@ -135,7 +135,7 @@ exp:
 - 默认值 normal
 
   默认值 normal 是一个和 font-family 有着密切关联的变量值。
-  ![image](../../assets/css/inline-flow/line3.png)
+  ![image](../assets/inline-flow/line3.png)
 
   根据上表可以看出，只要字体确定，各个浏览器下的默认 line-height 解析值基本上都是一样的,但是不同的浏览器所使用的默认中英文字体并不是一样的，并且不同操作系统的默认字体也不一样，也就是说，不同系统不同浏览器的默认 line-height 都是有差异的。所以对 `line-height 的默认值进行重置是势在必行的`
 
@@ -214,7 +214,6 @@ body > div {
 ```
 
 上面两个代码最终的 box 盒子的高度都是 96px，因为有内联元素定有行框盒子，而每个行框盒子前必定会产生`幽灵空白节点`，当 .box 元素设置 line-height:96px 时，`幽灵空白节点`高度 96px；当 .box 元素设置 line-height:20px 时，`<span>`元素的高度则变成了 96px，而`行框盒子的高度`是由高度最高的那个“内联盒子”决定的，这就是.box 元素高度永远都是最大的那个 line-height 的原因。
-
 
 那么如何让第一段代码的 span 的`line-height: 20px`生效呢?
 

@@ -60,7 +60,7 @@ font-family 默认值由操作系统和浏览器共同决定， Windows 和 OS X
 
   没有衬线字体这些额外的装饰，而且笔画的粗细差不多，如中文的“雅黑”字体，英文包括 Arial、Verdana、Tahoma、Helivetica、Calibri 等。
 
-![image](../../assets/css/font/family.png)
+![image](../assets/font/family.png)
 
 ```css
 body {
@@ -81,8 +81,7 @@ MMMMMM
 但是，如果是等宽字体（可以让英文字符同等宽度显示的字体就称为“等宽字体”），如 Consolas、Monaco、monospace，则宽度表现就不一样了
 
 ```html
-iiiiii 
-MMMMMM
+iiiiii MMMMMM
 ```
 
 等宽字体的实际应用
@@ -97,7 +96,7 @@ MMMMMM
 
   大家都知道，原生的`<select>`的`<option>`元素的 innerHTML 只能是纯 text 字符，不能有 html，也不支持伪元素，因此，要模拟 solid、dashed 和 dotted，只能使用字符，而字符有长有短，这时候使用等宽字体，便可解决这种问题。
 
-![image](../../assets/css/font/family2.png)
+![image](../assets/font/family2.png)
 
 - ch 单位与等宽字体布局
 
@@ -113,19 +112,19 @@ MMMMMM
 
 - Windows 常见内置中文字体和对应英文名称
 
-![image](../../assets/css/font/family3.png)
+![image](../assets/font/family3.png)
 
 - OS X 系统内置中文字体和对应英文名称
 
-![image](../../assets/css/font/family4.png)
+![image](../assets/font/family4.png)
 
 - Office 软件安装新增中文字体和对应英文名称
 
-![image](../../assets/css/font/family5.png)
+![image](../assets/font/family5.png)
 
 - 其他一些中文字体和对应英文名称
 
-![image](../../assets/css/font/family6.png)
+![image](../assets/font/family6.png)
 
 ## 一些补充说明
 

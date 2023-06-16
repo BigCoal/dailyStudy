@@ -36,7 +36,7 @@
 
 此时`<span>`元素的“包含块”范围是什么？
 
-![image](../../assets/css/float/abs1.png)
+![image](../assets/float/abs1.png)
 
 记住内联元素的“包含块”是由“生成的”前后内联盒子决定的，与里面的内联盒子细节没有任何关系。
 
@@ -70,7 +70,7 @@
 
   主要差异在于，Firefox 浏览器的“包含块”仅覆盖第一行，而 IE 和 Chrome 浏览器“包含块”的表现完全符合定义，由第一行开头和最后一行结尾的内联盒子共同决定
 
-  ![image](../../assets/css/float/abs2.png)
+  ![image](../assets/float/abs2.png)
 
 #### 2. “包含块”所在的元素不是父块级元素，而是最近的 position 不为 static 的祖先元素或根元素；
 
@@ -80,11 +80,11 @@ height:100%和 height:inherit 的区别？
 
 如果我们想要实现下面效果：
 
-![image](../../assets/css/float/abs3.png)
+![image](../assets/float/abs3.png)
 
 我们可以利用 `::before` 和 `::after` 伪元素实现我们想要的效果，一个实现三角，一个实现矩形区。为了不干扰布局，显然实现提示效果的两个伪元素会使用 absolute 绝对定位，为了定位准确，我们会给小图标元素设置 `position:relative`。此时问题来了：由于提示信息的内容有长有短，我们不可能给提示元素设置一个特定的宽度，于是宽度表现走“包裹性”，也就是最大宽度不超过“包含块”的宽度，但是恰好此时“包含块”就是我们的小图标元素，并且宽度往往都不超过 20 像素，也就是我们的提示信息只能够在 20 像素宽的区域内显示，这就导致了最终的文字内容“一柱擎天”，如下图所示。
 
-![image](../../assets/css/float/abs4.png)
+![image](../assets/float/abs4.png)
 
 要修复这一问题其实很简单，只要改变默认的宽度显示类型就可以，添加 `white-space: nowrap`，让宽度表现从“包裹性”变成“最大可用宽度”即可
 
@@ -159,11 +159,11 @@ absolute 定位效果实现完全不需要父元素设置 position 为 relative 
 }
 ```
 
-![image](../../assets/css/float/abs5.png)
+![image](../assets/float/abs5.png)
 
 普通的水平对齐的图标也可以使用“无依赖绝对定位”实现
 
-![image](../../assets/css/float/abs6.png)
+![image](../assets/float/abs6.png)
 
 ```html
 <style>
@@ -186,7 +186,7 @@ absolute 定位效果实现完全不需要父元素设置 position 为 relative 
 
 应用二：下拉列表的定位
 
-![image](../../assets/css/float/abs7.png)
+![image](../assets/float/abs7.png)
 
 ```html
 <style>
@@ -255,7 +255,7 @@ absolute 定位效果实现完全不需要父元素设置 position 为 relative 
 <div class="nav">导航 2</div>
 ```
 
-![image](../../assets/css/float/abs8.png)
+![image](../assets/float/abs8.png)
 
 结果在 IE 和 Chrome 浏览器下，夹在中间的`<img>`在中间显示（见图上），但是 Firefox 浏览器却是在最后显示,此处的浏览器不一致的行为表现应该属于`“未定义行为”`
 
@@ -277,7 +277,7 @@ absolute 定位效果实现完全不需要父元素设置 position 为 relative 
 
 在 Chrome 和 Firefox 浏览器下，图片在中间位置显示了，但是仅仅是在中间区域显示，并不是水平居中
 
-![image](../../assets/css/float/abs9.png)
+![image](../assets/float/abs9.png)
 
 虽然本示例中图片位置确实受 text-align 属性影响，但是并不是 text-align 和 absolute 元素直接发生关系，absolute 元素的 display 计算值是块状的，text-align 是不会有作用的。这里之所以产生了位置变化，本质上是`“幽灵空白节点”`和`“无依赖绝对定位”`共同作用的结果。
 
@@ -314,7 +314,7 @@ p:before {
 </div>
 ```
 
-![image](../../assets/css/float/abs100.png)
+![image](../assets/float/abs100.png)
 
 此时，有人可能会惊呼：什么？设置 height:0 同时 overflow:hidden？那岂不是里面所有元素都被剪裁看不见啦？
 
@@ -354,24 +354,22 @@ exp2:
 
 实际开发的时候，绝对定位元素和非绝对定位元素往往可能混杂在一起，虽然绝对定位元素不能让滚动条出现，但是非绝对定位元素可以，于是，就可能出现另外一种很有特色的现象，即当容器滚动的时候，绝对定位元素微丝不动，不跟着滚动，表现类似 fixed 固定定位。
 
-![image](../../assets/css/float/abs11.png)
+![image](../assets/float/abs11.png)
 
 我们可以利用这一特性实现在局部滚动的容器中模拟近似 position:fixed 的效果，如如表头固定等。
 
 针对于 `position:fixed`，由于 `position:fixed` 固定定位元素的包含块是根元素，因此，除非是窗体滚动，否则上面讨论的所有 overflow 剪裁规则对固定定位都不适用。
-
-
 
 在 CSS 世界中，上面说的这些几乎都是完美无瑕的，但是，随着 CSS3 新世界到来的冲击，规则在不经意间发生了一些变化，其中最明显的就是 transform 属性对 overflow 剪裁规则的影响，
 overflow 元素自身 transform 的时候，Chrome 和 Opera 浏览器下的 overflow 剪裁是无效的
 
 ## absolute 与 clip
 
-> 语法：clip: rect(top right bottom left),只支持数值 
+> 语法：clip: rect(top right bottom left),只支持数值
 
 `clip: rect(30px 200px 200px 20px)`
 
-![image](../../assets/css/float/abs12.png)
+![image](../assets/float/abs12.png)
 
 ### 重新认识 clip
 
@@ -379,36 +377,36 @@ overflow 元素自身 transform 的时候，Chrome 和 Opera 浏览器下的 ove
 
    对于普通元素或者绝对定位元素，想要对其进行剪裁，我们可以利用语义更明显的 overflow 属性，但是对于 position:fixed 元素，overflow 属性往往就力不能及了，因为 fixed 固定定位元素的包含块是根元素，除非是根元素滚动条
 
-    ```css
-    .fixed-clip {
-      position: fixed;
-      clip: rect(30px 200px 200px 20px);
-    }
-    ```
+   ```css
+   .fixed-clip {
+     position: fixed;
+     clip: rect(30px 200px 200px 20px);
+   }
+   ```
 
 2. 最佳可访问性隐藏
 
-    所谓“可访问性隐藏”，指的是虽然内容肉眼看不见，但是其他辅助设备却能够进行识别和访问的隐藏。
+   所谓“可访问性隐藏”，指的是虽然内容肉眼看不见，但是其他辅助设备却能够进行识别和访问的隐藏。
 
-    假如我们要隐藏下面的 h1 标签，我们看下辅助设备的识别情况
+   假如我们要隐藏下面的 h1 标签，我们看下辅助设备的识别情况
 
-    ```html
-    <a href="/" class="logo">
-      <h1>CSS 世界</h1>
-    </a>
-    ```
+   ```html
+   <a href="/" class="logo">
+     <h1>CSS 世界</h1>
+   </a>
+   ```
 
-    - display:none 或 visibility:hidden:屏幕阅读设备会忽略
-    - text-indent:文字锁进量大到屏幕之外，也会忽略
-    - color:transparent:可以被读取，但是无法阻止文本被框选
-    - clip:既能满足视觉上的隐藏，也可以被读取
+   - display:none 或 visibility:hidden:屏幕阅读设备会忽略
+   - text-indent:文字锁进量大到屏幕之外，也会忽略
+   - color:transparent:可以被读取，但是无法阻止文本被框选
+   - clip:既能满足视觉上的隐藏，也可以被读取
 
-    ```css
-    .clip {
-      position: absolute;
-      clip: rect(0 0 0 0);
-    }
-    ```
+   ```css
+   .clip {
+     position: absolute;
+     clip: rect(0 0 0 0);
+   }
+   ```
 
 众所周知，如果`<form>`表单元素里面有一个 `type:submit` 或者 image 类型的按钮，那么表单自动有回车提交行为，可以节约大量啰嗦的键盘相关的事件的代码。但是，submit 类型按钮在不同的浏览器下的样式兼容性有问题,所以我们使用下面语法
 

@@ -44,7 +44,7 @@
 <div>下文</div>
 ```
 
-![image](../../assets/css/css-world/padding1.png)
+![image](../assets/css-world/padding1.png)
 
 代码运行后上图可以看到，尺寸虽有效，但是对上下元素的原本布局却没有任何影响，仅仅是垂直方向发生了层叠
 
@@ -131,13 +131,13 @@ padding 不支持负数，同时该属性的百分比不管是水平方向还是
 </div>
 ```
 
-![image](../../assets/css/css-world/padding2.png)
+![image](../assets/css-world/padding2.png)
 
 对于内联元素，其 padding 是会断行的，也就是 padding 区域是跟着内联盒模型中的行框盒子走的，上面的例子由于文字比较多，一行显示不了，于是“非常棒”三个字换到了下一行，于是，原本的 padding 区域也跟着一起掉下来了，根据后来居上的层叠规则，“今天天”三个字自然就正好被覆盖，于是看不见了；同时，规则的矩形区域因为换行，也变成了五条边；至于宽度和外部容器盒子不一样宽，那是自然的，如果没有任何文字内容，那自然宽度正好和容器一致；现在有“内有文字若干”这 6 个字，实际宽度是容器宽度和这 6 个字宽度的总和，换行后的宽度要想和容器宽度一样，那可真要靠极好的人品了。
 
 当我们去掉`今天天气非常棒`的文字后,如下图，按理说 padding 为 50%，应该是一个正方形，但是图片明显不是，这是因为内联盒子的垂直 padding 会让`幽灵空白节点`呈现，我们只要设置 font-size:0,便会变成一个正方形
 
-![image](../../assets/css/css-world/padding3.png)
+![image](../assets/css-world/padding3.png)
 
 ## 标签元素内置的 Padding
 
@@ -173,38 +173,40 @@ padding 不支持负数，同时该属性的百分比不管是水平方向还是
 <label for="btn">按钮</label>
 ```
 
-
-## padding与图形绘制
+## padding 与图形绘制
 
 padding 属性和 background-clip 属性配合，可以在有限的标签下实现一些 CSS 图形绘制效果
 
-实例1:不使用伪元素，仅一层标签实现大队长的“三道杠”分类图标效果。
+实例 1:不使用伪元素，仅一层标签实现大队长的“三道杠”分类图标效果。
 
 ```css
-.icon-menu { 
- display: inline-block; 
- width: 140px; height: 10px; 
- padding: 35px 0; 
- border-top: 10px solid; /*border-color 属性的默认值是 color 属性的值*/ 
- border-bottom: 10px solid; 
- background-color: currentColor; /*color的属性值 */
- background-clip: content-box; 
+.icon-menu {
+  display: inline-block;
+  width: 140px;
+  height: 10px;
+  padding: 35px 0;
+  border-top: 10px solid; /*border-color 属性的默认值是 color 属性的值*/
+  border-bottom: 10px solid;
+  background-color: currentColor; /*color的属性值 */
+  background-clip: content-box;
 }
 ```
 
-实例2:不使用伪元素，仅一层标签实现双层圆点效果
+实例 2:不使用伪元素，仅一层标签实现双层圆点效果
+
 ```css
-.icon-dot { 
- display: inline-block; 
- width: 100px; height: 100px; 
- padding: 10px; 
- border: 10px solid; 
- border-radius: 50%; 
- background-color: currentColor; 
- background-clip: content-box; 
+.icon-dot {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  border: 10px solid;
+  border-radius: 50%;
+  background-color: currentColor;
+  background-clip: content-box;
 }
 ```
 
 两种实现效果图
 
-![image](../../assets/css/css-world/padding4.png)
+![image](../assets/css-world/padding4.png)

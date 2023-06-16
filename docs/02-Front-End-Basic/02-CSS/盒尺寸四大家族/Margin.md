@@ -91,7 +91,7 @@ li {
 
 此时就遇到了一个问题，即最右侧永远有个 20 像素的间隙，无法完美实现两端对齐
 
-![image](../../assets/css/css-world/margin1.png)
+![image](../assets/css-world/margin1.png)
 
 利用 margin 就可以完美解决此问题
 
@@ -138,7 +138,7 @@ ul > li {
 
 对于两栏等高布局，可能左侧栏内容多，也可能右侧栏内容多，但是无论内容多少，两栏背景和容器一样高
 
-![image](../../assets/css/css-world/margin2.png)
+![image](../assets/css-world/margin2.png)
 
 方法其实很多，例如使用 display: table-cell 布局，左右两栏作为单元格处理，或者使用 border 边框来模拟，再或者使用我
 们这里的 margin 负值实现，核心 CSS 代码如下：
@@ -499,6 +499,6 @@ exp:
   </div>
   ```
 
-  ![image](../../assets/css/css-world/margin3.png)
+  ![image](../assets/css-world/margin3.png)
 
   如上图所示，尽管 `margin-top` 设置为-9999px,最终的效果都和上图一样，这是由于 `vertical-align` 的默认值是 `baseline`,导致图片的下边缘被幽灵空白节点的基线给限制死了（后续会写）
