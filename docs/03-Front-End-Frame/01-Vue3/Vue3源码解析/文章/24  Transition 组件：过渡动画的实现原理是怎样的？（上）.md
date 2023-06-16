@@ -1,3 +1,5 @@
+# Transition 组件：过渡动画的实现原理-上
+
 作为一名前端开发工程师，平时开发页面少不了要写一些过渡动画，通常可以用 CSS 脚本来实现，当然一些时候也会使用 JavaScript 操作 DOM 来实现动画。那么，如果我们使用 Vue.js 技术栈，有没有好的实现动画的方式呢？
 
 答案是肯定的——有，Vue.js 提供了内置的 Transition 组件，它可以让我们轻松实现动画过渡效果。
@@ -212,7 +214,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ```
 
-对于 Transition 组件部分，生成的 render 函数主要创建了Transition 组件 vnode，并且有一个默认插槽。
+对于 Transition 组件部分，生成的 render 函数主要创建了 Transition 组件 vnode，并且有一个默认插槽。
 
 我们接着来看 Transition 组件的定义：
 
@@ -341,7 +343,7 @@ Transition 组件和前面学习的 KeepAlive 组件一样，是一个抽象组�
 
 如果 Transition 组件内部没有嵌套任何子节点，那么它会渲染空的注释节点。
 
-在渲染的过程中，Transition 组件还会通过 resolveTransitionHooks 去定义组件创建和删除阶段的钩子函数对象，然后再通过 setTransitionHooks函数去把这个钩子函数对象设置到 vnode.transition 上。
+在渲染的过程中，Transition 组件还会通过 resolveTransitionHooks 去定义组件创建和删除阶段的钩子函数对象，然后再通过 setTransitionHooks 函数去把这个钩子函数对象设置到 vnode.transition 上。
 
 渲染过程中，还会判断这是否是一次更新渲染，如果是会对不同的模式执行不同的处理逻辑，我会在后续介绍模式的应用时详细说明。
 

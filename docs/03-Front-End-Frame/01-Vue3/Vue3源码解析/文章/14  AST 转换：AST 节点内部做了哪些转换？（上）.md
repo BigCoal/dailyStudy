@@ -1,3 +1,5 @@
+# AST 转换：AST 节点内部转换过程-上
+
 上一节课，我们学习了 template 的解析过程，最终拿到了一个 AST 节点对象。这个对象是对模板的完整描述，但是它还不能直接拿来生成代码，因为它的语义化还不够，没有包含和编译优化的相关属性，所以还需要进一步转换。
 
 AST 转换过程非常复杂，有非常多的分支逻辑，为了方便你理解它的核心流程，我精心准备了一个示例，我们只分析示例场景在 AST 转换过程中的相关代码逻辑，不过我希望你在学习完之后，可以举一反三，对示例做一些修改，学习更多场景的代码逻辑。
@@ -435,7 +437,7 @@ function createVNodeCall(context, tag, props, children, patchFlag, dynamicProps,
       context.helper(CREATE_VNODE)
     }
     if (directives) {
-      context.helper(WITH_DIRECTIVES) 
+      context.helper(WITH_DIRECTIVES)
     }
   }
   return {
@@ -566,13 +568,13 @@ transformExpression 主要做的事情就是转换插值和元素指令中的动
 }
 ```
 
-这里，我们重点关注对象中的 children 属性，它是一个长度为 3 的数组，其实就是把表达式`msg + test`拆成了三部分，其中变量 msg 和 test 对应都加上了前缀 _ctx。
+这里，我们重点关注对象中的 children 属性，它是一个长度为 3 的数组，其实就是把表达式`msg + test`拆成了三部分，其中变量 msg 和 test 对应都加上了前缀 \_ctx。
 
 那么为什么需要加这个前缀呢？
 
 我们就要想到模板中引用的的 msg 和 test 对象最终都是在组件实例中访问的，但为了书写模板方便，Vue.js 并没有让我们在模板中手动加组件实例的前缀，例如：`{{ this.msg + this.test }}`，这样写起来就会不够方便，但如果用 JSX 写的话，通常要手动写 this。
 
-你可能会有疑问，为什么 Vue.js 2.x 编译的结果没有 _ctx 前缀呢？这是因为 Vue.js 2.x 的编译结果使用了”黑魔法“ with，比如上述模板，在 Vue.js 2.x 最终编译的结果：`with(this){return _s(msg + test)}`。
+你可能会有疑问，为什么 Vue.js 2.x 编译的结果没有 \_ctx 前缀呢？这是因为 Vue.js 2.x 的编译结果使用了”黑魔法“ with，比如上述模板，在 Vue.js 2.x 最终编译的结果：`with(this){return _s(msg + test)}`。
 
 它利用 with 的特性动态去 this 中查找 msg 和 test 属性，所以不需要手动加前缀。
 

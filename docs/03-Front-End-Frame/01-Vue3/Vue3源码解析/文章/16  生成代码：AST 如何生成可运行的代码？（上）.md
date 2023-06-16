@@ -1,3 +1,5 @@
+# 生成代码：AST 生成可运行代码过程-上
+
 上一节课我们分析了 AST 节点转换的过程，也知道了 AST 节点转换的作用是通过语法分析，创建了语义和信息更加丰富的代码生成节点 codegenNode，便于后续生成代码。
 
 那么这一节课，我们就来分析整个编译的过程的最后一步——代码生成的实现原理。
@@ -203,8 +205,8 @@ function createCodegenContext(ast, { mode = 'function', prefixIdentifiers = mode
 此外，context 还包含了在 generate 过程中可能会调用的一些辅助函数，接下来我会介绍几个常用的方法，它们会在整个代码生成节点过程中经常被用到。
 
 - `push(code)`，就是在当前的代码 context.code 后追加 code 来更新它的值。
-- `indent()`，它的作用就是增加代码的缩进，它会让上下文维护的代码缩进 context.indentLevel 加 1，内部会执行 newline 方法，添加一个换行符，以及两倍indentLevel 对应的空格来表示缩进的长度。
-- `deindent()`，和 indent 相反，它会减少代码的缩进，让上下文维护的代码缩进 context.indentLevel 减 1，在内部会执行 newline 方法去添加一个换行符，并减少两倍indentLevel 对应的空格的缩进长度。
+- `indent()`，它的作用就是增加代码的缩进，它会让上下文维护的代码缩进 context.indentLevel 加 1，内部会执行 newline 方法，添加一个换行符，以及两倍 indentLevel 对应的空格来表示缩进的长度。
+- `deindent()`，和 indent 相反，它会减少代码的缩进，让上下文维护的代码缩进 context.indentLevel 减 1，在内部会执行 newline 方法去添加一个换行符，并减少两倍 indentLevel 对应的空格的缩进长度。
 
 上下文创建完毕后，接下来就到了真正的代码生成阶段，在分析的过程中我会结合示例讲解，让你更直观地理解整个代码的生成过程，我们先来看生成预设代码。
 
@@ -217,9 +219,9 @@ function createCodegenContext(ast, { mode = 'function', prefixIdentifiers = mode
 ```
 function genModulePreamble(ast, context, genScopeId) {
   const { push, newline, optimizeBindings, runtimeModuleName } = context
-  
+
   // 处理 scopeId
-  
+
   if (ast.helpers.length) {
      // 生成 import 声明代码
     if (optimizeBindings) {
@@ -237,11 +239,11 @@ function genModulePreamble(ast, context, genScopeId) {
     }
   }
   // 处理 ssrHelpers
-  
+
   // 处理 imports
-  
+
   // 处理 scopeId
-  
+
   genHoists(ast.hoists, context)
   newline()
   push(`export `)
@@ -320,7 +322,7 @@ import { resolveComponent as _resolveComponent, createVNode as _createVNode, cre
 
 通过生成的代码，我们可以直观地感受到，这里就是从 Vue 中引入了一些辅助方法，那么为什么需要引入这些辅助方法呢，这就和 Vue.js 3.0 的设计有关了。
 
-在 Vue.js 2.x 中，创建 VNode 的方法比如 $createElement、_c 这些都是挂载在组件的实例上，在生成渲染函数的时候，直接从组件实例 vm 中访问这些方法即可。
+在 Vue.js 2.x 中，创建 VNode 的方法比如 $createElement、\_c 这些都是挂载在组件的实例上，在生成渲染函数的时候，直接从组件实例 vm 中访问这些方法即可。
 
 而到了 Vue.js 3.0，创建 VNode 的方法 createVNode 是直接通过模块的方式导出，其它方法比如 resolveComponent、openBlock ，都是类似的，所以我们首先需要生成这些 import 声明的预设代码。
 
@@ -335,7 +337,7 @@ function genHoists(hoists, context) {
   }
   context.pure = true
   const { push, newline } = context
-  
+
   newline()
   hoists.forEach((exp, i) => {
     if (exp) {
@@ -344,7 +346,7 @@ function genHoists(hoists, context) {
       newline()
     }
   })
-  
+
   context.pure = false
 }
 ```
@@ -401,7 +403,7 @@ function genHoists(hoists, context) {
     "children": {
       "type": 2, /* ELEMENT */
       "content": "static"
-    },                                                  
+    },
     "patchFlag": "-1 /* HOISTED */",
     "isBlock": false,
     "disableTracking": false
@@ -448,7 +450,7 @@ const _hoisted_1 = { class: "app" }
 const _hoisted_2 = { key: 1 }
 const _hoisted_3 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED */)
 const _hoisted_4 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED */)
-export 
+export
 ```
 
 ### 生成渲染函数
@@ -514,7 +516,7 @@ if (ast.temps > 0) {
 }
 ```
 
-在我们的示例中，directives 数组长度为 0，temps 的值是 0，所以自定义指令和临时变量代码生成的相关逻辑跳过，而这里 components的值是`["hello"]`。
+在我们的示例中，directives 数组长度为 0，temps 的值是 0，所以自定义指令和临时变量代码生成的相关逻辑跳过，而这里 components 的值是`["hello"]`。
 
 接着就通过 genAssets 去生成自定义组件声明代码，我们来看一下它的实现：
 
@@ -545,7 +547,7 @@ function toValidAssetId(name, type) {
 }
 ```
 
-比如 hello 组件，执行 toValidAssetId 就变成了 _component_hello。
+比如 hello 组件，执行 toValidAssetId 就变成了 \_component_hello。
 
 因此对于我们的示例而言，genAssets 后生成的代码是这样的：
 
@@ -589,7 +591,7 @@ const _hoisted_3 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED 
 const _hoisted_4 = /*#__PURE__*/_createVNode("p", null, "static", -1 /* HOISTED */)
 export function render(_ctx, _cache) {
   const _component_hello = _resolveComponent("hello")
-  return 
+  return
 ```
 
 好的，我们就先分析到这里，下节课继续来看生成创建 VNode 树的表达式的过程。

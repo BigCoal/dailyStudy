@@ -1,3 +1,5 @@
+# 完整的 DOM-diff 流程（下）
+
 下面我们来继续讲解上节课提到的**核心 diff 算法**。
 
 新子节点数组相对于旧子节点数组的变化，无非是通过更新、删除、添加和移动节点来完成，而核心 diff 算法，就是在已知旧子节点的 DOM 结构、vnode 和新子节点的 vnode 情况下，以较低的成本完成子节点的更新为目的，求解生成新子节点 DOM 的系列操作。
@@ -67,33 +69,50 @@
 我们先来看一下头部节点同步的实现代码：
 
 ```js
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 3, e2 = 4
   // (a b) c d
   // (a b) e c d
   while (i <= e1 && i <= e2) {
-    const n1 = c1[i]
-    const n2 = c2[i]
+    const n1 = c1[i];
+    const n2 = c2[i];
     if (isSameVNodeType(n1, n2)) {
       // 相同的节点，递归执行 patch 更新节点
-      patch(n1, n2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized)
+      patch(
+        n1,
+        n2,
+        container,
+        parentAnchor,
+        parentComponent,
+        parentSuspense,
+        isSVG,
+        optimized
+      );
+    } else {
+      break;
     }
-    else {
-      break
-    }
-    i++
+    i++;
   }
-}
+};
 ```
 
-在整个 diff 的过程，我们需要维护几个变量：头部的索引 i、旧子节点的尾部索引 e1和新子节点的尾部索引 e2。
+在整个 diff 的过程，我们需要维护几个变量：头部的索引 i、旧子节点的尾部索引 e1 和新子节点的尾部索引 e2。
 
 同步头部节点就是从头部开始，依次对比新节点和旧节点，如果它们相同的则执行 patch 更新节点；如果不同或者索引 i 大于索引 e1 或者 e2，则同步过程结束。
 
@@ -108,13 +127,22 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
 接着从尾部开始**同步尾部节点**，实现代码如下：
 
 ```js
-const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized) => {
-  let i = 0
-  const l2 = c2.length
+const patchKeyedChildren = (
+  c1,
+  c2,
+  container,
+  parentAnchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
+) => {
+  let i = 0;
+  const l2 = c2.length;
   // 旧子节点的尾部索引
-  let e1 = c1.length - 1
+  let e1 = c1.length - 1;
   // 新子节点的尾部索引
-  let e2 = l2 - 1
+  let e2 = l2 - 1;
   // 1. 从头部开始同步
   // i = 0, e1 = 3, e2 = 4
   // (a b) c d
@@ -124,18 +152,26 @@ const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, pa
   // (a b) (c d)
   // (a b) e (c d)
   while (i <= e1 && i <= e2) {
-    const n1 = c1[e1]
-    const n2 = c2[e2]
+    const n1 = c1[e1];
+    const n2 = c2[e2];
     if (isSameVNodeType(n1, n2)) {
-      patch(n1, n2, container, parentAnchor, parentComponent, parentSuspense, isSVG, optimized)
+      patch(
+        n1,
+        n2,
+        container,
+        parentAnchor,
+        parentComponent,
+        parentSuspense,
+        isSVG,
+        optimized
+      );
+    } else {
+      break;
     }
-    else {
-      break
-    }
-    e1--
-    e2--
+    e1--;
+    e2--;
   }
-}
+};
 ```
 
 同步尾部节点就是从尾部开始，依次对比新节点和旧节点，如果相同的则执行 patch 更新节点；如果不同或者索引 i 大于索引 e1 或者 e2，则同步过程结束。

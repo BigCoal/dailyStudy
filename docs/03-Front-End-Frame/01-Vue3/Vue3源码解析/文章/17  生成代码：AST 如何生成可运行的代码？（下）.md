@@ -1,3 +1,5 @@
+# 生成代码：AST 生成可运行代码过程-下
+
 上节课，我们已经知道了在 AST 转换后，会执行 generate 函数生成代码，而 generate 主要做五件事情：创建代码生成上下文，生成预设代码，生成渲染函数，生成资源声明代码，以及生成创建 VNode 树的表达式。这节课我们继续分析，来看生成创建 VNode 树的表达式的过程。
 
 ### 生成创建 VNode 树的表达式
@@ -167,7 +169,7 @@ export function render(_ctx, _cache) {
   return (_openBlock()
 ```
 
-接着往下看，会判断 pure 是否为 true，如果是则生成相关的注释，虽然这里的 pure 为 false，但是之前我们在生成静态提升变量相关代码的时候 pure 为 true，所以生成了注释代码 /**#\**PURE\****/。
+接着往下看，会判断 pure 是否为 true，如果是则生成相关的注释，虽然这里的 pure 为 false，但是之前我们在生成静态提升变量相关代码的时候 pure 为 true，所以生成了注释代码 /**#\*\*PURE\*\***/。
 
 接下来会判断 isBlock，如果它为 true 则在生成创建 Block 相关代码，如果它为 false，则生成创建 VNode 的相关代码。
 
@@ -186,7 +188,7 @@ export function render(_ctx, _cache) {
   return (_openBlock(), _createBlock(
 ```
 
-生成了一个_createBlock 的函数调用后，下面就需要生成函数的参数，通过如下代码生成：
+生成了一个\_createBlock 的函数调用后，下面就需要生成函数的参数，通过如下代码生成：
 
 复制代码
 
@@ -302,7 +304,7 @@ function genExpression(node, context) {
 }
 ```
 
-这里 genExpression 非常简单，就是往代码中添加 content 的内容。此时 node 中的 content 值是 _hoisted_1，再回到 genNodeList，由于 multilines 为 false，comma 为 true，因此生成如下代码：
+这里 genExpression 非常简单，就是往代码中添加 content 的内容。此时 node 中的 content 值是 \_hoisted_1，再回到 genNodeList，由于 multilines 为 false，comma 为 true，因此生成如下代码：
 
 复制代码
 
@@ -612,7 +614,7 @@ function openBlock(disableTracking = false) {
 }
 ```
 
-Vue.js 3.0 在运行时设计了一个 blockStack 和 currentBlock，其中 blockStack 表示一个 Block Tree，因为要考虑嵌套 Block 的情况，而currentBlock 表示当前的 Block。
+Vue.js 3.0 在运行时设计了一个 blockStack 和 currentBlock，其中 blockStack 表示一个 Block Tree，因为要考虑嵌套 Block 的情况，而 currentBlock 表示当前的 Block。
 
 openBlock 的实现很简单，往当前 blockStack push 一个新的 Block，作为 currentBlock。
 
@@ -626,7 +628,7 @@ openBlock 的实现很简单，往当前 blockStack push 一个新的 Block，�
 function createVNode(type, props = null
 ,children = null) {
   // 处理 props 相关逻辑，标准化 class 和 style
-  // 对 vnode 类型信息编码 
+  // 对 vnode 类型信息编码
   // 创建 vnode 对象
   // 标准化子节点，把不同数据类型的 children 转成数组或者文本类型。
   // 添加动态 vnode 节点到 currentBlock 中
@@ -641,7 +643,7 @@ function createVNode(type, props = null
       shapeFlag & 2 /* FUNCTIONAL_COMPONENT */)) {
     currentBlock.push(vnode);
   }
-  
+
   return vnode
 }
 ```
@@ -690,7 +692,7 @@ function createBlock(type, props, children, patchFlag, dynamicProps) {
   openBlock()
   // 创建 vnode
   const vnode = createVNode(type, props, children, patchFlag, dynamicProps, true)
-  // ...  
+  // ...
   return vnode
 }
 ```

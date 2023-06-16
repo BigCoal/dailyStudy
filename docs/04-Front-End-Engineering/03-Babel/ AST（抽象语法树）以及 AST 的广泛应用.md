@@ -1,26 +1,24 @@
-> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [juejin.cn](https://juejin.cn/post/7155151377013047304#heading-17)
+# AST 及广泛应用
 
-一、前言
-----
+## 一、前言
 
-本文是 [从零到亿系统性的建立前端构建知识体系✨](https://juejin.cn/post/7145855619096903717 "https://juejin.cn/post/7145855619096903717") 中的第三篇，整体难度 ⭐️⭐️⭐️。
+本文是 [从零到亿系统性的建立前端构建知识体系 ✨](https://juejin.cn/post/7145855619096903717 "https://juejin.cn/post/7145855619096903717") 中的第三篇，整体难度 ⭐️⭐️⭐️。
 
 在本文中我们将会深挖 **AST（抽象语法树）** 以及基于 **AST** 衍生出来的一系列实际应用。读完本章你会收获什么：
 
-*   AST（抽象语法树） 到底是什么？
-*   AST 基础：从零到一手撸一个功能完备的编译器
-*   AST 基础：[Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 的设计理念
-*   AST 的应用：手写 console 插件，再也不怕打开控制台满屏的 console 了😭😭😭
-*   AST 的应用： [ES6](https://link.juejin.cn?target=https%3A%2F%2Fwww.w3schools.com%2FJs%2Fjs_es6.asp "https://www.w3schools.com/Js/js_es6.asp") 是如何转成 [ES5](https://link.juejin.cn?target=https%3A%2F%2Fwww.w3schools.com%2FJs%2Fjs_es5.asp "https://www.w3schools.com/Js/js_es5.asp") 的？
-*   AST 的应用：30 行代码依靠 AST 实现代码压缩
-*   AST 的应用：40 行代码知晓 [ESLint](https://link.juejin.cn?target=https%3A%2F%2Feslint.org%2Fdocs%2Flatest%2F "https://eslint.org/docs/latest/") 的工作原理
-*   AST 的应用：手写 [按需加载插件](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-import "https://www.npmjs.com/package/babel-plugin-import") ，同事看了都说 666
-*   AST 的应用：手写 [Typescript](https://link.juejin.cn?target=https%3A%2F%2Fwww.typescriptlang.org%2F "https://www.typescriptlang.org/") 代码检测插件（[fork-ts-checker-webpack-plugin](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Ffork-ts-checker-webpack-plugin "https://www.npmjs.com/package/fork-ts-checker-webpack-plugin")），原来 TS 语法检测如此简单
-*   其他延伸：结合 AST 手写监控系统中的日志上传插件
-*   其他延伸：教你玩转 AST，最佳实践
+- AST（抽象语法树） 到底是什么？
+- AST 基础：从零到一手撸一个功能完备的编译器
+- AST 基础：[Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 的设计理念
+- AST 的应用：手写 console 插件，再也不怕打开控制台满屏的 console 了 😭😭😭
+- AST 的应用： [ES6](https://link.juejin.cn?target=https%3A%2F%2Fwww.w3schools.com%2FJs%2Fjs_es6.asp "https://www.w3schools.com/Js/js_es6.asp") 是如何转成 [ES5](https://link.juejin.cn?target=https%3A%2F%2Fwww.w3schools.com%2FJs%2Fjs_es5.asp "https://www.w3schools.com/Js/js_es5.asp") 的？
+- AST 的应用：30 行代码依靠 AST 实现代码压缩
+- AST 的应用：40 行代码知晓 [ESLint](https://link.juejin.cn?target=https%3A%2F%2Feslint.org%2Fdocs%2Flatest%2F "https://eslint.org/docs/latest/") 的工作原理
+- AST 的应用：手写 [按需加载插件](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-import "https://www.npmjs.com/package/babel-plugin-import") ，同事看了都说 666
+- AST 的应用：手写 [Typescript](https://link.juejin.cn?target=https%3A%2F%2Fwww.typescriptlang.org%2F "https://www.typescriptlang.org/") 代码检测插件（[fork-ts-checker-webpack-plugin](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Ffork-ts-checker-webpack-plugin "https://www.npmjs.com/package/fork-ts-checker-webpack-plugin")），原来 TS 语法检测如此简单
+- 其他延伸：结合 AST 手写监控系统中的日志上传插件
+- 其他延伸：教你玩转 AST，最佳实践
 
-二、AST（抽象语法树） 到底是什么？
--------------------
+## 二、AST（抽象语法树） 到底是什么？
 
 抽象语法树（Abstract Syntax Tree，AST）是源代码语法结构的一种抽象表示，它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。在代码语法的检查、代码风格的检查、代码的格式化、代码的高亮、代码错误提示、代码自动补全等等场景均有广泛的应用。
 
@@ -28,8 +26,8 @@
 
 解题方法通常是：
 
-*   第一步：找出语句中的主语、谓语、宾语
-*   第二步：找出语句中的形容词、动词、标点符号等进行分析
+- 第一步：找出语句中的主语、谓语、宾语
+- 第二步：找出语句中的形容词、动词、标点符号等进行分析
 
 如果将其程序化，我们按照上面的方法可以先将其进行拆分成这样：
 
@@ -42,7 +40,7 @@
 ]
 ```
 
-在这一步骤中可以很快的发现第一个错误：在句末使用的是一个逗号❌，实际应该使用句号。
+在这一步骤中可以很快的发现第一个错误：在句末使用的是一个逗号 ❌，实际应该使用句号。
 
 接着再对主语、谓语、宾语中的词语进行依次分析，将数据结构整理成这样：
 
@@ -68,14 +66,13 @@
 };
 ```
 
-在这个结构中我们发现：在一个肯定陈述句中，将一个人比作一个猪🐷，显然不合适...❌，因此找出第二个错误。
+在这个结构中我们发现：在一个肯定陈述句中，将一个人比作一个猪 🐷，显然不合适...❌，因此找出第二个错误。
 
 在上面这个简单的例子中，其实和 AST 的生成和应用就颇为相似，`AST是源代码的抽象语法结构的树状表现形式，简单点就是一个深度嵌套对象，这个对象能够描述我们书写代码的所有信息`。
 
 为了帮大家加深理解，接下来我将手牵手带大家撸一个小型的编译器。
 
-三、手写编译器
--------
+## 三、手写编译器
 
 该小节分为两个部分：设计篇和原理篇。
 
@@ -95,7 +92,7 @@
 
 ![](./static/2f90236f5c914a069bd51611b75160a7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
-接下来，我们先看一个小 Demo，将 [lisp](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLisp_(programming_language) "https://en.wikipedia.org/wiki/Lisp_(programming_language)") 的函数调用编译成类似 [C](https://link.juejin.cn?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FC%25E8%25AF%25AD%25E8%25A8%2580 "https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80") 的函数，如果你不熟悉也没关系，看完下面的代码相信大家能够快速的理解：
+接下来，我们先看一个小 Demo，将 [lisp](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLisp_(programming_language)> "https://en.wikipedia.org/wiki/Lisp_(programming_language)") 的函数调用编译成类似 [C](https://link.juejin.cn?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FC%25E8%25AF%25AD%25E8%25A8%2580 "https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80") 的函数，如果你不熟悉也没关系，看完下面的代码相信大家能够快速的理解：
 
 ```
 LISP 代码： (add 2 (subtract 4 2))
@@ -184,7 +181,7 @@ LISP 代码： (add 2 (subtract 4 2))
  }
 ```
 
-在案例中我们是想将 [lisp](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLisp_(programming_language) "https://en.wikipedia.org/wiki/Lisp_(programming_language)") 语言转化为 [C](https://link.juejin.cn?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FC%25E8%25AF%25AD%25E8%25A8%2580 "https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80") 语言，因此需要构建一个新的 AST（抽象语法树），这个创建的过程就`需要遍历这个“树”的节点`并读取其内容，由此引出 **Traversal(遍历)** 和 **Visitors (访问器)**。
+在案例中我们是想将 [lisp](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLisp_(programming_language)> "https://en.wikipedia.org/wiki/Lisp_(programming_language)") 语言转化为 [C](https://link.juejin.cn?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FC%25E8%25AF%25AD%25E8%25A8%2580 "https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80") 语言，因此需要构建一个新的 AST（抽象语法树），这个创建的过程就`需要遍历这个“树”的节点`并读取其内容，由此引出 **Traversal(遍历)** 和 **Visitors (访问器)**。
 
 **Traversal(遍历)**：顾名思义这个过程就是，遍历这个 AST（抽象语法树）的所有节点，这个过程使用 [深度优先原则](https://link.juejin.cn?target=https%3A%2F%2Fzhuanlan.zhihu.com%2Fp%2F33340701 "https://zhuanlan.zhihu.com/p/33340701")，大概执行顺序如下：
 
@@ -356,16 +353,16 @@ function parser (tokens) {
       //获取name后我们需要继续获取接下来调用语句中的参数，直到我们遇到了")",这里会存在嵌套的现象如下
       // (add 2 (subtract 4 2))
       /*
-        [                                        
-          { type: 'paren', value: '(' },       
-          { type: 'name', value: 'add' },      
-          { type: 'number', value: '2' },      
-          { type: 'paren', value: '(' },       
-          { type: 'name', value: 'subtract' }, 
-          { type: 'number', value: '4' },      
-          { type: 'number', value: '2' },      
-          { type: 'paren', value: ')' },       
-          { type: 'paren', value: ')' },       
+        [
+          { type: 'paren', value: '(' },
+          { type: 'name', value: 'add' },
+          { type: 'number', value: '2' },
+          { type: 'paren', value: '(' },
+          { type: 'name', value: 'subtract' },
+          { type: 'number', value: '4' },
+          { type: 'number', value: '2' },
+          { type: 'paren', value: ')' },
+          { type: 'paren', value: ')' },
         ]
       */
       token = tokens[++current];
@@ -604,7 +601,7 @@ function codeGenerator(node) {
       return (
         codeGenerator(node.callee) +  '(' + node.arguments.map(codeGenerator).join(', ') + ')'
       );
-      
+
     // 如果是识别就直接返回值 如： (add 2 2),在新AST中 add就是那个identifier节点
     case 'Identifier':
       return node.name;
@@ -633,28 +630,27 @@ function compiler(input) {
 }
 ```
 
-现在一个小型的编译器就完整实现了，我们来测试一下：测试通过😄。
+现在一个小型的编译器就完整实现了，我们来测试一下：测试通过 😄。
 
 ![](./static/d53afc14edd344dbbc30b93a4713d192~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
-四、AST 的广泛应用
------------
+## 四、AST 的广泛应用
 
 在讲 AST 的广泛应用之前，我们先来了解一下 [Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 是什么？以免一部分同学不熟悉，影响后面的学习。
 
-[Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 其实就是一个最常用的 Javascript 编译器，它能够转译 `ECMAScript 2015+` 的代码，使它在旧的浏览器或者环境中也能够运行，工作过程分为三个部分（其实就跟我们上面手写的一样，相信大家现在肯定倍感亲切）：
+[Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 其实就是一个最常用的 Javascript 编译器，它能够转译  `ECMAScript 2015+`  的代码，使它在旧的浏览器或者环境中也能够运行，工作过程分为三个部分（其实就跟我们上面手写的一样，相信大家现在肯定倍感亲切）：
 
-*   **Parse(解析)** 将源代码转换成抽象语法树，树上有很多的 [estree 节点](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Festree%2Festree "https://github.com/estree/estree")
-*   **Transform(转换)** 对抽象语法树进行转换
-*   **Generate(代码生成)** 将上一步经过转换过的抽象语法树生成新的代码
+- **Parse(解析)** 将源代码转换成抽象语法树，树上有很多的 [estree 节点](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Festree%2Festree "https://github.com/estree/estree")
+- **Transform(转换)** 对抽象语法树进行转换
+- **Generate(代码生成)** 将上一步经过转换过的抽象语法树生成新的代码
 
 当然我们现在不用从零开始手写了，可以借助于 `babel` 插件：
 
-*   [@babel/parser](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fparser "https://github.com/babel/babel/tree/master/packages/@babel/parser") 可以把源码转换成`AST`
-*   [@babel/traverse](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-traverse "https://www.npmjs.com/package/babel-traverse") 用于对 `AST` 的遍历，维护了整棵树的状态，并且负责替换、移除和添加节点
-*   [@babel/generate](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fgenerate "https://github.com/babel/babel/tree/master/packages/@babel/generate") 可以把`AST`生成源码，同时生成`sourcemap`
-*   [@babel/types](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2Fbabel-types "https://github.com/babel/babel/tree/master/packages/babel-types") 用于 `AST` 节点的 Lodash 式工具库, 它包含了构造、验证以及变换 `AST` 节点的方法，对编写处理 `AST` 逻辑非常有用
-*   [@babel/core](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40babel%2Fcore "https://www.npmjs.com/package/@babel/core") Babel 的编译器，核心 API 都在这里面，比如常见的 `transform`、`parse`，并实现了插件功能
+- [@babel/parser](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fparser "https://github.com/babel/babel/tree/master/packages/@babel/parser")  可以把源码转换成`AST`
+- [@babel/traverse](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-traverse "https://www.npmjs.com/package/babel-traverse") 用于对 `AST` 的遍历，维护了整棵树的状态，并且负责替换、移除和添加节点
+- [@babel/generate](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fgenerate "https://github.com/babel/babel/tree/master/packages/@babel/generate")  可以把`AST`生成源码，同时生成`sourcemap`
+- [@babel/types](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2Fbabel-types "https://github.com/babel/babel/tree/master/packages/babel-types")  用于 `AST` 节点的 Lodash 式工具库, 它包含了构造、验证以及变换 `AST` 节点的方法，对编写处理 `AST` 逻辑非常有用
+- [@babel/core](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40babel%2Fcore "https://www.npmjs.com/package/@babel/core") Babel 的编译器，核心 API 都在这里面，比如常见的 `transform`、`parse`，并实现了插件功能
 
 先安装：
 
@@ -681,7 +677,7 @@ const world = () => {};
 2.  遍历`AST`上的节点，找到 `hello` 函数名节点并修改
 3.  将转换过的`AST`再生成`JS`代码
 
-将源代码拷贝到 [在线 ast 转换器](https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F "https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F") 中，查看 `hello` 函数名节点：
+将源代码拷贝到  [在线 ast 转换器](https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F "https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F")  中，查看 `hello` 函数名节点：
 
 ![](./static/1633a93e9ff24157b5e575d3fbcddaed~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
@@ -814,9 +810,9 @@ console.log(targetSource.code);
 
 在上面 4.2 节中，我们虽然实现了基本的转换，但还有一些场景并没有考虑进来：
 
-*   比如箭头函数使用简写的语法，该如何处理？
-*   比如箭头函数中的 this，该如何处理？
-*   ...
+- 比如箭头函数使用简写的语法，该如何处理？
+- 比如箭头函数中的 this，该如何处理？
+- ...
 
 本节就来详细的分析分析，剩下的希望大家能够举一反三。
 
@@ -869,10 +865,10 @@ const arrowFunctionPlugin = {
 
 整体思路：
 
-*   第一步：找到当前箭头函数要使用哪个作用域内的`this`，暂时称为父作用域
-*   第二步：往父作用域中加入`_this`变量，也就是添加语句：`var _this = this`
-*   第三步：找出当前箭头函数内所有用到`this`的地方
-*   第四步：将当前箭头函数中的`this`，统一替换成`_this`
+- 第一步：找到当前箭头函数要使用哪个作用域内的`this`，暂时称为父作用域
+- 第二步：往父作用域中加入`_this`变量，也就是添加语句：`var _this = this`
+- 第三步：找出当前箭头函数内所有用到`this`的地方
+- 第四步：将当前箭头函数中的`this`，统一替换成`_this`
 
 > 第一步：找到当前箭头函数要使用哪个作用域内的`this`
 
@@ -910,9 +906,9 @@ const arrowFunctionPlugin = {
 
 > 第二步：往父作用域中加入`_this`变量
 
-这里需要引入[作用域（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science) "https://en.wikipedia.org/wiki/Scope_(computer_science)")的概念。大家都知道 JavaScript 拥有[词法作用域](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)%23Lexical_scoping_vs._dynamic_scoping "https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scoping_vs._dynamic_scoping")，即代码块创建新的作用域会形成一个树状结构，它与别的作用域之间相互隔离不受影响。[作用域（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science) "https://en.wikipedia.org/wiki/Scope_(computer_science)")同样如此，我们得确保在改变代码的各个部分时不会破坏其他的部分。
+这里需要引入[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的概念。大家都知道 JavaScript 拥有[词法作用域](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)%23Lexical_scoping_vs._dynamic_scoping> "https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scoping_vs._dynamic_scoping")，即代码块创建新的作用域会形成一个树状结构，它与别的作用域之间相互隔离不受影响。[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")同样如此，我们得确保在改变代码的各个部分时不会破坏其他的部分。
 
-[作用域（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science) "https://en.wikipedia.org/wiki/Scope_(computer_science)")的大致结构：
+[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的大致结构：
 
 ```
 {
@@ -924,7 +920,7 @@ const arrowFunctionPlugin = {
 }
 ```
 
-这一步比较简单，要想在作用域中加一个_this 变量，其实就是对 AST 树中的[（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science) "https://en.wikipedia.org/wiki/Scope_(computer_science)")新增一个节点即可。
+这一步比较简单，要想在作用域中加一个*this 变量，其实就是对 AST 树中的[（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope*(computer*science) "https://en.wikipedia.org/wiki/Scope*(computer_science)")新增一个节点即可。
 
 ```
 function hoistFunctionEnvironment(path) {
@@ -1105,9 +1101,9 @@ console.log("hello world","当前文件名","具体代码位置信息")
 
 思路：
 
-*   第一步：先找出`console`节点的部分
-*   第二步：判断是否是这几个方法名中的某一个：`"log"、"info"、"warn"、"error"`
-*   第三步：往节点的`arguments`中添加参数
+- 第一步：先找出`console`节点的部分
+- 第二步：判断是否是这几个方法名中的某一个：`"log"、"info"、"warn"、"error"`
+- 第三步：往节点的`arguments`中添加参数
 
 > 第一步：先找出`console`节点的部分
 
@@ -1241,7 +1237,7 @@ console.log(targetSource.code);
 
 ![](./static/c6c66b3b115b417bb3f5249c41858eac~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
-再也不怕找不到自己的`console.log`了🐶。
+再也不怕找不到自己的`console.log`了 🐶。
 
 ### 4.5、大展身手：手写监控系统中的日志上传插件
 
@@ -1292,10 +1288,10 @@ class Calculator {
 
 整体思路：
 
-*   第一步：先判断源代码中是否引入了`logger`库
-*   第二步：如果引入了，就找出导入的变量名，后面直接使用该变量名即可
-*   第三步：如果没有引入我们就在源代码的顶部引用一下
-*   第四步：在函数中插入引入的函数
+- 第一步：先判断源代码中是否引入了`logger`库
+- 第二步：如果引入了，就找出导入的变量名，后面直接使用该变量名即可
+- 第三步：如果没有引入我们就在源代码的顶部引用一下
+- 第四步：在函数中插入引入的函数
 
 > 第一步：先判断源代码中是否引入了`logger`库
 
@@ -1540,7 +1536,7 @@ template.statement(`import loggerLib from 'logger'`)()
 const core = require("@babel/core"); //babel核心模块
 let types = require("@babel/types"); //用来生成或者判断节点的AST语法树的节点
 const template = require("@babel/template");
-let sourceCode = ` 
+let sourceCode = `
   //四种声明函数的方式
   function sum(a, b) {
     return a + b;
@@ -1706,7 +1702,7 @@ console.log(targetSource.code);
 
 代码压缩一般是在项目打包上线阶段做的，平时大家可能更多的是直接使用插件，今天也来趴一趴它的工作原理。
 
-压缩其实也很简单，就是把变量从有意义变成无意义，保证尽可能的短，例如变成：_、a、b 等，当然其实远远不止这些，还有将空格缩进取消等等，本节同样也只是抛砖引玉。
+压缩其实也很简单，就是把变量从有意义变成无意义，保证尽可能的短，例如变成：\_、a、b 等，当然其实远远不止这些，还有将空格缩进取消等等，本节同样也只是抛砖引玉。
 
 源代码：
 
@@ -1723,8 +1719,8 @@ function getAge(){
 
 整体思路：
 
-*   第一步：需要捕获那些能够生成作用域的节点（函数、类的函数、函数表达式、语句块、if else 、while、for 等），因为只要有作用域，就有可能会使用变量
-*   第二步：给这些作用域内的捕获到的变量重新命名，进行简化
+- 第一步：需要捕获那些能够生成作用域的节点（函数、类的函数、函数表达式、语句块、if else 、while、for 等），因为只要有作用域，就有可能会使用变量
+- 第二步：给这些作用域内的捕获到的变量重新命名，进行简化
 
 > 第一步：需要捕获那些能够生成作用域的节点
 
@@ -1884,9 +1880,9 @@ console.log(flatten, concat);
 
 整体方案：
 
-*   第一步：在插件中拿到我们在插件调用时传递的参数`libraryName`
-*   第二步：获取`import`节点，找出引入模块是`libraryName`的语句
-*   第三步：进行批量替换旧节点
+- 第一步：在插件中拿到我们在插件调用时传递的参数`libraryName`
+- 第二步：获取`import`节点，找出引入模块是`libraryName`的语句
+- 第三步：进行批量替换旧节点
 
 > 第一步：在插件中拿到我们在插件调用时传递的参数 libraryName
 
@@ -1917,7 +1913,7 @@ let types = require("@babel/types"); //用来生成或者判断节点的AST语�
 const visitor = {
   ImportDeclaration(path, state) {
     const { libraryName, libraryDirectory = "lib" } = state.opts; //获取选项中的支持的库的名称
-   
+
 +   const { node } = path; //获取节点
 +   const { specifiers } = node; //获取批量导入声明数组
 +   //如果当前的节点的模块名称是我们需要的库的名称，并且导入不是默认导入才会进来
@@ -1946,7 +1942,7 @@ let types = require("@babel/types"); //用来生成或者判断节点的AST语�
 const visitor = {
   ImportDeclaration(path, state) {
     const { libraryName, libraryDirectory = "lib" } = state.opts; //获取选项中的支持的库的名称
-    
+
     const { node } = path; //获取节点
     const { specifiers } = node; //获取批量导入声明数组
     //如果当前的节点的模块名称是我们需要的库的名称，并且导入不是默认导入才会进来
@@ -1990,9 +1986,9 @@ module.exports = function () {
 
 这里先说一个题外话，项目中做 TS 文件的类型检测大致有以下几种途径：
 
-*   使用 [ts-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fts-loader "https://www.npmjs.com/package/ts-loader")
-*   使用 [babel-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-loader "https://www.npmjs.com/package/babel-loader") 结合 [fork-ts-checker-webpack-plugin](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Ffork-ts-checker-webpack-plugin "https://www.npmjs.com/package/fork-ts-checker-webpack-plugin")
-*   使用 [babel-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-loader "https://www.npmjs.com/package/babel-loader") 结合 [tsc](https://link.juejin.cn?target=https%3A%2F%2Fwww.typescriptlang.org%2F%3F "https://www.typescriptlang.org/?")
+- 使用 [ts-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fts-loader "https://www.npmjs.com/package/ts-loader")
+- 使用 [babel-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-loader "https://www.npmjs.com/package/babel-loader") 结合 [fork-ts-checker-webpack-plugin](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Ffork-ts-checker-webpack-plugin "https://www.npmjs.com/package/fork-ts-checker-webpack-plugin")
+- 使用 [babel-loader](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-loader "https://www.npmjs.com/package/babel-loader") 结合 [tsc](https://link.juejin.cn?target=https%3A%2F%2Fwww.typescriptlang.org%2F%3F "https://www.typescriptlang.org/?")
 
 这三种方式有利有弊，详细细节可以看之前的一篇文章：[我是如何带领团队从零到一建立前端规范的？🎉🎉🎉](https://juejin.cn/post/7085257325165936648 "https://juejin.cn/post/7085257325165936648")。这三种方式虽然解决方案不同，但原理还是大同小异的，本节将从三种常见场景出发，由易到难，带大家吃透其中的原理。
 
@@ -2006,9 +2002,9 @@ var age:number="12";
 
 校验思路：
 
-*   第一步：获取拿到声明的类型（number）
-*   第二步：获取真实值的类型（"12" 的类型）
-*   第三步：比较声明的类型和值的类型是否相同
+- 第一步：获取拿到声明的类型（number）
+- 第二步：获取真实值的类型（"12" 的类型）
+- 第三步：比较声明的类型和值的类型是否相同
 
 ```
 const core = require("@babel/core"); //babel核心模块
@@ -2074,10 +2070,10 @@ let sourceCode = `
 
 校验思路：
 
-*   第一步：先获取左侧变量的定义（age）
-*   第二步：在获取左侧变量定义的类型（number）
-*   第三步：获取右侧的值的类型（“12”）
-*   第四步：判断变量的左侧变量的类型和右侧的值的类型是否相同
+- 第一步：先获取左侧变量的定义（age）
+- 第二步：在获取左侧变量定义的类型（number）
+- 第三步：获取右侧的值的类型（“12”）
+- 第四步：判断变量的左侧变量的类型和右侧的值的类型是否相同
 
 ```
 const babel = require("@babel/core");
@@ -2158,16 +2154,15 @@ function join<T, W>(a: T, b: W) {}
 
 整体思路：
 
-*   第一步：先获取实参类型数组（1,'2'的类型数组：[number,string]）
-*   第二步：获取函数调用时传递的泛型类型数组（[number, string]）
-*   第三步：拿到函数定义时的泛型 [T , W]，然后结合第二步将 T 赋值为 number，W 赋值为 string，得到数组 [T=number,W=string]
-*   第四步：计算函数定义时的形参类型数组：此时 a:number，b:string => [number,string]
-*   第五步：a 的形参类型跟 a 的实参类型进行比较，b 的形参类型跟 b 的实参类型进行比较
+- 第一步：先获取实参类型数组（1,'2'的类型数组：[number,string]）
+- 第二步：获取函数调用时传递的泛型类型数组（[number, string]）
+- 第三步：拿到函数定义时的泛型 [T , W]，然后结合第二步将 T 赋值为 number，W 赋值为 string，得到数组 [T=number,W=string]
+- 第四步：计算函数定义时的形参类型数组：此时 a:number，b:string => [number,string]
+- 第五步：a 的形参类型跟 a 的实参类型进行比较，b 的形参类型跟 b 的实参类型进行比较
 
 理清思路很简单是不是？其实并不复杂。
 
-五、最佳实践
-------
+## 五、最佳实践
 
 ### 1、尽量避免遍历抽象语法树（AST）
 
@@ -2177,7 +2172,7 @@ Babel 尽可能的对此做出了优化，方法是如果合并多个`visitor`�
 
 > 及时合并访问者对象
 
-当编写访问者时，若逻辑上必要的话，它会试图在多处调用 `path.traverse`。
+当编写访问者时，若逻辑上必要的话，它会试图在多处调用  `path.traverse`。
 
 ```
 path.traverse({
@@ -2208,7 +2203,7 @@ path.traverse({
 
 > 可以手动查找就不要遍历
 
-访问者也会尝试在查找一个特定节点类型时调用 `path.traverse`。
+访问者也会尝试在查找一个特定节点类型时调用  `path.traverse`。
 
 ```
 const visitorOne = {
@@ -2252,7 +2247,7 @@ const MyVisitor = {
 };
 ```
 
-当上述代码在每次调用 `FunctionDeclaration()` 时都会创建新的访问者对象，使得 Babel 变得更大并且每次都要去做验证。 这也是代价不菲的，所以最好把访问者向上提升。
+当上述代码在每次调用  `FunctionDeclaration()`  时都会创建新的访问者对象，使得 Babel 变得更大并且每次都要去做验证。 这也是代价不菲的，所以最好把访问者向上提升。
 
 ```
 const visitorOne = {
@@ -2286,7 +2281,7 @@ const MyVisitor = {
 };
 ```
 
-可以传递给 `traverse()` 方法的第二个参数然后在访问者中用 `this` 去访问。
+可以传递给  `traverse()`  方法的第二个参数然后在访问者中用  `this`  去访问。
 
 ```
 const visitorOne = {
@@ -2309,7 +2304,7 @@ const MyVisitor = {
 
 有时候在考虑一些转换时，你可能会忘记某些结构是可以嵌套的。
 
-举例来说，假设我们要从 `Foo` `ClassDeclaration` 中查找 `constructor` `ClassMethod`。.
+举例来说，假设我们要从  `Foo` `ClassDeclaration`  中查找  `constructor` `ClassMethod`。.
 
 ```
 class Foo {
@@ -2337,7 +2332,7 @@ const MyVisitor = {
 }
 ```
 
-可是我们忽略了类型定义是可以嵌套的，于是使用上面的遍历方式最终也会找到嵌套的 `constructor`：
+可是我们忽略了类型定义是可以嵌套的，于是使用上面的遍历方式最终也会找到嵌套的  `constructor`：
 
 ```
 class Foo {
@@ -2351,8 +2346,7 @@ class Foo {
 }
 ```
 
-六、总结
-----
+## 六、总结
 
 本文我们先从 AST 的设计理念出发，逐步引申出编译器的工作原理，为了让大家更加深入的了解 AST，我们使用差不多 180 行代码手写了一个简易编译器。
 
@@ -2362,19 +2356,18 @@ class Foo {
 
 > 参考：
 
-*   [the-super-tiny-compiler](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fthe-super-tiny-compiler "https://github.com/jamiebuilds/the-super-tiny-compiler")
-*   [babel-handbook](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fbabel-handbook "https://github.com/jamiebuilds/babel-handbook")
+- [the-super-tiny-compiler](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fthe-super-tiny-compiler "https://github.com/jamiebuilds/the-super-tiny-compiler")
+- [babel-handbook](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fbabel-handbook "https://github.com/jamiebuilds/babel-handbook")
 
-七、推荐阅读
-------
+## 七、推荐阅读
 
-1.  [从零到亿系统性的建立前端构建知识体系✨](https://juejin.cn/post/7145855619096903717 "https://juejin.cn/post/7145855619096903717")
+1.  [从零到亿系统性的建立前端构建知识体系 ✨](https://juejin.cn/post/7145855619096903717 "https://juejin.cn/post/7145855619096903717")
 2.  [我是如何带领团队从零到一建立前端规范的？🎉🎉🎉](https://juejin.cn/post/7085257325165936648 "https://juejin.cn/post/7085257325165936648")
 3.  [【Webpack Plugin】写了个插件跟喜欢的女生表白，结果......😭😭😭](https://juejin.cn/post/7160467329334607908 "https://juejin.cn/post/7160467329334607908")
-4.  [学会这些自定义 hooks，让你摸鱼时间再翻一倍🐟🐟](https://juejin.cn/post/7095396322643017742 "https://juejin.cn/post/7095396322643017742")
+4.  [学会这些自定义 hooks，让你摸鱼时间再翻一倍 🐟🐟](https://juejin.cn/post/7095396322643017742 "https://juejin.cn/post/7095396322643017742")
 5.  [Webpack 深度进阶：两张图彻底讲明白热更新原理！](https://juejin.cn/post/7176963906844246074#comment "https://juejin.cn/post/7176963906844246074#comment")
 6.  [浅析前端异常及降级处理](https://juejin.cn/post/6979564690787532814 "https://juejin.cn/post/6979564690787532814")
 7.  [前端重新部署后，领导跟我说页面崩溃了...](https://juejin.cn/post/6981718762483679239 "https://juejin.cn/post/6981718762483679239")
 8.  [前端场景下的搜索框，你真的理解了吗？](https://juejin.cn/post/7042332309449605127 "https://juejin.cn/post/7042332309449605127")
 9.  [手把手教你实现 React 数据持久化机制](https://juejin.cn/post/7072761358277672974 "https://juejin.cn/post/7072761358277672974")
-10.  [面试官：你确定多窗口之间 sessionStorage 不能共享状态吗？？？🤔](https://juejin.cn/post/7076767687828832286 "https://juejin.cn/post/7076767687828832286")
+10. [面试官：你确定多窗口之间 sessionStorage 不能共享状态吗？？？🤔](https://juejin.cn/post/7076767687828832286 "https://juejin.cn/post/7076767687828832286")

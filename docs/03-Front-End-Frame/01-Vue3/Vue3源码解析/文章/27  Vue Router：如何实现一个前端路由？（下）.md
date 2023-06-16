@@ -1,3 +1,5 @@
+# Vue Router：实现前端路由（下）
+
 上节课我们学习了 Vue Router 的基本用法，并且开始探究它的实现原理，今天我们继续未完的原理，一起来看路径是如何和路由组件映射的。
 
 ### 路径和路由组件的渲染的映射
@@ -76,7 +78,7 @@ const RouterView = defineComponent({
 
 RouterView 组件也是基于 composition API 实现的，我们重点看它的渲染部分，由于 setup 函数的返回值是一个函数，那这个函数就是它的渲染函数。
 
-我们从后往前看，通常不带插槽的情况下，会返回 component 变量，它是根据 ViewComponent 渲染出来的，而ViewComponent 是根据matchedRoute.components[props.name] 求得的，而matchedRoute 是 matchedRouteRef对应的 value。
+我们从后往前看，通常不带插槽的情况下，会返回 component 变量，它是根据 ViewComponent 渲染出来的，而 ViewComponent 是根据 matchedRoute.components[props.name] 求得的，而 matchedRoute 是 matchedRouteRef 对应的 value。
 
 matchedRouteRef 一个计算属性，在不考虑 prop 传入 route 的情况下，它的 getter 是由 injectedRoute.matched[depth] 求得的，而 injectedRoute，就是我们在前面在安装路由时候，注入的响应式 currentRoute 对象，而 depth 就是表示这个 RouterView 的嵌套层级。
 
@@ -133,7 +135,7 @@ app.mount('#app')
 const matcher = createRouterMatcher(options.routes, options)
 ```
 
-执行了createRouterMatcher 函数，并传入 routes 路径配置数组，它的目的就是根据路径配置对象创建一个路由的匹配对象，再来看它的实现：
+执行了 createRouterMatcher 函数，并传入 routes 路径配置数组，它的目的就是根据路径配置对象创建一个路由的匹配对象，再来看它的实现：
 
 复制代码
 
@@ -142,7 +144,7 @@ function createRouterMatcher(routes, globalOptions) {
   const matchers = []
   const matcherMap = new Map()
   globalOptions = mergeOptions({ strict: false, end: true, sensitive: false }, globalOptions)
-  
+
   function addRoute(record, parent, originalRecord) {
     let isRootAdd = !originalRecord
     let mainNormalizedRecord = normalizeRouteRecord(record)
@@ -192,7 +194,7 @@ function createRouterMatcher(routes, globalOptions) {
       }
       : noop
   }
-  
+
   function insertMatcher(matcher) {
     let i = 0
     while (i < matchers.length &&
@@ -202,9 +204,9 @@ function createRouterMatcher(routes, globalOptions) {
     if (matcher.record.name && !isAliasRecord(matcher))
       matcherMap.set(matcher.record.name, matcher)
   }
- 
+
   // 定义其它一些辅助函数
-  
+
   // 添加初始路径
   routes.forEach(route => addRoute(route))
   return { addRoute, resolve, removeRoute, getRoutes, getRecordMatcher }
@@ -217,7 +219,7 @@ createRouterMatcher 函数内部定义了一个 matchers 数组和一些辅助�
 
 在 addRoute 函数内部，首先会把 route 对象标准化成一个 record，其实就是给路径对象添加更丰富的属性。
 
-然后再执行createRouteRecordMatcher 函数，传入标准化的 record 对象，我们再来看它的实现：
+然后再执行 createRouteRecordMatcher 函数，传入标准化的 record 对象，我们再来看它的实现：
 
 复制代码
 
@@ -292,7 +294,7 @@ function resolve(location, currentLocation) {
       warn(`The Matcher cannot resolve relative paths but received "${path}". Unless you directly called \`matcher.resolve("${path}")\`, this is probably a bug in vue-router. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/vue-router-next.`)
     }
     matcher = matchers.find(m => m.re.test(path))
-  
+
     if (matcher) {
       params = matcher.parse(path)
       name = matcher.record.name
@@ -440,11 +442,11 @@ function runGuardQueue(guards) {
 }
 ```
 
-其实就是通过数组的 reduce 方法，链式执行 guard 函数，每个 guard 函数都会返回一个 Promise对象。
+其实就是通过数组的 reduce 方法，链式执行 guard 函数，每个 guard 函数都会返回一个 Promise 对象。
 
-但是从我们的例子看，我们添加的是一个普通函数，并不是一个返回 Promise对象的函数，那是怎么做的呢？
+但是从我们的例子看，我们添加的是一个普通函数，并不是一个返回 Promise 对象的函数，那是怎么做的呢？
 
-原来在把 guard 添加到 guards 数组前，都会执行 guardToPromiseFn 函数把普通函数 Promise化，来看它的实现：
+原来在把 guard 添加到 guards 数组前，都会执行 guardToPromiseFn 函数把普通函数 Promise 化，来看它的实现：
 
 复制代码
 
@@ -520,11 +522,11 @@ guardToPromiseFn 函数返回一个新的函数，这个函数内部会执行 gu
 guardCall = Promise.resolve(guardReturn)
 ```
 
-把导航守卫的返回值 Promise化，然后再执行 guardCall.then(next)，把导航守卫的返回值传给 next 函数。
+把导航守卫的返回值 Promise 化，然后再执行 guardCall.then(next)，把导航守卫的返回值传给 next 函数。
 
 当然，如果你在导航守卫中定义了第三个参数 next，但是你没有在函数中调用它，这种情况也会报警告。
 
-所以，对于导航守卫而言，经过 Promise化后添加到 guards 数组中，然后再通过 runGuards 以及 Promise 的方式链式调用，最终依次顺序执行这些导航守卫。
+所以，对于导航守卫而言，经过 Promise 化后添加到 guards 数组中，然后再通过 runGuards 以及 Promise 的方式链式调用，最终依次顺序执行这些导航守卫。
 
 ### 总结
 

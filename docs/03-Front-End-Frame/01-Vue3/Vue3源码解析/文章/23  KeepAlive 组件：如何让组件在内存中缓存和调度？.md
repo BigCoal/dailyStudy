@@ -1,3 +1,5 @@
+# KeepAlive 组件：如何让组件在内存中缓存和调度？
+
 通过前面的学习，我们了解到多个平行组件条件渲染，当满足条件的时候会触发某个组件的挂载，而已渲染的组件当条件不满足的时候会触发组件的卸载，举个例子：
 
 复制代码
@@ -44,7 +46,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ```
 
-我们使用了 KeepAlive 组件对这两个组件做了一层封装，KeepAlive 是一个抽象组件，它并不会渲染成一个真实的 DOM，只会渲染内部包裹的子节点，并且让内部的子组件在切换的时候，不会走一整套递归卸载和挂载 DOM的流程，从而优化了性能。
+我们使用了 KeepAlive 组件对这两个组件做了一层封装，KeepAlive 是一个抽象组件，它并不会渲染成一个真实的 DOM，只会渲染内部包裹的子节点，并且让内部的子组件在切换的时候，不会走一整套递归卸载和挂载 DOM 的流程，从而优化了性能。
 
 那么它具体是怎么做的呢？我们再来看 KeepAlive 组件的定义：
 
@@ -318,7 +320,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 > 经过前面的分析，我认为 onBeforeMount 的钩子函数注入似乎并没有必要，我在源码中删除后再跑 Vue.js 3.0 的单测也能通过，如果你有不同意见，欢迎在留言区与我分享。
 
-这个时候渲染了 B 组件，当我们再次点击按钮，修改 flag 值的时候，会再次触发KeepAlvie 组件的重新渲染，当然此时执行 onBeforeUpdate 钩子函数缓存的就是 B 组件的渲染子树了。
+这个时候渲染了 B 组件，当我们再次点击按钮，修改 flag 值的时候，会再次触发 KeepAlvie 组件的重新渲染，当然此时执行 onBeforeUpdate 钩子函数缓存的就是 B 组件的渲染子树了。
 
 接着再次执行 KeepAlive 组件的 render 函数，此时就可以从缓存中根据 A 组件的 key 拿到对应的渲染子树 cachedVNode 的了，然后执行如下逻辑：
 
@@ -369,7 +371,7 @@ const processComponent = (n1, n2, container, anchor, parentComponent, parentSusp
 }
 ```
 
-KeepAlive 首次渲染某一个子节点时，和正常的组件节点渲染没有区别，但是有缓存后，由于标记了 shapeFlag，所以在执行processComponent函数时会走到处理 KeepAlive 组件的逻辑中，执行 KeepAlive 组件实例上下文中的 activate 函数，我们来看它的实现：
+KeepAlive 首次渲染某一个子节点时，和正常的组件节点渲染没有区别，但是有缓存后，由于标记了 shapeFlag，所以在执行 processComponent 函数时会走到处理 KeepAlive 组件的逻辑中，执行 KeepAlive 组件实例上下文中的 activate 函数，我们来看它的实现：
 
 复制代码
 
@@ -538,7 +540,7 @@ onBeforeUnmount(() => {
     }
     unmount(cached)
   })
-})  
+})
 ```
 
 它会遍历所有缓存的 vnode，并且比对缓存的 vnode 是不是当前 KeepAlive 组件渲染的 vnode。

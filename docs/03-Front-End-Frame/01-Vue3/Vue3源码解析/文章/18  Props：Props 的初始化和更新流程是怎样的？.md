@@ -1,3 +1,5 @@
+# Props：Props 的初始化和更新流程
+
 前面我们提到过 Vue.js 的核心思想之一是组件化，页面可以由一个个组件构建而成，组件是一种抽象的概念，它是对页面的部分布局和逻辑的封装。
 
 为了让组件支持各种丰富的功能，Vue.js 设计了 Props 特性，它允许组件的使用者在外部传递 Props，然后组件内部就可以根据这些 Props 去实现各种各样的功能。
@@ -229,7 +231,7 @@ export default {
 }
 ```
 
-如果 props 被定义成数组形式，那么数组的每个元素必须是一个字符串，然后把字符串都变成驼峰形式作为 key，并为normalized 的 key 对应的每一个值创建一个空对象。针对上述示例，最终标准化的 props 的定义是这样的：
+如果 props 被定义成数组形式，那么数组的每个元素必须是一个字符串，然后把字符串都变成驼峰形式作为 key，并为 normalized 的 key 对应的每一个值创建一个空对象。针对上述示例，最终标准化的 props 的定义是这样的：
 
 复制代码
 
@@ -272,7 +274,7 @@ export default {
 
 接下来，就是判断一些 prop 是否需要转换，其中，含有布尔类型的 prop 和有默认值的 prop 需要转换，这些 prop 的 key 保存在 needCastKeys 中。注意，这里会给 prop 添加两个特殊的 key，prop[0] 和 prop[1]赋值，它们的作用后续我们会说。
 
-最后，返回标准化结果 normalizedEntry，它包含标准化后的 props 定义 normalized，以及需要转换的 props key needCastKeys，并且用 comp.__props 缓存这个标准化结果，如果对同一个组件重复执行 normalizePropsOptions，直接返回这个标准化结果即可。
+最后，返回标准化结果 normalizedEntry，它包含标准化后的 props 定义 normalized，以及需要转换的 props key needCastKeys，并且用 comp.\_\_props 缓存这个标准化结果，如果对同一个组件重复执行 normalizePropsOptions，直接返回这个标准化结果即可。
 
 标准化 props 配置的目的无非就是支持用户各种的 props 配置写法，标准化统一的对象格式为了后续统一处理。
 
@@ -283,7 +285,7 @@ export default {
 ```
 function setFullProps(instance, rawProps, props, attrs) {
   // 标准化 props 的配置
-  
+
   if (rawProps) {
     for (const key in rawProps) {
       const value = rawProps[key]
@@ -302,7 +304,7 @@ function setFullProps(instance, rawProps, props, attrs) {
       }
     }
   }
-  
+
   // 转换需要转换的 props
 }
 ```
@@ -318,9 +320,9 @@ function setFullProps(instance, rawProps, props, attrs) {
 ```
 function setFullProps(instance, rawProps, props, attrs) {
   // 标准化 props 的配置
-  
+
   // 遍历 props 数据求值
-  
+
   if (needCastKeys) {
     // 需要做转换的 props
     const rawCurrentProps = toRaw(props)
@@ -406,7 +408,7 @@ export default {
 function initProps(instance, rawProps, isStateful, isSSR = false) {
   const props = {}
   // 设置 props 的值
- 
+
   // 验证 props 合法
   if ((process.env.NODE_ENV !== 'production')) {
     validateProps(props, instance.type)
@@ -471,8 +473,8 @@ function validateProp(name, value, prop, isAbsent) {
 
 ```
 export default {
-  props: { 
-    value: { 
+  props: {
+    value: {
       type: Number,
       required: true,
       validator(val) {
@@ -752,7 +754,7 @@ const Child = defineComponent({
 count.value++
 ```
 
-这里，我们定义了父组件 Parent 和子组件 Child，子组件 Child 中定义了 prop count，除了在渲染模板中引用了 count，我们在 setup 函数中通过了 watchEffect 注册了一个回调函数，内部依赖了 props.count，当修改 count.value 的时候，我们希望这个回调函数也能执行，所以这个 prop 的值需要是响应式的，由于 setup 函数的第一个参数是props 变量，其实就是组件实例 instance.props，所以也就是要求 instance.props 是响应式的。
+这里，我们定义了父组件 Parent 和子组件 Child，子组件 Child 中定义了 prop count，除了在渲染模板中引用了 count，我们在 setup 函数中通过了 watchEffect 注册了一个回调函数，内部依赖了 props.count，当修改 count.value 的时候，我们希望这个回调函数也能执行，所以这个 prop 的值需要是响应式的，由于 setup 函数的第一个参数是 props 变量，其实就是组件实例 instance.props，所以也就是要求 instance.props 是响应式的。
 
 我们再来看为什么用 shallowReactive API 呢？shallow 的字面意思是浅的，从实现上来说，就是不会递归执行 reactive，只劫持最外一层对象。
 

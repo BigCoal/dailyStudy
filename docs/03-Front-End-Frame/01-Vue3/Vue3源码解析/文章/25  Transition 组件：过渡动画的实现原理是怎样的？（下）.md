@@ -1,3 +1,5 @@
+# Transition 组件：过渡动画的实现原理-下
+
 上节课，我们已经知道了，Vue.js 提供了内置的 Transition 组件帮我们实现动画过渡效果。在之前的分析中我把 Transition 组件的实现分成了三个部分：组件的渲染、钩子函数的执行、模式的应用。这节课我们从钩子函数的执行继续探究 Transition 组件的实现原理。
 
 ### 钩子函数的执行
@@ -148,7 +150,7 @@ resolveTransitionProps 函数主要作用是，在我们给 Transition 传递的
 
 onBeforeAppear 和 onBeforeEnter 的逻辑类似，就不赘述了，它是在我们给 Transition 组件传入 appear 的 Prop，且首次挂载的时候执行的。
 
-执行完 beforeEnter 钩子函数，接着插入元素到页面，然后会执行 vnode.transition 中的enter 钩子函数，我们来看它的定义：
+执行完 beforeEnter 钩子函数，接着插入元素到页面，然后会执行 vnode.transition 中的 enter 钩子函数，我们来看它的定义：
 
 复制代码
 
@@ -438,7 +440,7 @@ if (mode === 'out-in') {
 
 好的，到这里我们这一节的学习就结束啦，通过这节课的学习，你应该了解了 Transition 组件是如何渲染的，如何执行过渡动画和相应的钩子函数的，以及当两个视图切换时，模式的工作原理是怎样的。
 
-最后，给你留一道思考题，Transition 组件在 beforeEnter 钩子函数里会判断 el._leaveCb 是否存在，存在则执行，在 leave 钩子函数里会判断 el._enterCb 是否存在，存在则执行，这么做的原因是什么？欢迎你在留言区与我分享。
+最后，给你留一道思考题，Transition 组件在 beforeEnter 钩子函数里会判断 el.\_leaveCb 是否存在，存在则执行，在 leave 钩子函数里会判断 el.\_enterCb 是否存在，存在则执行，这么做的原因是什么？欢迎你在留言区与我分享。
 
 > 本节课的相关代码在源代码中的位置如下：
 > packages/runtime-core/src/components/BasetTransition.ts

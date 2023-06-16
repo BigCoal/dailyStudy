@@ -1,3 +1,5 @@
+# Teleport 组件：如何脱离当前组件渲染子组件？
+
 我们都知道，Vue.js 的核心思想之一是组件化，组件就是 DOM 的映射，我们通过嵌套的组件构成了一个组件应用程序的树。
 
 但是，有些时候组件模板的一部分在逻辑上属于该组件，而从技术角度来看，最好将模板的这一部分移动到应用程序之外的其他位置。
@@ -250,7 +252,7 @@ function process(n1, n2, container, anchor, parentComponent, parentSuspense, isS
 
 Teleport 组件创建部分主要分为三个步骤，**第一步在主视图里插入注释节点或者空白文本节点**，**第二步获取目标元素节点**，**第三步往目标元素插入 Teleport 组件的子节点**。
 
-我们先来看第一步，会在非生产环境往 Teleport 组件原本的位置插入注释节点，在生产环境插入空白文本节点。在开发环境中，组件的 el 对象指向 teleport start 注释节点，组件的 anchor 对象指向teleport end 注释节点。
+我们先来看第一步，会在非生产环境往 Teleport 组件原本的位置插入注释节点，在生产环境插入空白文本节点。在开发环境中，组件的 el 对象指向 teleport start 注释节点，组件的 anchor 对象指向 teleport end 注释节点。
 
 接着看第二步，会通过 resolveTarget 方法从 props 中的 to 属性以及 DOM 选择器拿到对应要移动到的目标元素 target。
 

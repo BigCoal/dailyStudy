@@ -1,4 +1,6 @@
-这一节课我们依然要**解析 template 生成 AST 背后的实现原理**，上节课，我们知道了baseParse 主要就做三件事情：**创建解析上下文**，**解析子节点**，**创建 AST 根节点**。
+# 模板解析：构造 AST 的完整流程（下）
+
+这一节课我们依然要**解析 template 生成 AST 背后的实现原理**，上节课，我们知道了 baseParse 主要就做三件事情：**创建解析上下文**，**解析子节点**，**创建 AST 根节点**。
 
 我们讲到了解析子节点，主要有四种情况，分别是注释节点的解析、插值的解析、普通文本的解析，以及元素节点的解析，这节课我们就到了最后的元素节点。
 
@@ -208,9 +210,9 @@ function parseChildren(context, mode, ancestors) {
   const parent = last(ancestors)
   const ns = parent ? parent.ns : 0 /* HTML */
   const nodes = []
-  
+
   // 自顶向下分析代码，生成 nodes
-  
+
   let removedWhitespace = false
   if (mode !== 2 /* RAWTEXT */) {
     if (!context.inPre) {
@@ -220,7 +222,7 @@ function parseChildren(context, mode, ancestors) {
           if (!/[^\t\r\n\f ]/.test(node.content)) {
             // 匹配空白字符
             const prev = nodes[i - 1]
-            const next = nodes[i + 1] 
+            const next = nodes[i + 1]
             // 如果空白字符是开头或者结尾节点
             // 或者空白字符与注释节点相连
             // 或者空白字符在两个元素之间并包含换行符
@@ -260,7 +262,7 @@ function parseChildren(context, mode, ancestors) {
       }
     }
   }
-  
+
   // 过滤空白字符节点
   return removedWhitespace ? nodes.filter(Boolean) : nodes
 }

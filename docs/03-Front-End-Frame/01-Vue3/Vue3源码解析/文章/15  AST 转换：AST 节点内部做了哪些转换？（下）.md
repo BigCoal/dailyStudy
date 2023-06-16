@@ -1,3 +1,5 @@
+# AST 转换：AST 节点内部转换过程-下
+
 上一节课，我们已经知道了 transform 的核心流程主要有四步：创建 transform 上下文、遍历 AST 节点、静态提升以及创建根代码生成节点。这节课我们接着分析遍历 AST 节点中的 Text 节点的转换函数。
 
 ### 遍历 AST 节点
@@ -262,7 +264,7 @@ const transformIf = createStructuralDirectiveTransform(/^(if|else|else-if)$/, (n
     "codegenNode": undefined,
     "isSelfClosing": false,
     "ns": 0,
-    "props": [{ 
+    "props": [{
       "type": 7,
       "name": "else",
       "exp": undefined,
@@ -519,7 +521,7 @@ function createChildrenCodegenNode(branch, index, context) {
     else {
       return createVNodeCall(context, helper(FRAGMENT), createObjectExpression([keyProperty]), children, `${64 /* STABLE_FRAGMENT */} /* ${PatchFlagNames[64 /* STABLE_FRAGMENT */]} */`, undefined, undefined, true, false, branch.loc)
     }
-  } 
+  }
   else {
     const vnodeCall = firstChild
       .codegenNode;
@@ -641,7 +643,7 @@ export function render(_ctx, _cache) {
 }
 ```
 
-这里，我们先忽略 openBlock、Fragment ，我会在代码生成章节详细说明，重点看一下 _hoisted_1 和 _hoisted_2 这两个变量，它们分别对应模板中两个静态 p 标签生成的 vnode，可以发现它的创建是在 render 函数外部执行的。
+这里，我们先忽略 openBlock、Fragment ，我会在代码生成章节详细说明，重点看一下 \_hoisted_1 和 \_hoisted_2 这两个变量，它们分别对应模板中两个静态 p 标签生成的 vnode，可以发现它的创建是在 render 函数外部执行的。
 这样做的好处是，不用每次在 render 阶段都执行一次 createVNode 创建 vnode 对象，直接用之前在内存中创建好的 vnode 即可。
 
 那么为什么叫静态提升呢？
