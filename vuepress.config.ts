@@ -1,11 +1,17 @@
 import { defineUserConfig } from "vuepress";
 import { defaultTheme } from "@vuepress/theme-default";
+import { viteBundler } from "@vuepress/bundler-vite";
 
 export default defineUserConfig({
   lang: "zh-CN",
   title: "大煤球的技术文档",
   description: "学而不思则罔，思而不学则殆",
   head: [["link", { rel: "icon", href: "/logo.png" }]],
+  bundler: viteBundler({
+    viteOptions: {
+      assetsInclude: ["**/*.awebp"],
+    },
+  }),
   theme: defaultTheme({
     logo: "/logo.png",
     // search: true, //搜索

@@ -1,3 +1,11 @@
+/*
+ * @Author: zhubaokang 1048506792@qq.com
+ * @Date: 2023-06-19 21:07:45
+ * @LastEditors: zhubaokang 1048506792@qq.com
+ * @LastEditTime: 2023-06-19 21:28:37
+ * @FilePath: \dailyStudy\tool\md爬取图片保存并修改md中图片地址.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 const fs = require("fs");
 const path = require("path");
 const request = require("request");
@@ -49,7 +57,7 @@ function crawlingImg(mdPath) {
   if (imgs) {
     //爬取资源写入静态目录中
     imgs.forEach((imgUrl) => {
-      const filename = path.basename(imgUrl);
+      const filename = normalizeFileName(path.basename(imgUrl));
       request(imgUrl).pipe(
         fs.createWriteStream(path.join(staticDir, filename))
       );
@@ -57,7 +65,7 @@ function crawlingImg(mdPath) {
 
     //替换原来的md文件中远程图片地址为本地图片地址
     let newMdString = markdownString.replace(imgReg, (match) => {
-      return "./static/" + path.basename(match);
+      return "./static/" + normalizeFileName(path.basename(match));
     });
     fs.writeFile(mdPath, newMdString, (err) => {
       if (err) throw err;
@@ -65,9 +73,20 @@ function crawlingImg(mdPath) {
     });
   }
 }
+//格式化文件名：主要针对于windows对：文件名不支持和 对awebp后缀转换为png
+function normalizeFileName(url) {
+  url = url.replaceAll(":", "-");
+  if (url.endsWith("awebp")) {
+    url = url.slice(0, -5) + "png";
+  }
+  return url;
+}
 
 //目标文件
-const p = path.join(__dirname, "../src/03-前端框架/01-Vue3/Vue3源码解析/文章");
+const p = path.join(
+  __dirname,
+  "../docs/03-Front-End-Frame/02-Webpack/01-手写tapable/01-tapable.md"
+);
 const paths = getMDFiles(p);
 paths.map((pathItem) => {
   crawlingImg(pathItem);

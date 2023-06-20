@@ -1,4 +1,4 @@
-<!-- # AST 及广泛应用
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [juejin.cn](https://juejin.cn/post/7155151377013047304)
 
 ## 一、前言
 
@@ -20,7 +20,7 @@
 
 ## 二、AST（抽象语法树） 到底是什么？
 
-抽象语法树（Abstract Syntax Tree，AST）是源代码语法结构的一种抽象表示，它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。在代码语法的检查、代码风格的检查、代码的格式化、代码的高亮、代码错误提示、代码自动补全等等场景均有广泛的应用。
+抽象语法树（Abstract(抽象) Syntax(语法) Tree，AST）是源代码语法结构的一种抽象表示，它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。在代码语法的检查、代码风格的检查、代码的格式化、代码的高亮、代码错误提示、代码自动补全等等场景均有广泛的应用。
 
 以前我们在做小学语文题时，经常会做到的一种题型就是在一句话中找出不恰当的部分，比如："你是猪，"
 
@@ -85,12 +85,12 @@
 一个完整的编译器整体执行过程可以分为三个步骤：
 
 1.  **Parsing(解析过程)**：这个过程要经`词法分析`、`语法分析`、`构建AST（抽象语法树）`一系列操作；
-2.  **Transformation（转化过程**）：这个过程就是将上一步解析后的内容，按照编译器指定的规则进行处理，`形成一个新的表现形式`；
-3.  **Code Generation（代码生成**）：将上一步处理好的内容`转化为新的代码`；
+2.  **Transformation(转型)（转化过程**）：这个过程就是将上一步解析后的内容，按照编译器指定的规则进行处理，`形成一个新的表现形式`；
+3.  **Code Generation(一代)（代码生成**）：将上一步处理好的内容`转化为新的代码`；
 
 如图所示，不喜欢看字的就看图：
 
-![](./static/2f90236f5c914a069bd51611b75160a7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/2f90236f5c914a069bd51611b75160a7~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 接下来，我们先看一个小 Demo，将 [lisp](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLisp_(programming_language)> "https://en.wikipedia.org/wiki/Lisp_(programming_language)") 的函数调用编译成类似 [C](https://link.juejin.cn?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FC%25E8%25AF%25AD%25E8%25A8%2580 "https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80") 的函数，如果你不熟悉也没关系，看完下面的代码相信大家能够快速的理解：
 
@@ -154,7 +154,7 @@ LISP 代码： (add 2 (subtract 4 2))
 }
 ```
 
-#### 3.1.3、Transformation(转化)
+#### 3.1.3、Transformation(转型)(转化)
 
 这个过程主要是`改写AST（抽象语法树）`，`或者根据当前AST（抽象语法树）生成一个新的AST（抽象语法树）`，这个过程可以是相同语言，或者可以直接将 AST（抽象语法树）翻译为其他语言。
 
@@ -185,7 +185,7 @@ LISP 代码： (add 2 (subtract 4 2))
 
 **Traversal(遍历)**：顾名思义这个过程就是，遍历这个 AST（抽象语法树）的所有节点，这个过程使用 [深度优先原则](https://link.juejin.cn?target=https%3A%2F%2Fzhuanlan.zhihu.com%2Fp%2F33340701 "https://zhuanlan.zhihu.com/p/33340701")，大概执行顺序如下：
 
-![](./static/825779625fa34efd90a6c115be7919af~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/825779625fa34efd90a6c115be7919af~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 ```
 进入Program - 最顶层开始
@@ -228,9 +228,9 @@ const visitor = {
     }
 ```
 
-#### 3.1.4、Code Generation(生成代码)
+#### 3.1.4、Code Generation(一代)(生成代码)
 
-最后就是代码生成阶段了，`其实就是将生成的新AST树再转回代码的过程`。大部分的代码生成器主要过程是，不断的访问 Transformation 生成的 AST(抽象语法树)或者再结合 tokens，按照指定的规则，将 “树” 上的节点打印拼接最终还原为新的 code，自此编译器的执行过程就结束了。
+最后就是代码生成阶段了，`其实就是将生成的新AST树再转回代码的过程`。大部分的代码生成器主要过程是，不断的访问 Transformation(转型) 生成的 AST(抽象语法树) 或者再结合 tokens，按照指定的规则，将 “树” 上的节点打印拼接最终还原为新的 code，自此编译器的执行过程就结束了。
 
 ### 3.2、原理篇：
 
@@ -632,7 +632,7 @@ function compiler(input) {
 
 现在一个小型的编译器就完整实现了，我们来测试一下：测试通过 😄。
 
-![](./static/d53afc14edd344dbbc30b93a4713d192~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/d53afc14edd344dbbc30b93a4713d192~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 ## 四、AST 的广泛应用
 
@@ -641,16 +641,16 @@ function compiler(input) {
 [Babel](https://link.juejin.cn?target=https%3A%2F%2Fbabeljs.io%2Fdocs%2Fen%2F "https://babeljs.io/docs/en/") 其实就是一个最常用的 Javascript 编译器，它能够转译  `ECMAScript 2015+`  的代码，使它在旧的浏览器或者环境中也能够运行，工作过程分为三个部分（其实就跟我们上面手写的一样，相信大家现在肯定倍感亲切）：
 
 - **Parse(解析)** 将源代码转换成抽象语法树，树上有很多的 [estree 节点](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Festree%2Festree "https://github.com/estree/estree")
-- **Transform(转换)** 对抽象语法树进行转换
-- **Generate(代码生成)** 将上一步经过转换过的抽象语法树生成新的代码
+- **Transform(转化)(转换)** 对抽象语法树进行转换
+- **Generate(生成)(代码生成)** 将上一步经过转换过的抽象语法树生成新的代码
 
 当然我们现在不用从零开始手写了，可以借助于 `babel` 插件：
 
 - [@babel/parser](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fparser "https://github.com/babel/babel/tree/master/packages/@babel/parser")  可以把源码转换成`AST`
 - [@babel/traverse](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-traverse "https://www.npmjs.com/package/babel-traverse") 用于对 `AST` 的遍历，维护了整棵树的状态，并且负责替换、移除和添加节点
-- [@babel/generate](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fgenerate "https://github.com/babel/babel/tree/master/packages/@babel/generate")  可以把`AST`生成源码，同时生成`sourcemap`
+- [@babel/generate(生成)](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2F%40babel%2Fgenerate "https://github.com/babel/babel/tree/master/packages/@babel/generate")  可以把`AST`生成源码，同时生成`sourcemap`
 - [@babel/types](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fbabel%2Fbabel%2Ftree%2Fmaster%2Fpackages%2Fbabel-types "https://github.com/babel/babel/tree/master/packages/babel-types")  用于 `AST` 节点的 Lodash 式工具库, 它包含了构造、验证以及变换 `AST` 节点的方法，对编写处理 `AST` 逻辑非常有用
-- [@babel/core](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40babel%2Fcore "https://www.npmjs.com/package/@babel/core") Babel 的编译器，核心 API 都在这里面，比如常见的 `transform`、`parse`，并实现了插件功能
+- [@babel/core(核心)](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40babel%2Fcore "https://www.npmjs.com/package/@babel/core") Babel 的编译器，核心 API 都在这里面，比如常见的 `transform`、`parse`，并实现了插件功能
 
 先安装：
 
@@ -679,11 +679,11 @@ const world = () => {};
 
 将源代码拷贝到  [在线 ast 转换器](https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F "https://link.juejin.cn/?target=https%3A%2F%2Fastexplorer.net%2F")  中，查看 `hello` 函数名节点：
 
-![](./static/1633a93e9ff24157b5e575d3fbcddaed~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/1633a93e9ff24157b5e575d3fbcddaed~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 接下来再看看目标函数的`AST`，和原函数的`AST`做个比较：
 
-![](./static/e3626d1c60fb4c779f0d5f595d155053~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/e3626d1c60fb4c779f0d5f595d155053~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 现在我们已经有了思路：只需要将该节点的`name`字段修改即可。
 
@@ -720,9 +720,9 @@ const result = generator.default(ast, {}, code);
 console.log(result.code); //const world = () => {};
 ```
 
-### 4.2、初露锋芒：手写简易版 babel-plugin-transform-es2015-arrow-functions
+### 4.2、初露锋芒：手写简易版 babel-plugin-transform(转化)-es2015-arrow(箭头)-functions
 
-接下来尝试稍微难度大一点的，手写箭头函数转换插件 [babel-plugin-transform-es2015-arrow-functions](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-transform-es2015-arrow-functions "https://www.npmjs.com/package/babel-plugin-transform-es2015-arrow-functions")，将箭头函数转换为普通函数。
+接下来尝试稍微难度大一点的，手写箭头函数转换插件 [babel-plugin-transform(转化)-es2015-arrow(箭头)-functions](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-transform-es2015-arrow-functions "https://www.npmjs.com/package/babel-plugin-transform-es2015-arrow-functions")，将箭头函数转换为普通函数。
 
 先看看使用原插件的情况，安装：
 
@@ -748,7 +748,7 @@ let targetSource = core.transform(sourceCode, {
 console.log(targetSource.code);
 ```
 
-![](./static/cbdc0163e6f04d8789308128c79e0d54~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/cbdc0163e6f04d8789308128c79e0d54~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 接下来我们就来照着写一个类似的 **Babel 插件**。`所谓的babel插件其实是一个对象，对象里面有一个visitor属性，它也是一个对象，key为类型，value为函数，接受path作为参数。`也就是这样：
 
@@ -764,15 +764,15 @@ const arrowFunctionPlugin = {
 
 老规矩，先看普通函数之前的 AST：
 
-![](./static/452d8a6833ad4270a76db12d639c10ce~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/452d8a6833ad4270a76db12d639c10ce~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 如果现在再让我们去修改函数名，其实也可以通过 **Babel 插件**的方式更简单：
 
-![](./static/f36bd02fd8294e4bbe40fff732fdcbb5~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/f36bd02fd8294e4bbe40fff732fdcbb5~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
-好了，进入正题。在写箭头函数转换插件之前，我们首先得知道代码转换前后的区别。还是通过 [astexplorer.net/](https://link.juejin.cn?target=https%3A%2F%2Fastexplorer.net%2F "https://astexplorer.net/") 这个网站去比较，经过本人长达一分钟的对比，`发现箭头函数和普通函数除了类型不一样，其他都一样`。
+好了，进入正题。在写箭头函数转换插件之前，我们首先得知道代码转换前后的区别。还是通过 [astexplorer.net(净)/](https://link.juejin.cn?target=https%3A%2F%2Fastexplorer.net%2F "https://astexplorer.net/") 这个网站去比较，经过本人长达一分钟的对比，`发现箭头函数和普通函数除了类型不一样，其他都一样`。
 
-![](./static/5960c94e11d84b3e9786d324a4206f74~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/5960c94e11d84b3e9786d324a4206f74~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 那这就好办了呀，直接修改类型尝试一下：
 
@@ -804,9 +804,9 @@ console.log(targetSource.code);
 
 打印结果：符合预期（是不是 so easy!!!）。
 
-![](./static/becaefcaa1cc4fcc9d2af357547c2440~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/becaefcaa1cc4fcc9d2af357547c2440~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
-### 4.3、崭露头角：手写复杂版 babel-plugin-transform-es2015-arrow-functions
+### 4.3、崭露头角：手写复杂版 babel-plugin-transform(转化)-es2015-arrow(箭头)-functions
 
 在上面 4.2 节中，我们虽然实现了基本的转换，但还有一些场景并没有考虑进来：
 
@@ -826,7 +826,7 @@ let sourceCode = `
 
 如果还是使用上面写的插件进行转换：
 
-![](./static/4703d8da30d94f09b68f40e39c389436~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/4703d8da30d94f09b68f40e39c389436~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 结果肯定是不对的，转换后的代码缺少一对大括号，还缺少 return 关键字。
 
@@ -855,11 +855,11 @@ const arrowFunctionPlugin = {
 
 查看运行后的结果：成功。
 
-![](./static/85b229571e34405099409ecad9d3758d~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/85b229571e34405099409ecad9d3758d~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
-再来看如果存在`this`的情况，原插件 [babel-plugin-transform-es2015-arrow-functions](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-transform-es2015-arrow-functions "https://www.npmjs.com/package/babel-plugin-transform-es2015-arrow-functions") 转换后的结果：
+再来看如果存在`this`的情况，原插件 [babel-plugin-transform(转化)-es2015-arrow(箭头)-functions](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fbabel-plugin-transform-es2015-arrow-functions "https://www.npmjs.com/package/babel-plugin-transform-es2015-arrow-functions") 转换后的结果：
 
-![](./static/6166252ef2dd44cc9a65b79892566cb4~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/6166252ef2dd44cc9a65b79892566cb4~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 老套路，我们先得知道`转化后的代码的AST`和`源代码的AST`之间的差异，这里就不贴图了，大家可以自己动手看一看比较一下。
 
@@ -906,9 +906,9 @@ const arrowFunctionPlugin = {
 
 > 第二步：往父作用域中加入`_this`变量
 
-这里需要引入[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的概念。大家都知道 JavaScript 拥有[词法作用域](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)%23Lexical_scoping_vs._dynamic_scoping> "https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scoping_vs._dynamic_scoping")，即代码块创建新的作用域会形成一个树状结构，它与别的作用域之间相互隔离不受影响。[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")同样如此，我们得确保在改变代码的各个部分时不会破坏其他的部分。
+这里需要引入[作用域（scope(范围)）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的概念。大家都知道 JavaScript 拥有[词法作用域](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)%23Lexical_scoping_vs._dynamic_scoping> "https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scoping_vs._dynamic_scoping")，即代码块创建新的作用域会形成一个树状结构，它与别的作用域之间相互隔离不受影响。[作用域（scope(范围)）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")同样如此，我们得确保在改变代码的各个部分时不会破坏其他的部分。
 
-[作用域（scope）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的大致结构：
+[作用域（scope(范围)）](<https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope_(computer_science)> "https://en.wikipedia.org/wiki/Scope_(computer_science)")的大致结构：
 
 ```
 {
@@ -920,7 +920,7 @@ const arrowFunctionPlugin = {
 }
 ```
 
-这一步比较简单，要想在作用域中加一个*this 变量，其实就是对 AST 树中的[（scope）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope*(computer*science) "https://en.wikipedia.org/wiki/Scope*(computer_science)")新增一个节点即可。
+这一步比较简单，要想在作用域中加一个*this 变量，其实就是对 AST 树中的[（scope(范围)）](https://link.juejin.cn?target=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FScope*(computer*science) "https://en.wikipedia.org/wiki/Scope*(computer_science)")新增一个节点即可。
 
 ```
 function hoistFunctionEnvironment(path) {
@@ -1005,7 +1005,7 @@ function hoistFunctionEnvironment(path) {
 
 运行结果：成功（OHHHHHHHHHHHHHH）。
 
-![](./static/80ca9ba284b7404d86c6edbf2ed18138~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/80ca9ba284b7404d86c6edbf2ed18138~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 > 整体代码
 
@@ -1097,7 +1097,7 @@ console.log("hello world","当前文件名","具体代码位置信息")
 
 到了现在，相信大家已经开始去对比前后 AST 树了，经过我们火眼金睛的对比，找出只是`arguments`略有不同，我们只需处理这一块即可：
 
-![](./static/0e386aca5dbf4a40b93373ee587dfd5f~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/0e386aca5dbf4a40b93373ee587dfd5f~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 思路：
 
@@ -1107,9 +1107,9 @@ console.log("hello world","当前文件名","具体代码位置信息")
 
 > 第一步：先找出`console`节点的部分
 
-我们先观察 console.log 部分的 AST：
+我们先观察 console.log(日志) 部分的 AST：
 
-![](./static/91da267deed9436b8d899a0bfea46e2c~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/91da267deed9436b8d899a0bfea46e2c~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 看完思路也就出来了：先找`CallExpression`类型的节点，然后再找出节点中的`callee.object.name`属性：
 
@@ -1146,7 +1146,7 @@ console.log(targetSource.code);
 
 还是先观察 console 部分的 AST：
 
-![](./static/44c3185f4af84757a7e855793cd85cb2~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/44c3185f4af84757a7e855793cd85cb2~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 发现我们想要的方法名可以在节点的`callee.property.name`属性中直接取到，那就好办了呀，直接上代码：
 
@@ -1187,7 +1187,7 @@ console.log(targetSource.code);
 
 继续观察新的 AST：
 
-![](./static/563ce7dc56514816a9d5eedfe5572e59~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/563ce7dc56514816a9d5eedfe5572e59~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 需要我们往`arguments`中插入`StringLiteral`节点，节点中的`value`属性即是我们需要配置的值。
 
@@ -1235,7 +1235,7 @@ console.log(targetSource.code);
 
 > 效果：
 
-![](./static/c6c66b3b115b417bb3f5249c41858eac~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/c6c66b3b115b417bb3f5249c41858eac~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 再也不怕找不到自己的`console.log`了 🐶。
 
@@ -1305,9 +1305,9 @@ import * as logeer6 from "logger5";
 
 要判断源代码中有没有引入`logger`库，其实就是查找 `from`节点后面有没有`logger`，老规矩，查看这三种导入方式的`AST`：
 
-![](./static/313d26a3bb314f6598bcdb50c4a5cb25~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/313d26a3bb314f6598bcdb50c4a5cb25~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
-![](./static/edff1c0b76484aaa976282b7ca4e1223~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/edff1c0b76484aaa976282b7ca4e1223~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 发现不管哪种导入方式，我们都可以通过节点的`source.value属性获取导入的库名`，通过`specifiers.local.name属性获取导入的变量名`。上代码：
 
@@ -1396,7 +1396,7 @@ visitor: {
 
 老规矩，先去看看要引入语句的 AST，然后生成一个对应的节点就好。
 
-![](./static/6f57af5c81224f37b8831532b10b5d0a~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/6f57af5c81224f37b8831532b10b5d0a~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 ```
 visitor: {
@@ -1434,7 +1434,7 @@ visitor: {
 
 写到这一步我们看看效果：引入成功。
 
-![](./static/76a11dfafefd4a4b9aaac0e052dc9ee4~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/76a11dfafefd4a4b9aaac0e052dc9ee4~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 > 第四步：在函数中插入引入的函数
 
@@ -1451,7 +1451,7 @@ visitor: {
  );
 ```
 
-我们可以将生成后的该节点挂载在 state 对象下，`state就是一个用来暂存数据的对象，是一个容器，用于共享数据`。
+我们可以将生成后的该节点挂载在 state(状态) 对象下，`state就是一个用来暂存数据的对象，是一个容器，用于共享数据`。
 
 ```
 +   Program(path, state) {
@@ -1511,7 +1511,7 @@ visitor: {
 
 到此，就大功告成了，查看效果：
 
-![](./static/a936d4c1ff5e4d2f9abb2da831b65510~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/a936d4c1ff5e4d2f9abb2da831b65510~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 > 优化代码：
 
@@ -1635,7 +1635,7 @@ export default function() {
 }
 ```
 
-前置小知识学完我们开干吧！ [ESLint](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Feslint "https://www.npmjs.com/package/eslint") 中的一个比较简单的校验规则：[noconsole](https://link.juejin.cn?target=https%3A%2F%2Feslint.org%2Fdocs%2Flatest%2Frules%2Fno-console%23rule-details "https://eslint.org/docs/latest/rules/no-console#rule-details")，也就是代码中不允许打印 console.log，今天就撸它了，以儆效尤！
+前置小知识学完我们开干吧！ [ESLint](https://link.juejin.cn?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Feslint "https://www.npmjs.com/package/eslint") 中的一个比较简单的校验规则：[noconsole](https://link.juejin.cn?target=https%3A%2F%2Feslint.org%2Fdocs%2Flatest%2Frules%2Fno-console%23rule-details "https://eslint.org/docs/latest/rules/no-console#rule-details")，也就是代码中不允许打印 console.log(日志)，今天就撸它了，以儆效尤！
 
 源代码：基于此规则，校验肯定不能通过了
 
@@ -1694,7 +1694,7 @@ console.log(targetSource.code);
 
 运行效果：
 
-![](./static/a2034985c3bf494db60c401d7374e5e6~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/a2034985c3bf494db60c401d7374e5e6~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 其实各种大大小小的规则，都是基于此，大同小异，就是这么简单！！！
 
@@ -1715,7 +1715,7 @@ function getAge(){
  }
 ```
 
-压缩后希望将 getAge、age、name 这些命名进行压缩。
+压缩后希望将 getAge、age(年龄)、name 这些命名进行压缩。
 
 整体思路：
 
@@ -1813,7 +1813,7 @@ console.log(code);
 
 效果：代码中的变量命名已经经过压缩。
 
-![](./static/085020877b954951990661982dad95ce~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/085020877b954951990661982dad95ce~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 ### 4.8、厚积薄发：实现按需加载插件
 
@@ -1859,7 +1859,7 @@ module.exports = {
 };
 ```
 
-源代码（src/index.js）：
+源代码（src/index(指数).js）：
 
 ```
 import { flatten, concat } from "lodash";
@@ -1868,7 +1868,7 @@ console.log(flatten, concat);
 
 我们先来看看不做按需加载的情况下的打包结果：可以看到，已经快有 500Kb 的大小了。
 
-![](./static/47109f93b1f549c7b08ee74e44f3e0e8~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/47109f93b1f549c7b08ee74e44f3e0e8~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 解决思路：将源代码变成这样
 
@@ -1904,7 +1904,7 @@ module.exports = function () {
 };
 ```
 
-> 第二步：获取 import 节点，找出引入模块是 libraryName 的语句
+> 第二步：获取 import(进口) 节点，找出引入模块是 libraryName 的语句
 
 ```
 const core = require("@babel/core"); //babel核心模块
@@ -1978,7 +1978,7 @@ module.exports = function () {
 
 效果：最终打包结果只有 19KB 了。
 
-![](./static/d8cd4d5e77484d0d88dba95610e09de7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/d8cd4d5e77484d0d88dba95610e09de7~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 ### 4.9、一战成名：实现`TypeScript`的类型校验
 
@@ -2055,7 +2055,7 @@ console.log(targetSource.code);
 
 > 效果：
 
-![](./static/5fdec86c0a344936857449d00b9405e0~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/5fdec86c0a344936857449d00b9405e0~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 #### 9.2、先声明再赋值场景
 
@@ -2070,7 +2070,7 @@ let sourceCode = `
 
 校验思路：
 
-- 第一步：先获取左侧变量的定义（age）
+- 第一步：先获取左侧变量的定义（age(年龄)）
 - 第二步：在获取左侧变量定义的类型（number）
 - 第三步：获取右侧的值的类型（“12”）
 - 第四步：判断变量的左侧变量的类型和右侧的值的类型是否相同
@@ -2139,7 +2139,7 @@ console.log(result.code);
 
 > 效果：
 
-![](./static/3ed1194aac9f4c019860d83e0dbb0f5d~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+![](./static/3ed1194aac9f4c019860d83e0dbb0f5d~tplv-k3u1fbpfcp-zoom-in-crop-mark-4536-0-0-0.png?)
 
 #### 9.3、泛型场景
 
@@ -2154,10 +2154,10 @@ function join<T, W>(a: T, b: W) {}
 
 整体思路：
 
-- 第一步：先获取实参类型数组（1,'2'的类型数组：[number,string]）
-- 第二步：获取函数调用时传递的泛型类型数组（[number, string]）
-- 第三步：拿到函数定义时的泛型 [T , W]，然后结合第二步将 T 赋值为 number，W 赋值为 string，得到数组 [T=number,W=string]
-- 第四步：计算函数定义时的形参类型数组：此时 a:number，b:string => [number,string]
+- 第一步：先获取实参类型数组（1,'2'的类型数组：[number,string(字符串)]）
+- 第二步：获取函数调用时传递的泛型类型数组（[number, string(字符串)]）
+- 第三步：拿到函数定义时的泛型 [T , W]，然后结合第二步将 T 赋值为 number，W 赋值为 string(字符串)，得到数组 [T=number,W=string(字符串)]
+- 第四步：计算函数定义时的形参类型数组：此时 a:number，b:string(字符串) => [number,string(字符串)]
 - 第五步：a 的形参类型跟 a 的实参类型进行比较，b 的形参类型跟 b 的实参类型进行比较
 
 理清思路很简单是不是？其实并不复杂。
@@ -2356,7 +2356,7 @@ class Foo {
 
 > 参考：
 
-- [the-super-tiny-compiler](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fthe-super-tiny-compiler "https://github.com/jamiebuilds/the-super-tiny-compiler")
+- [the-super-tiny(微小)-compiler](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fthe-super-tiny-compiler "https://github.com/jamiebuilds/the-super-tiny-compiler")
 - [babel-handbook](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fjamiebuilds%2Fbabel-handbook "https://github.com/jamiebuilds/babel-handbook")
 
 ## 七、推荐阅读
@@ -2369,5 +2369,5 @@ class Foo {
 6.  [浅析前端异常及降级处理](https://juejin.cn/post/6979564690787532814 "https://juejin.cn/post/6979564690787532814")
 7.  [前端重新部署后，领导跟我说页面崩溃了...](https://juejin.cn/post/6981718762483679239 "https://juejin.cn/post/6981718762483679239")
 8.  [前端场景下的搜索框，你真的理解了吗？](https://juejin.cn/post/7042332309449605127 "https://juejin.cn/post/7042332309449605127")
-9.  [手把手教你实现 React 数据持久化机制](https://juejin.cn/post/7072761358277672974 "https://juejin.cn/post/7072761358277672974")
-10. [面试官：你确定多窗口之间 sessionStorage 不能共享状态吗？？？🤔](https://juejin.cn/post/7076767687828832286 "https://juejin.cn/post/7076767687828832286") -->
+9.  [手把手教你实现 React(反应) 数据持久化机制](https://juejin.cn/post/7072761358277672974 "https://juejin.cn/post/7072761358277672974")
+10. [面试官：你确定多窗口之间 sessionStorage 不能共享状态吗？？？🤔](https://juejin.cn/post/7076767687828832286 "https://juejin.cn/post/7076767687828832286")
