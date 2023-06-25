@@ -29,37 +29,23 @@ L |[l]|两种读音,字母 l 后面有元音和它拼读，则发汉语拼音 l 
 
 ## 生词和短语
 
-| 单词      | 音标            | 解释                                | 扩展 |
-| :-------- | :-------------- | :---------------------------------- | ---- |
-| umbrella  | \[ʌm'brelə]     | n.伞                                |
-| please    | \[pli\:z]       | int.请                              |
-| here      | \[hıə]          | ad.这里                             |
-| my        | \[mai]          | possessive(占有欲)  adjective  我的 |
-| ticket    | \['tikit]       | n.票                                |
-| number    | \['nʌmbə]       | n.号码                              |
-| five      | \[faiv]         | num.   五                           |
-| sorry     | \['sɒri]        | a.对不起的                          |
-| sir(先生) | \[sз:]          | n.先生                              |
-| cloakroom | \['kləʊkru\:m]  | n.衣帽存放处                        |
-| suit      | \[sju\:t]       | n.一套衣服                          |
-| school    | \[sku\:l]       | n.学校                              |
-| teacher   | \['ti\:tʃə]     | n.老师                              |
-| son       | \[sʌn]          | n.儿子                              |
-| daughter  | \['dɒ\:tə]      | n.女儿                              |
-| Mr.       | \['mist(薄雾)ə] | 先生                                |
-| good(好)  | \[gud]          | a.好                                |
-| morning   | \['mɒ\:nıŋ]     | n.早晨                              |
-| Miss      | \[mis]          | 小姐                                |
-| new       | \[nju:]         | a.新的                              |
-| student   | \['stju\:dənt]  | n.学生                              |
-| French    | \[frentʃ]       | a.  & n.法国人                      |
-| German    | \['dʒз\:mən]    | a.  & n.德国人                      |
-| nice      | \['nais]        | a.美好的                            |
-| meet      | \[mi\:t]        | v.遇见                              |
-| Japanese  | \[dʒæpə'ni\:z]  | a.  & n.日本人(的)                  |
-| Korean    | \[kə'rıən]      | a.  & n.韩国人(的)                  |
-| Chinese   | \['tʃai'ni\:z]  | a.  & n.中国人(的)；汉语(的)        |
-| too       | \[tu:]          | ad.也                               |
+| 单词      | 音标           | 解释                                | 扩展 |
+| :-------- | :------------- | :---------------------------------- | ---- |
+| umbrella  | \[ʌm'brelə]    | n.伞                                |
+| please    | \[pli\:z]      | int.请                              |
+| here      | \[hıə]         | ad.这里                             |
+| my        | \[mai]         | possessive(占有欲)  adjective  我的 |
+| ticket    | \['tikit]      | n.票                                |
+| number    | \['nʌmbə]      | n.号码                              |
+| five      | \[faiv]        | num.   五                           |
+| sorry     | \['sɒri]       | a.对不起的                          |
+| sir(先生) | \[sз:]         | n.先生                              |
+| cloakroom | \['kləʊkru\:m] | n.衣帽存放处                        |
+| suit      | \[sju\:t]      | n.一套衣服                          |
+| school    | \[sku\:l]      | n.学校                              |
+| teacher   | \['ti\:tʃə]    | n.老师                              |
+| son       | \[sʌn]         | n.儿子                              |
+| daughter  | \['dɒ\:tə]     | n.女儿                              |
 
 ### umbrella
 

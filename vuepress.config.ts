@@ -38,7 +38,7 @@ export default defineUserConfig({
       },
       {
         text: "英语自学",
-        link: "/06-English/新概念/新概念1/1-2 Excuse me.md",
+        link: "/06-English/新概念/新概念1/Lesson01~02/Lesson01~02.md",
       },
     ],
     // 侧边栏
@@ -493,10 +493,10 @@ export default defineUserConfig({
         },
       ],
       "/06-English/": [
-        "/06-English/新概念/新概念1/1-2 Excuse me.md",
-        "/06-English/新概念/新概念1/3-4 Sorry sit",
-        "/06-English/新概念/新概念1/5-6 Nice to meet you copy.md",
-        "/06-English/新概念/新概念1/7-8 Are you a teacher.md",
+        "/06-English/新概念/新概念1/Lesson01~02/Lesson01~02.md",
+        "/06-English/新概念/新概念1/Lesson03~04/Lesson03~04.md",
+        "/06-English/新概念/新概念1/Lesson05~06/Lesson05~06.md",
+        "/06-English/新概念/新概念1/Lesson07~08/Lesson07~08.md",
       ],
     },
   }),
