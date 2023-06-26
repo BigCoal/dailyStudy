@@ -439,6 +439,14 @@ export default defineUserConfig({
       ],
       "/03-Front-End-Frame/": [
         {
+          text: "Webpack源码解读",
+          collapsible: true,
+          children: [
+            "/03-Front-End-Frame/02-Webpack/01-手写tapable/01-tapable.md",
+            "/03-Front-End-Frame/02-Webpack/05-TreeShaking/05-TreeShaking.md",
+          ],
+        },
+        {
           text: "Vue3源码解读",
           collapsible: true,
           children: [
