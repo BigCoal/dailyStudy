@@ -192,6 +192,26 @@ be 动词的基本意思：是
    we are --- we’re  
    they are --- they’re
 
+Be 动词使用的两个维度： 人称维度和单复数维度
+
+人称维度：
+I->am
+you ->are
+she、he、it -> is
+
+单复数维度：
+复数(we,they,your) -> are
+
+示例：
+I am in Beijing;
+He is in Shanghai;
+They are in New York;
+Who are you?
+What color is your car? //你的车是第三人称单数
+Your car is new.
+My shirts are here. //我的衬衫是复数形式，用 are
+What is your car number? // 车牌号是单数，用 is
+
 ## 课文讲解
 
 Excuse me.  
@@ -231,3 +251,16 @@ This is my book. 这是我的书。
 This is not my book. 这不是我的书。
 Is this your book? 这是你的书吗？
 Yes, it is. 是的。
+
+快速变换一般疑问句
+She's a doctor
+Is she a doctor?
+
+He's a student
+Is he a student?
+
+I'm Chinese
+You are Chinese?
+
+This is my teacher
+Is this your teacher?
