@@ -10,6 +10,15 @@
 
 ## 生词和短语
 
+| 单词            | 音标          | 解释     | 扩展 |
+| :-------------- | :------------ | :------- | ---- |
+| employee(员工)  | \['emplɒi'i:] | n.雇员   |
+| hard-working    |               | a.勤奋的 |
+| sales  reps     |               | 推销员   |
+| man             | \[mæn]        | n.男人   |
+| office          | \['ɒfis]      | n.办公室 |
+| assistant(助理) | \[ə'sistənt]  | n.助手   |
+
 employee [ɪmˈplɔɪi:]
 n. 雇员
 hard-working [hɑ:d 'wɜ:kɪŋ]
