@@ -10,6 +10,26 @@
 
 ## 生词和短语
 
+| 单词          | 音标            | 解释             | 扩展 |
+| :------------ | :-------------- | :--------------- | ---- |
+| customs       |                 | n.海关           |
+| officer(军官) | \['ɒfisə]       | n.官员           |
+| girl          | \[gз\:l]        | n.女孩，姑娘     |
+| Danish        | \['deiniʃ]      | a.  & n.丹麦人   |
+| friend        | \[frend]        | n.朋友           |
+| Norwegian     | \[nɒ:'wi\:dʒən] | a.  & n.挪威人   |
+| passport      | \['pa\:spɒ\:t]  | n.护照           |
+| brown         | \[braun]        | a.棕色的         |
+| tourist       | \['tuərist]     | n.旅游者         |
+| Russian       | \['rʌʃən]       | a.  & n.俄罗斯人 |
+| Dutch         | \['dʌtʃ]        | a.  & n.荷兰人   |
+| these         | \[θi\:z]        | pron.这些        |
+| red           | \[red]          | a.红色的         |
+| grey          | \[grei]         | a.灰色的         |
+| yellow        | \['jeləʊ]       | a.黄色的         |
+| black         | \[blæk]         | a.黑色的         |
+| orange        | \['ɒrindʒ]      | a.橘黄色的；n.橙 |
+
 customs [ˈkʌstəmz]
 n. 海关
 officer ['ɒfɪsər]
