@@ -85,7 +85,7 @@ function normalizeFileName(url) {
 //目标文件
 const p = path.join(
   __dirname,
-  "../docs/03-Front-End-Frame/02-Webpack/01-手写tapable/01-tapable.md"
+  "../docs/03-Front-End-Frame/02-Webpack/05-TreeShaking/05-TreeShaking.md"
 );
 const paths = getMDFiles(p);
 paths.map((pathItem) => {

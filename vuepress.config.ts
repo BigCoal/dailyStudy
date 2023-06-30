@@ -1,10 +1,12 @@
 import { defineUserConfig } from "vuepress";
 import { defaultTheme } from "@vuepress/theme-default";
 import { viteBundler } from "@vuepress/bundler-vite";
+import { registerComponentsPlugin } from "@vuepress/plugin-register-components";
+import { path } from "@vuepress/utils";
 
 export default defineUserConfig({
   lang: "zh-CN",
-  title: "大煤球的技术文档",
+  title: "大煤球的知识库",
   description: "学而不思则罔，思而不学则殆",
   head: [["link", { rel: "icon", href: "/logo.png" }]],
   bundler: viteBundler({
@@ -12,6 +14,13 @@ export default defineUserConfig({
       assetsInclude: ["**/*.awebp"],
     },
   }),
+  plugins: [
+    registerComponentsPlugin({
+      components: {
+        Checkbox: path.resolve(__dirname, "./components/Checkbox/index.vue"),
+      },
+    }),
+  ],
   theme: defaultTheme({
     logo: "/logo.png",
     // search: true, //搜索
@@ -39,6 +48,10 @@ export default defineUserConfig({
       {
         text: "英语自学",
         link: "/06-English/新概念/新概念1/Lesson01~02/Lesson01~02.md",
+      },
+      {
+        text: "Plan",
+        link: "/07-Plan/index.md",
       },
     ],
     // 侧边栏
@@ -566,6 +579,7 @@ export default defineUserConfig({
         "/06-English/新概念/新概念1/Lesson05~06/Lesson05~06.md",
         "/06-English/新概念/新概念1/Lesson07~08/Lesson07~08.md",
       ],
+      "/07-Plan/": ["/07-Plan/index.md"],
     },
   }),
 });
