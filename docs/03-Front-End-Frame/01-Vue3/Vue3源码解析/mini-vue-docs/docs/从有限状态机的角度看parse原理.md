@@ -30,8 +30,8 @@
 总结来说大概是这样的：
 
 - 最开始是`初始状态`，也就是刚刚执行 createRoot，进入 parseChildren
-- 如果是 {{ 开头，进入 `插值状态`，如果是 }} 开头，进入 `end 状态`，再次回到 `初始状态`
-- 如果是 < 开头，进入 `element 状态`，接着会 `parseTag `，`parseChildren`，`parseTag 结束`，进入 `end 状态`，再次回到  `初始状态`
+- 如果是 开头，进入 `插值状态`，如果是 开头，进入 `end 状态`，再次回到 `初始状态`
+- 如果是 < 开头，进入 `element 状态`，接着会 `parseTag `，`parseChildren`，`parseTag 结束`，进入 `end 状态`，再次回到 `初始状态`
 - 如果以上都不是，那么进入 `text 状态`，进入 `end 状态`，再次回到 `初始状态`
 - 每次从三种状态转为 end 状态，都会推进，最终会以 context.source 消费完毕作为出口
 
@@ -40,37 +40,37 @@
 ```js
 function test(str) {
   function stateA(char) {
-    if (char === 'a') {
-      return stateB
+    if (char === "a") {
+      return stateB;
     }
-    return stateA
+    return stateA;
   }
   function stateB(char) {
-    if (char === 'b') {
-      return stateC
+    if (char === "b") {
+      return stateC;
     }
-    return stateA
+    return stateA;
   }
   function stateC(char) {
-    if (char === 'c') {
-      return stateEnd
+    if (char === "c") {
+      return stateEnd;
     }
-    return stateA
+    return stateA;
   }
   function stateEnd() {
-    return stateEnd
+    return stateEnd;
   }
-  let currentState = stateA
+  let currentState = stateA;
   for (let i = 0; i < str.length; i++) {
-    currentState = currentState(str[i])
+    currentState = currentState(str[i]);
     if (currentState === stateEnd) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 }
 
-console.log(test('ac'))
+console.log(test("ac"));
 ```
 
 - 上面的例子我们就通过有限状态机模仿了正则中的 `/abc/` 的功能

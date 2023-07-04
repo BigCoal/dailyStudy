@@ -1,0 +1,101 @@
+*,
+*:after,
+*::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.ac-custom{
+	display: inline-block;
+	margin-top:10px;
+}
+.ac-custom .content {
+	display: flex;
+	position: relative;
+	/* align-items: flex-start; */
+	font-size: 17px;
+	vertical-align: top;
+	color: #605f5f;
+	-webkit-transition: color 0.3s;
+	transition: color 0.3s;
+}
+
+.ac-custom input[type="checkbox"],
+.ac-custom input[type="radio"],
+.ac-custom .content::before {
+	min-width: 20px;
+	width: 20px;
+	height: 20px;
+	margin-right:10px;
+	position: relative;
+    top: 4px;
+}
+
+.ac-custom input[type="checkbox"],
+.ac-custom input[type="radio"] {
+	opacity: 0;
+	-webkit-appearance: none;
+	display: inline-block;
+	vertical-align: middle;
+	z-index: 100;
+}
+
+.ac-custom  .content::before  {
+	content: '';
+	border: 2px solid #817b7b;
+	-webkit-transition: opacity 0.3s;
+	transition: opacity 0.3s;
+}
+
+.ac-radio label::before {
+	border-radius: 50%;
+}
+
+.ac-custom input[type="checkbox"]:checked + label,
+.ac-custom input[type="radio"]:checked + label {
+	color: #000000;
+} 
+
+.ac-custom input[type="checkbox"]:checked + label::before,
+.ac-custom input[type="radio"]:checked + label::before {
+	opacity: 0.8;
+}
+
+/* General SVG and path styles */
+
+.ac-custom .checkmark-svg {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: 0px;
+	left: 1px;
+	pointer-events: none;
+}
+
+.ac-custom .checkmark-svg path {
+	stroke:#ff9800bf;
+	stroke-width: 14px;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+
+
+.ac-custom .list-svg{
+	position: absolute;
+	width:calc(100% - 30px) ;
+    height: 80px;
+    left: 30px;
+    top: 8px;
+    margin-top: 0px;
+}
+
+.ac-custom .list-svg path {
+	
+	stroke: #ff9800bf;
+	stroke-width: 9px;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+/* Specific input, SVG and path styles */

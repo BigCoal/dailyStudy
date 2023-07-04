@@ -1,10 +1,12 @@
 import { defineUserConfig } from "vuepress";
 import { defaultTheme } from "@vuepress/theme-default";
 import { viteBundler } from "@vuepress/bundler-vite";
+import { registerComponentsPlugin } from "@vuepress/plugin-register-components";
+import { path } from "@vuepress/utils";
 
 export default defineUserConfig({
   lang: "zh-CN",
-  title: "大煤球的技术文档",
+  title: "大煤球的知识库",
   description: "学而不思则罔，思而不学则殆",
   head: [["link", { rel: "icon", href: "/logo.png" }]],
   bundler: viteBundler({
@@ -12,6 +14,13 @@ export default defineUserConfig({
       assetsInclude: ["**/*.awebp"],
     },
   }),
+  plugins: [
+    registerComponentsPlugin({
+      components: {
+        Checkbox: path.resolve(__dirname, "./components/Checkbox/index.vue"),
+      },
+    }),
+  ],
   theme: defaultTheme({
     logo: "/logo.png",
     // search: true, //搜索
@@ -39,6 +48,10 @@ export default defineUserConfig({
       {
         text: "英语自学",
         link: "/06-English/新概念/新概念1/Lesson01~02/Lesson01~02.md",
+      },
+      {
+        text: "Plan",
+        link: "/07-Plan/index.md",
       },
     ],
     // 侧边栏
@@ -548,6 +561,45 @@ export default defineUserConfig({
         },
       ],
       "/04-Front-End-Engineering/": [
+        {
+          text: "性能优化",
+          collapsible: true,
+          children: [
+            "/04-Front-End-Engineering/00-性能优化01/开篇：知识体系与小册格局.md",
+            "/04-Front-End-Engineering/00-性能优化01/网络篇 1：webpack 性能调优与 Gzip 原理.md",
+            "/04-Front-End-Engineering/00-性能优化01/网络篇 2：图片优化质量与性能的博弈.md",
+            "/04-Front-End-Engineering/00-性能优化01/存储篇 1：浏览器缓存机制介绍与缓存策略剖析.md",
+            "/04-Front-End-Engineering/00-性能优化01/存储篇 2：本地存储从 Cookie 到 Web Storage、IndexDB.md",
+            "/04-Front-End-Engineering/00-性能优化01/彩蛋篇：CDN 的缓存与回源机制解析.md",
+            "/04-Front-End-Engineering/00-性能优化01/渲染篇 1：服务端渲染的探索与实践.md",
+            "/04-Front-End-Engineering/00-性能优化01/渲染篇 2：知己知彼解锁浏览器背后的运行机制.md",
+            "/04-Front-End-Engineering/00-性能优化01/渲染篇 3：对症下药DOM 优化原理与基本实践.md",
+            "/04-Front-End-Engineering/00-性能优化01/渲染篇 4：千方百计Event Loop 与异步更新策略.md",
+            "/04-Front-End-Engineering/00-性能优化01/渲染篇 5：最后一击回流（Reflow）与重绘（Repaint）.md",
+            "/04-Front-End-Engineering/00-性能优化01/应用篇 1：优化首屏体验Lazy-Load 初探.md",
+            "/04-Front-End-Engineering/00-性能优化01/应用篇 2：事件的节流（throttle）与防抖（debounce）.md",
+            "/04-Front-End-Engineering/00-性能优化01/性能监测篇：Performance、LightHouse 与性能 API.md",
+            "/04-Front-End-Engineering/00-性能优化01/前方的路：希望以此为你的起点.md",
+          ],
+        },
+        {
+          text: "性能优化2",
+          collapsible: true,
+          children: [
+            "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.md",
+            "/04-Front-End-Engineering/00-性能优化02/02 Web 性能指标.md",
+            "/04-Front-End-Engineering/00-性能优化02/03 Web 性能测试.md",
+            "/04-Front-End-Engineering/00-性能优化02/04 前端页面的生命周期.md",
+            "/04-Front-End-Engineering/00-性能优化02/05 请求和响应优化 01.md",
+            "/04-Front-End-Engineering/00-性能优化02/06 渲染优化01.md",
+            "/04-Front-End-Engineering/00-性能优化02/06 渲染优化02.md",
+            "/04-Front-End-Engineering/00-性能优化02/06 渲染优化03.md",
+            "/04-Front-End-Engineering/00-性能优化02/07 图片优化.md",
+            "/04-Front-End-Engineering/00-性能优化02/08 资源加载优化.md",
+            "/04-Front-End-Engineering/00-性能优化02/09 其它优化参考文章.md",
+            "/04-Front-End-Engineering/00-性能优化02/10 网页加速优化简单总结.md",
+          ],
+        },
         "/04-Front-End-Engineering/01-CanIUse/01-caniuse.md",
         "/04-Front-End-Engineering/03-Babel/ AST（抽象语法树）以及 AST 的广泛应用.md",
         "/04-Front-End-Engineering/04-commitLint/commitLint.md",
@@ -566,6 +618,7 @@ export default defineUserConfig({
         "/06-English/新概念/新概念1/Lesson05~06/Lesson05~06.md",
         "/06-English/新概念/新概念1/Lesson07~08/Lesson07~08.md",
       ],
+      "/07-Plan/": ["/07-Plan/index.md"],
     },
   }),
 });

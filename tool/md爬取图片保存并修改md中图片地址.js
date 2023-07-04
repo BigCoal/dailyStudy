@@ -38,8 +38,21 @@ function getMDFiles(pathName) {
     return [];
   }
 }
-
-function crawlingImg(mdPath) {
+async function downloadImage(imageUrl, savePath) {
+  return new Promise((resolve, reject) => {
+    request(imageUrl)
+      .pipe(fs.createWriteStream(savePath))
+      .on("finish", () => {
+        console.log("Image saved successfully:", savePath);
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error("Error while saving the image:", err);
+        reject(err);
+      });
+  });
+}
+async function crawlingImg(mdPath) {
   const mdPathDir = path.dirname(mdPath);
 
   //目标目录下没有用静态目录创建
@@ -51,21 +64,21 @@ function crawlingImg(mdPath) {
   const markdownString = fs.readFileSync(mdPath, "utf-8");
 
   //匹配md文件内所有的图片资源
-  const imgReg = /(http|https):(.*)?\.(jpg|png|awebp)/g;
+  const imgReg = /\((http|https):(.*)?\.(jpg|png|awebp|jpeg)/g;
   const imgs = markdownString.match(imgReg);
 
   if (imgs) {
-    //爬取资源写入静态目录中
-    imgs.forEach((imgUrl) => {
+    for (let i = 0; i < imgs.length; i++) {
+      const imgUrl = imgs[i].slice(1);
+      console.log(imgUrl);
       const filename = normalizeFileName(path.basename(imgUrl));
-      request(imgUrl).pipe(
-        fs.createWriteStream(path.join(staticDir, filename))
-      );
-    });
+      const saveFile = path.join(staticDir, filename);
+      await downloadImage(imgUrl, saveFile);
+    }
 
     //替换原来的md文件中远程图片地址为本地图片地址
     let newMdString = markdownString.replace(imgReg, (match) => {
-      return "./static/" + normalizeFileName(path.basename(match));
+      return "(./static/" + normalizeFileName(path.basename(match));
     });
     fs.writeFile(mdPath, newMdString, (err) => {
       if (err) throw err;
@@ -85,7 +98,7 @@ function normalizeFileName(url) {
 //目标文件
 const p = path.join(
   __dirname,
-  "../docs/03-Front-End-Frame/02-Webpack/01-手写tapable/01-tapable.md"
+  "../docs/04-Front-End-Engineering/00-性能优化02"
 );
 const paths = getMDFiles(p);
 paths.map((pathItem) => {
