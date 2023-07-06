@@ -6,7 +6,7 @@
 
 出于安全性，浏览器限制脚本内发起的跨源 HTTP 请求。 例如，`XMLHttpRequest` 和 [Fetch API](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API) 遵循[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy)。这意味着使用这些 API 的 Web 应用程序只能从加载应用程序的同一个域请求 HTTP 资源，除非响应报文包含了正确 CORS 响应头。
 
-![](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/cors_principle.png)
+![](./static/cors_principle.png)
 
 跨源域资源共享（[CORS](https://developer.mozilla.org/zh-CN/docs/Glossary/CORS)）机制允许 Web 应用服务器进行跨源访问控制，从而使跨源数据传输得以安全进行。现代浏览器支持在 API 容器中（例如 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 或 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API)）使用 CORS，以降低跨源 HTTP 请求所带来的风险。
 
@@ -117,7 +117,7 @@ xhr.send('<person><name>Arun</name></person>');
 
 上面的代码使用 `POST` 请求发送一个 XML 文档，该请求包含了一个自定义的请求首部字段（X-PINGOTHER: pingpong）。另外，该请求的 `Content-Type` 为 `application/xml`。因此，该请求需要首先发起 “预检请求”。
 
-![](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/preflight_correct.png)
+![](./static/preflight_correct.png)
 
 **备注：** 如下所述，实际的 `POST` 请求不会携带 `Access-Control-Request-*` 首部，它们仅用于 `OPTIONS` 请求。
 
@@ -253,7 +253,7 @@ function callOtherDomain() {
 
 第 7 行将 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 的 `withCredentials` 标志设置为 `true`，从而向服务器发送 Cookies。因为这是一个简单 `GET` 请求，所以浏览器不会对其发起 “预检请求”。但是，如果服务器端的响应中未携带 [`Access-Control-Allow-Credentials`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials)`: true`，浏览器将不会把响应内容返回给请求的发送者。
 
-![](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/cred-req-updated.png)
+![](./static/cred-req-updated.png)
 
 客户端与服务器端交互示例如下：
 

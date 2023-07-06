@@ -31,7 +31,7 @@ http 缓存规则由响应首部字段进行控制，其中的关键字段有 **
 
 我们通过 chrome 控制台可以很轻松的找到一个案例：
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f27357a382509~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/166f27357a382509~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 图中配置
 
@@ -41,7 +41,7 @@ http 缓存规则由响应首部字段进行控制，其中的关键字段有 **
 
 ### 缓存流程
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f2735c584653e~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/166f2735c584653e~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 缓存规则在其中是如何起作用的呢，我们来看几个重点关注部分
 
@@ -99,13 +99,13 @@ cdn 缓存是一种服务端缓存，CDN 服务商将源站的资源缓存到遍
 
 ### 缓存规则
 
-与 http 缓存规则不同的是，这个规则并不是规范性的，而是由 cdn 服务商来制定，我们以腾讯云举例，打开 cdn 加速服务配置，面板如下。![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f2735818decc5~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+与 http 缓存规则不同的是，这个规则并不是规范性的，而是由 cdn 服务商来制定，我们以腾讯云举例，打开 cdn 加速服务配置，面板如下。![](./static/166f2735818decc5~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 可以看到，提供给我们的配置项只有文件类型（或文件目录）和刷新时间，意义也很简单，针对不同文件类型，在 cdn 节点上缓存对应的时间。
 
 ### cdn 运作流程
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f2735f65e8be9~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/166f2735f65e8be9~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 由图我们可以看出，cdn 缓存的配置主要作用在缓存处理阶段，虽然配置项只有文件类型和缓存时间，但流程却并不简单，我们先来明确一个概念——回源，回源的意思就是返回源站，何为源站，就是我们自己的服务器，很多人误解接入 cdn 就是把资源放在了 cdn 上，其实不然，如图中所示，接入 cdn 后，我们的服务器就是源站，源站一般情况下只会在 cdn 节点没有资源或 cdn 资源失效时接收到 cdn 节点的请求，其他时间，源站并不会接收请求（当然，如果我们知道源站的地址，我们可以直接访问源站）。明确了回源的概念后，cdn 的流程就显得不那么复杂了，简单的理解就是，没有资源就去源站读取，有资源就直接发送给用户。与 http 缓存不同的是，cdn 中没有 no-cache（max-age=0）的情况，当我们设置缓存时间为 0 的时候，该类型文件就被认定为不缓存文件，就是所有请求直接转发源站，只有当缓存时间大于 0 且缓存过期的时候，才会与源站对比缓存是否被修改。
 
@@ -113,7 +113,7 @@ cdn 缓存是一种服务端缓存，CDN 服务商将源站的资源缓存到遍
 
 cdn 缓存配置并不麻烦，整体来说，建议和 http 缓存配置保持统一。需要特别注意的是，cdn 的缓存配置会受到 http 缓存配置的影响，而且各个 cdn 服务商并不完全一致，以腾讯云为例，在缓存配置的文档中特别有以下说明。
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f2735ae3e0b5c~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)这会对我们有什么影响呢？
+![](./static/166f2735ae3e0b5c~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)这会对我们有什么影响呢？
 
 1.  如果我们 http 缓存设置 cache-control: max-age=600，即缓存 10 分钟，但 cdn 缓存配置中设置文件缓存时间为 1 小时，那么就会出现如下情况，文件被访问后第 12 分钟修改并上传到服务器，用户重新访问资源，响应码会是 304，对比缓存未修改，资源依然是旧的，一个小时后再次访问才能更新为最新资源
 2.  如果不设置 cache-control 呢，在 http 缓存中我们说过，如果不设置 cache-control，那么会有默认的缓存时间，但在这里，cdn 服务商明确会在没有 cache-control 字段时主动帮我们添加 cache-control: max-age=600。
@@ -129,7 +129,7 @@ http 缓存与 cdn 缓存的结合
 
 当我们分别理解了 http 缓存配置和 cdn 缓存配置后，我们还有一件事情，就是理解二者结合时，请求的流向问题
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/11/8/166f27357a55e482~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/166f27357a55e482~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 当用户访问我们的业务服务器时，首先进行的就是 http 缓存处理，如果 http 缓存通过校验，则直接响应给用户，如果未通过校验，则继续进行 cdn 缓存的处理，cdn 缓存处理完成后返回给客户端，由客户端进行 http 缓存规则存储并响应给用户。当我们分析缓存问题时，一定要将两个流程独立开来分析，现在来看开篇时的错误案例，很明显，第一个问题时由于 http 缓存配置不合理，导致用户必须进行强制刷新才能更新资源，第二个问题则是 cdn 缓存未及时更新造成的。
 

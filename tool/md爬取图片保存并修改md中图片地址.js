@@ -96,10 +96,7 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(
-  __dirname,
-  "../docs/04-Front-End-Engineering/00-性能优化02"
-);
+const p = path.join(__dirname, "../docs/01-Computer-Basic/02-计算机网络/HTTP");
 const paths = getMDFiles(p);
 paths.map((pathItem) => {
   crawlingImg(pathItem);

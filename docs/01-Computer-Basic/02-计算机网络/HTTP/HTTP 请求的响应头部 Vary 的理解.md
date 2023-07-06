@@ -1,27 +1,23 @@
-> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [blog.csdn.net](https://blog.csdn.net/qq_29405933/article/details/84315254)
-
-1. 引言
-=====
+1. # 引言
 
 由于我主要是做 Android 开发的，所以 Vary 很陌生，今天看到 [OkHttp](https://so.csdn.net/so/search?q=OkHttp&spm=1001.2101.3001.7020) 源码中，有对 Vary 的判断，就在网上查询并且仔细研究了一下，感觉比较有用，就记录一下。
 
-2. 讲解
-=====
+2. # 讲解
 
 简单说一下我对 Vary 一些理解，自己的一点总结。
 
 Vary 一般出现在 HTTP 请求的响应信息头部，比如像下面这样：
 
 > ```
-> HTTP/1.0 200 OK 
-> Date: Fri, 24 Sep 2010 23:09:32 GMT 
-> Content-Type: application/json;charset=UTF-8 
-> Content-Language: en-US 
-> Vary: Accept-Encoding,User-Agent 
-> Age: 1235 
-> X-Cache: HIT from cache.kolich.local 
-> X-Cache-Lookup: HIT from cache.kolich.local:80 
-> Content-Length: 25090 
+> HTTP/1.0 200 OK
+> Date: Fri, 24 Sep 2010 23:09:32 GMT
+> Content-Type: application/json;charset=UTF-8
+> Content-Language: en-US
+> Vary: Accept-Encoding,User-Agent
+> Age: 1235
+> X-Cache: HIT from cache.kolich.local
+> X-Cache-Lookup: HIT from cache.kolich.local:80
+> Content-Length: 25090
 > Connection: close
 > ```
 
@@ -53,41 +49,39 @@ Vary 出现在响应信息中的作用是什么呢？首先这是由服务器端
 这时候我们的 Vary 响应头就登场了，Vary 的字面意思是 “不一、多样化”，顾名思义，它的存在区分同样的网络请求的不同之处，其实就是通过头部信息来区分。一个简单的 Vary 头包括：
 
 > Vary: Accept-Encoding
-> 
+>
 > Vary: Accept-Encoding,User-Agent
-> 
+>
 > Vary: X-Some-Custom-[Header](https://so.csdn.net/so/search?q=Header&spm=1001.2101.3001.7020),Host
-> 
-> Vary: *
+>
+> Vary: \*
 
 Vary 存在于响应头中，它的内容来自于请求头中相关字段，Vary 头的内容如果是多条则用 “,” 分割。缓存服务器会将某接口的首次请求结果缓存下来（包括响应头中的 Vary），后面在发生相同请求的时候缓存服务器会拿着缓存的 Vary 来进行判断。比如 Vary: Accept-Encoding,User-Agent，那么 Accept-Encoding 与 User-Agent 两个请求头的内容，就会作为判断是否返回缓存数据的依据，当缓存服务器中相同请求的缓存数据的编码格式、代理服务与当前请求的编码格式、代理服务一致，那就返回缓存数据，否则就会从服务器重新获取新的数据。当缓存服务器中已经缓存了该条请求，那么某次服务器端的响应头中如果 Vary 的值改变，则 Vary 会更新到该请求的缓存中去，下次请求会对比新的 Vary 内容。
 
 官方解释 Vary 头：告知下游的代理服务器，应当如何对以后的请求协议头进行匹配，以决定是否可使用已缓存的响应内容而不是重新从原服务器请求新的内容。
 
-Vary: * ，这个我不太理解，我个人的理解是，当 Vary 的值为 “*” 时，意味着请求头中的那些字段的值不能用来区分当前请求是从缓存服务拿还是重新请求获取，在 Android 的 OkHttp 框架中，客户端接收到服务器的响应数据，进行缓存处理时，一旦判断响应头有 Vary:* 时，就不缓存该条数据。所以我猜想缓存服务器会不会也是这样，当 Vary 的值为 “*” 时，不做缓存。
+Vary: _ ，这个我不太理解，我个人的理解是，当 Vary 的值为 “_” 时，意味着请求头中的那些字段的值不能用来区分当前请求是从缓存服务拿还是重新请求获取，在 Android 的 OkHttp 框架中，客户端接收到服务器的响应数据，进行缓存处理时，一旦判断响应头有 Vary:_ 时，就不缓存该条数据。所以我猜想缓存服务器会不会也是这样，当 Vary 的值为 “_” 时，不做缓存。
 
-3. 总结
-=====
+3. # 总结
 
-1.  **Vary 是作为响应头由服务器端返回数据时添加的头部信息；**
-2.  **Vary 头的内容来自于当前请求的 Request 头部 Key，比如 Accept-Encoding、User-Agent 等；**
-3.  **缓存服务器进行某接口的网络请求结果数据缓存时，会将 Vary 一起缓存；**
-4.  **HTTP 请求，缓存中 Vary 的内容会作为当前缓存数据是否可以作为请求结果返回给客户端的判断依据；**
-5.  **HTTP 请求，响应数据中的 Vary 用来判断当前缓存中同请求的数据的 Vary 是否失效，如果缓存中的 Vary 与服务器刚拿到的 Vary 不一致，则可以进行更新。**
-6.  **当 Vary 的值为 “*”，意味着请求头中的所有信息都不可作为是否从缓存服务器拿数据的判断依据。**
+1. **Vary 是作为响应头由服务器端返回数据时添加的头部信息；**
+1. **Vary 头的内容来自于当前请求的 Request 头部 Key，比如 Accept-Encoding、User-Agent 等；**
+1. **缓存服务器进行某接口的网络请求结果数据缓存时，会将 Vary 一起缓存；**
+1. **HTTP 请求，缓存中 Vary 的内容会作为当前缓存数据是否可以作为请求结果返回给客户端的判断依据；**
+1. **HTTP 请求，响应数据中的 Vary 用来判断当前缓存中同请求的数据的 Vary 是否失效，如果缓存中的 Vary 与服务器刚拿到的 Vary 不一致，则可以进行更新。**
+1. **当 Vary 的值为 “\*”，意味着请求头中的所有信息都不可作为是否从缓存服务器拿数据的判断依据。**
 
-4. 疑问
-=====
+1. # 疑问
 
-当 Vary 的值为 “*” 时，意味着什么？Vary 是否有更好的解释？官网的英文本人实在是能力有限翻译不过来，哪位大神有兴趣，可以指点一二，我不胜感激，我把官网的英文解释贴上来：
+当 Vary 的值为 “\*” 时，意味着什么？Vary 是否有更好的解释？官网的英文本人实在是能力有限翻译不过来，哪位大神有兴趣，可以指点一二，我不胜感激，我把官网的英文解释贴上来：
 
 [7.1.4](https://tools.ietf.org/html/rfc7231#section-7.1.4). Vary
 
-The "Vary" header field in a response describes what parts of a request message, aside from the method, Host header field, and request target, might influence the origin server's process for selecting and representing this response. The value consists of either a single asterisk ("*") or a list of header field names (case-insensitive).
+The "Vary" header field in a response describes what parts of a request message, aside from the method, Host header field, and request target, might influence the origin server's process for selecting and representing this response. The value consists of either a single asterisk ("\*") or a list of header field names (case-insensitive).
 
-Vary = "*" / 1#field-name
+Vary = "\*" / 1#field-name
 
-A Vary field value of "*" signals that anything about the request might play a role in selecting the response representation, possibly including elements outside the message syntax (e.g., the client's network address). A recipient will not be able to determine whether this response is appropriate for a later request without forwarding the request to the origin server. A proxy MUST NOT generate a Vary field with a"*" value.
+A Vary field value of "_" signals that anything about the request might play a role in selecting the response representation, possibly including elements outside the message syntax (e.g., the client's network address). A recipient will not be able to determine whether this response is appropriate for a later request without forwarding the request to the origin server. A proxy MUST NOT generate a Vary field with a"_" value.
 
 A Vary field value consisting of a comma-separated list of names indicates that the named request header fields, known as the selecting header fields, might have a role in selecting the representation. The potential selecting header fields are not limited to those defined by this specification.
 

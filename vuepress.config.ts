@@ -34,7 +34,7 @@ export default defineUserConfig({
         link: "/01-Computer-Basic/03-设计模式/策略模式.md",
       },
       {
-        text: "前端基础三大件",
+        text: "前端基础四大件",
         link: "/02-Front-End-Basic/01-JavaScript/基础系列/slice-substring-substr.md",
       },
       {
@@ -43,7 +43,7 @@ export default defineUserConfig({
       },
       {
         text: "工程化",
-        link: "/04-Front-End-Engineering/01-CanIUse/01-caniuse.md",
+        link: "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.md",
       },
       {
         text: "英语自学",
@@ -127,7 +127,7 @@ export default defineUserConfig({
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP2四大核心特性.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTPS.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP_1.x 的连接管理.md",
-            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/内容安全策略( CSP ).md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP概述.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/meta标签.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/图解SSL_TLS协议.md",
@@ -143,6 +143,14 @@ export default defineUserConfig({
             // 字符串 - 页面文件路径
             "/01-Computer-Basic/03-设计模式/策略模式.md",
             "/01-Computer-Basic/03-设计模式/代理模式.md",
+          ],
+        },
+        {
+          text: "操作系统",
+          collapsible: true,
+          children: [
+            // 字符串 - 页面文件路径
+            "/01-Computer-Basic/04-操作系统/index.md",
           ],
         },
       ],
@@ -573,29 +581,29 @@ export default defineUserConfig({
         },
       ],
       "/04-Front-End-Engineering/": [
+        // {
+        //   text: "性能优化",
+        //   collapsible: true,
+        //   children: [
+        //     "/04-Front-End-Engineering/00-性能优化01/开篇：知识体系与小册格局.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/网络篇 1：webpack 性能调优与 Gzip 原理.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/网络篇 2：图片优化质量与性能的博弈.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/存储篇 1：浏览器缓存机制介绍与缓存策略剖析.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/存储篇 2：本地存储从 Cookie 到 Web Storage、IndexDB.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/彩蛋篇：CDN 的缓存与回源机制解析.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 1：服务端渲染的探索与实践.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 2：知己知彼解锁浏览器背后的运行机制.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 3：对症下药DOM 优化原理与基本实践.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 4：千方百计Event Loop 与异步更新策略.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 5：最后一击回流（Reflow）与重绘（Repaint）.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/应用篇 1：优化首屏体验Lazy-Load 初探.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/应用篇 2：事件的节流（throttle）与防抖（debounce）.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/性能监测篇：Performance、LightHouse 与性能 API.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/前方的路：希望以此为你的起点.md",
+        //   ],
+        // },
         {
           text: "性能优化",
-          collapsible: true,
-          children: [
-            "/04-Front-End-Engineering/00-性能优化01/开篇：知识体系与小册格局.md",
-            "/04-Front-End-Engineering/00-性能优化01/网络篇 1：webpack 性能调优与 Gzip 原理.md",
-            "/04-Front-End-Engineering/00-性能优化01/网络篇 2：图片优化质量与性能的博弈.md",
-            "/04-Front-End-Engineering/00-性能优化01/存储篇 1：浏览器缓存机制介绍与缓存策略剖析.md",
-            "/04-Front-End-Engineering/00-性能优化01/存储篇 2：本地存储从 Cookie 到 Web Storage、IndexDB.md",
-            "/04-Front-End-Engineering/00-性能优化01/彩蛋篇：CDN 的缓存与回源机制解析.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 1：服务端渲染的探索与实践.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 2：知己知彼解锁浏览器背后的运行机制.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 3：对症下药DOM 优化原理与基本实践.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 4：千方百计Event Loop 与异步更新策略.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 5：最后一击回流（Reflow）与重绘（Repaint）.md",
-            "/04-Front-End-Engineering/00-性能优化01/应用篇 1：优化首屏体验Lazy-Load 初探.md",
-            "/04-Front-End-Engineering/00-性能优化01/应用篇 2：事件的节流（throttle）与防抖（debounce）.md",
-            "/04-Front-End-Engineering/00-性能优化01/性能监测篇：Performance、LightHouse 与性能 API.md",
-            "/04-Front-End-Engineering/00-性能优化01/前方的路：希望以此为你的起点.md",
-          ],
-        },
-        {
-          text: "性能优化2",
           collapsible: true,
           children: [
             "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.md",

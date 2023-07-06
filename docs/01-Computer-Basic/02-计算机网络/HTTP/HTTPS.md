@@ -1,18 +1,17 @@
-> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [blog.csdn.net](https://blog.csdn.net/iispring/article/details/51615631)
+# HTTPS
 
 ### 目录
 
-*   *   [密码学基础](#_6)
-    *   [HTTPS 通信过程](#HTTPS_35)
-    *   [数字证书](#_76)
-    *   [Android 中访问 HTTPS](#AndroidHTTPS_131)
+- - [密码学基础](#_6)
+  - [HTTPS 通信过程](#HTTPS_35)
+  - [数字证书](#_76)
+  - [Android 中访问 HTTPS](#AndroidHTTPS_131)
 
 我们知道，HTTP 请求都是明文传输的，所谓的明文指的是没有经过[加密](https://so.csdn.net/so/search?q=%E5%8A%A0%E5%AF%86&spm=1001.2101.3001.7020)的信息，如果 HTTP 请求被黑客拦截，并且里面含有银行卡密码等敏感数据的话，会非常危险。为了解决这个问题，Netscape 公司制定了 HTTPS 协议，HTTPS 可以将数据加密传输，也就是传输的是密文，即便黑客在传输过程中拦截到数据也无法破译，这就保证了网络通信的安全。
 
-* * *
+---
 
-密码学基础
------
+## 密码学基础
 
 在正式讲解 HTTPS 协议之前，我们首先要知道一些密码学的知识。
 
@@ -37,10 +36,9 @@
 非对称加密的缺点是加密和解密花费时间长、速度慢，只适合对少量数据进行加密。  
 在非对称加密中使用的主要算法有：RSA、Elgamal、Rabin、D-H、ECC（椭圆曲线加密算法）等。
 
-* * *
+---
 
-HTTPS 通信过程
-----------
+## HTTPS 通信过程
 
 HTTPS 协议 = HTTP 协议 + SSL/TLS 协议，在 HTTPS 数据传输的过程中，需要用 SSL/TLS 对数据进行加密和解密，需要用 HTTP 对加密后的数据进行传输，由此可以看出 HTTPS 是由 HTTP 和 SSL/TLS 一起合作完成的。
 
@@ -55,34 +53,23 @@ TLS 的全称是 Transport Layer Security，即安全传输层协议，最新版
 
 HTTPS 在传输的过程中会涉及到三个密钥：
 
-*   服务器端的公钥和私钥，用来进行非对称加密
-    
-*   客户端生成的随机密钥，用来进行对称加密
-    
+- 服务器端的公钥和私钥，用来进行非对称加密
+- 客户端生成的随机密钥，用来进行对称加密
 
 一个 HTTPS 请求实际上包含了两次 HTTP 传输，可以细分为 8 步。
 
 1.  客户端向服务器发起 HTTPS 请求，连接到服务器的 443 端口。
-    
 2.  服务器端有一个密钥对，即公钥和私钥，是用来进行非对称加密使用的，服务器端保存着私钥，不能将其泄露，公钥可以发送给任何人。
-    
 3.  服务器将自己的公钥发送给客户端。
-    
 4.  客户端收到服务器端的公钥之后，会对公钥进行检查，验证其合法性，如果发现发现公钥有问题，那么 HTTPS 传输就无法继续。严格的说，这里应该是验证服务器发送的数字证书的合法性，关于客户端如何验证数字证书的合法性，下文会进行说明。如果公钥合格，那么客户端会生成一个随机值，这个随机值就是用于进行对称加密的密钥，我们将该密钥称之为 client key，即客户端密钥，这样在概念上和服务器端的密钥容易进行区分。然后用服务器的公钥对客户端密钥进行非对称加密，这样客户端密钥就变成密文了，至此，HTTPS 中的第一次 HTTP 请求结束。
-    
 5.  客户端会发起 HTTPS 中的第二个 HTTP 请求，将加密之后的客户端密钥发送给服务器。
-    
 6.  服务器接收到客户端发来的密文之后，会用自己的私钥对其进行非对称解密，解密之后的明文就是客户端密钥，然后用客户端密钥对数据进行对称加密，这样数据就变成了密文。
-    
 7.  然后服务器将加密后的密文发送给客户端。
-    
 8.  客户端收到服务器发送来的密文，用客户端密钥对其进行对称解密，得到服务器发送的数据。这样 HTTPS 中的第二个 HTTP 请求结束，整个 HTTPS 传输完成。
-    
 
-* * *
+---
 
-数字证书
-----
+## 数字证书
 
 通过观察 HTTPS 的传输过程，我们知道，当服务器接收到客户端发来的请求时，会向客户端发送服务器自己的公钥，但是黑客有可能中途篡改公钥，将其改成黑客自己的，所以有个问题，客户端怎么信赖这个公钥是自己想要访问的服务器的公钥而不是黑客的呢？ 这时候就需要用到数字证书。
 
@@ -95,26 +82,19 @@ HTTPS 在传输的过程中会涉及到三个密钥：
 不论什么平台，设备的操作系统中都会内置 100 多个全球公认的 CA，说具体点就是设备中存储了这些知名 CA 的公钥。当客户端接收到服务器的数字证书的时候，会进行如下验证：
 
 1.  首先客户端会用设备中内置的 CA 的公钥尝试解密数字证书，如果所有内置的 CA 的公钥都无法解密该数字证书，说明该数字证书不是由一个全球知名的 CA 签发的，这样客户端就无法信任该服务器的数字证书。
-    
 2.  如果有一个 CA 的公钥能够成功解密该数字证书，说明该数字证书就是由该 CA 的私钥签发的，因为被私钥加密的密文只能被与其成对的公钥解密。
-    
 3.  除此之外，还需要检查客户端当前访问的服务器的域名是与数字证书中提供的 “颁发给” 这一项吻合，还要检查数字证书是否过期等。
-    
 
 通过浏览器直接获取服务器的公钥很容易，各个浏览器操作大同小异。百度现在已经实现了全站点 HTTPS，我们就以百度为例如何从 Chrome 中获取其公钥。
 
 1.  用 Chrome 打开百度首页，在 https 左侧我们会发现有一个绿色的锁头。  
     ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMjI0OTI2?x-oss-process=image/format,png)
-    
 2.  点击该锁头，出现一个弹出面板，点击面板中的 “详细信息” 几个字。  
     ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzE2MDM3?x-oss-process=image/format,png)
-    
 3.  这是会打开 Chrome 的 Developer Tool，并自动切换到 Security 这个页面。  
     ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzUwNzEy?x-oss-process=image/format,png)
-    
 4.  点击 “View ceertificate” 按钮就可以查看该网站的证书了，如下所示：  
     ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNDMyNzI3?x-oss-process=image/format,png)
-    
 
 在 “常规” 这个面板中，我们从中可以查看该证书是又 Symantec 颁发给 baidu.com 这个网站的，有效期是从 2015 年 9 月 17 到 2016 年 9 月 1 日。
 
@@ -135,10 +115,9 @@ HTTPS 在传输的过程中会涉及到三个密钥：
 
 这里先解释一下什么是证书链。我们之前提到，VeriSign 是一个全球知名的 CA，但是一般情况下，CA 不会用自己的私钥去直接签名某网站的数字证书，一般 CA 会首先签发一种证书，然后用这种证书再去签发百度等的数字证书。在此例中，VeriSign 签发了 Symantec 证书，然后 Symantec 又签发了 baiduc.om，VeriSign 位于最顶端，类似于根结点，因此叫做根 CA，Symatec 位于中间，叫做中间 CA，当然，有可能有多个中间 CA，这样从根 CA 到中间 CA，再到最终的网站的证书，这样自上而下形成了一条证书链。如果想要查看证书链中的某个证书，只需要选中它，比如选中了 Symantec，然后点击下面的 “查看证书” 按钮就会弹出另一个对话框，在其中可以查看 Symantec 的数字证书，当然也可以将其导出成证书文件保存在硬盘上。
 
-* * *
+---
 
-Android 中访问 HTTPS
------------------
+## Android 中访问 HTTPS
 
 在 Android 中我们也会经常发送 HTTPS 请求，这时需要使用 HttpsURLConnection 这个类，HttpsURLConnection 是继承自 HttpURLConnection 的，其用法跟 HttpURLConnection 是一样的，比如我们想用 HTTPS 访问百度的首页，代码如下所示：
 
@@ -268,15 +247,10 @@ class DownloadThread extends Thread{
 上面的注释写的比较详细，此处我们还是对以上代码进行一下说明。
 
 1.  首先从 asserts 目录中获取 12306.cer 证书的文件流，然后用 CertificateFactory 的 generateCertificate 方法将该文件流转化为一个证书对象 Certificate，该证书就是 12306 网站的数字证书。
-    
 2.  创建一个默认类型的 KeyStore 实例，keyStore 用于存储着我们信赖的数字证书，将 12306 的数字证书放入 keyStore 中。
-    
 3.  我们获取一个默认的 TrustManagerFactory 的实例，并用之前的 keyStore 初始化它，这样 TrustManagerFactory 的实例也会信任 keyStore 中 12306.cer 证书。通过 TrustManagerFactory 的 getTrustManagers 方法获取 TrustManager 数组，该数组中的 TrustManager 也会信任 12306.cer 证书。
-    
 4.  创建一个 TLS 类型的 SSLContext 实例，并用之前的 TrustManager 数组初始化 sslContext 实例，这样该 sslContext 实例也会信任 12306.cer 证书。
-    
 5.  通过 sslContext 获取 SSLSocketFactory 对象，将 sslSocketFactory 通过 setSSLSocketFactory 方法作用于 HttpsURLConnection 对象，这样 conn 对象就会信任 keyStore 中的 12306.cer 证书。这样一来，客户端就会信任 12306 的证书，从而正确建立 HTTPS 连接。
-    
 
 以上的处理过程是 Google 官方建议的流程，步骤流程总结如下：
 
@@ -315,16 +289,13 @@ CA 是根 CA 证书，例如 SRCA.cer，C 是最终的网站的数字证书，�
 
 Android 客户端不信任服务器证书的原因主要是因为客户端不信任证书链中的根证书 CA。12306 网站的自身的数字证书可能会过几年就会重新生成，发生变动，但是 SRCA 作为其签发者，发生变动的次数会少的多，或者说是很长时间内不会改动，所以我们的 App 去信任 SRCA.cer 比直接去信任 12306.cer 要更稳定一些。
 
-* * *
+---
 
 总结：
 
 1.  HTTPS 的传输过程涉及到了对称加密和非对称加密，对称加密加密的是实际的数据，非对称加密加密的是对称加密所需要的客户端的密钥。
-    
 2.  为了确保客户端能够确认公钥就是想要访问的网站的公钥，引入了数字证书的概念，由于证书存在一级一级的签发过程，所以就出现了证书链，在证书链中的顶端的就是根 CA。
-    
 3.  Android 客户端不信任服务器证书的原因主要是因为客户端不信任证书链中的根证书 CA，我们应该让我们的 App 去信任该根证书 CA，而不是直接信任网站的自身的数字证书，因为网站的数字证书可能会发生变化。
-    
 
 希望本身对大家有所帮助！
 
