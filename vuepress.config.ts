@@ -23,7 +23,10 @@ export default defineUserConfig({
   ],
   theme: defaultTheme({
     logo: "/logo.png",
-    // search: true, //搜索
+    search: true, //搜索
+    editLinkPattern: ":repo/edit/master/docs/:path",
+    lastUpdated: false,
+    contributors: false,
     // darkMode: false,
     repo: "https://github.com/BigCoal/dailyStudy",
     // searchMaxSuggestions: 12,
