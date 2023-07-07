@@ -8,8 +8,9 @@
  */
 const fs = require("fs");
 const path = require("path");
-const request = require("request");
+const axios = require("axios");
 
+//获取.md 文件，如果传入是一个文件夹，遍历里面所有的md文件
 function getMDFiles(pathName) {
   // 判断路径是否存在
   if (!fs.existsSync(pathName)) {
@@ -38,17 +39,27 @@ function getMDFiles(pathName) {
     return [];
   }
 }
+//下载图片，保存图片
 async function downloadImage(imageUrl, savePath) {
   return new Promise((resolve, reject) => {
-    request(imageUrl)
-      .pipe(fs.createWriteStream(savePath))
-      .on("finish", () => {
-        console.log("Image saved successfully:", savePath);
-        resolve();
+    axios
+      .get(imageUrl, { responseType: "arraybuffer" })
+      .then((response) => {
+        const imageData = Buffer.from(response.data, "binary");
+
+        fs.writeFile(savePath, imageData, "binary", (error) => {
+          if (error) {
+            reject(error);
+            console.error("Error saving image:", imageUrl);
+          } else {
+            resolve();
+            console.log("Image downloaded and saved successfully.");
+          }
+        });
       })
-      .on("error", (err) => {
-        console.error("Error while saving the image:", err);
-        reject(err);
+      .catch((error) => {
+        reject(error);
+        console.error("Error downloading image:", imageUrl);
       });
   });
 }
@@ -64,28 +75,32 @@ async function crawlingImg(mdPath) {
   const markdownString = fs.readFileSync(mdPath, "utf-8");
 
   //匹配md文件内所有的图片资源
-  const imgReg = /\((http|https):(.*)?\.(jpg|png|awebp|jpeg)/g;
+  const imgReg = /\((http|https):.*?\.(jpg|png|awebp|jpeg)/g;
   const imgs = markdownString.match(imgReg);
+  try {
+    if (imgs) {
+      for (let i = 0; i < imgs.length; i++) {
+        const imgUrl = imgs[i].slice(1);
+        const filename = normalizeFileName(path.basename(imgUrl));
+        const saveFile = path.join(staticDir, filename);
 
-  if (imgs) {
-    for (let i = 0; i < imgs.length; i++) {
-      const imgUrl = imgs[i].slice(1);
-      console.log(imgUrl);
-      const filename = normalizeFileName(path.basename(imgUrl));
-      const saveFile = path.join(staticDir, filename);
-      await downloadImage(imgUrl, saveFile);
+        await downloadImage(imgUrl, saveFile);
+      }
+
+      //替换原来的md文件中远程图片地址为本地图片地址
+      let newMdString = markdownString.replace(imgReg, (match) => {
+        return "(./static/" + normalizeFileName(path.basename(match));
+      });
+      fs.writeFile(mdPath, newMdString, (err) => {
+        if (err) throw err;
+        console.log(`${mdPath} has been updated.`);
+      });
     }
-
-    //替换原来的md文件中远程图片地址为本地图片地址
-    let newMdString = markdownString.replace(imgReg, (match) => {
-      return "(./static/" + normalizeFileName(path.basename(match));
-    });
-    fs.writeFile(mdPath, newMdString, (err) => {
-      if (err) throw err;
-      console.log(`${mdPath} has been updated.`);
-    });
+  } catch (error) {
+    throw new Error("Parameter is not a number!");
   }
 }
+
 //格式化文件名：主要针对于windows对：文件名不支持和 对awebp后缀转换为png
 function normalizeFileName(url) {
   url = url.replaceAll(":", "-");
@@ -96,8 +111,9 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(__dirname, "../docs/01-Computer-Basic/02-计算机网络/HTTP");
+const p = path.join(__dirname, "../docs/03-Front-End-Frame/04-React/React基础");
 const paths = getMDFiles(p);
+
 paths.map((pathItem) => {
   crawlingImg(pathItem);
 });

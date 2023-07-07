@@ -368,7 +368,6 @@ export default defineUserConfig({
             {
               text: "内联元素和流",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/内联元素和流/字母x.md",
                 "/02-Front-End-Basic/02-CSS/内联元素和流/line-height.md",
@@ -483,7 +482,31 @@ export default defineUserConfig({
           ],
         },
         {
-          text: "Vue3源码解读",
+          text: "React18",
+          collapsible: true,
+          children: [
+            {
+              text: "React基础",
+              collapsible: true,
+              children: [
+                "/03-Front-End-Frame/04-React/React基础/01-React介绍.md",
+                "/03-Front-End-Frame/04-React/React基础/02-环境初始化.md",
+                "/03-Front-End-Frame/04-React/React基础/03-jsx基础.md",
+                "/03-Front-End-Frame/04-React/React基础/04-React组件基础.md",
+                "/03-Front-End-Frame/04-React/React基础/05-React组件通信.md",
+                "/03-Front-End-Frame/04-React/React基础/06-React组件进阶.md",
+                "/03-Front-End-Frame/04-React/React基础/07-Hooks基础.md",
+                "/03-Front-End-Frame/04-React/React基础/08-Hooks进阶.md",
+                "/03-Front-End-Frame/04-React/React基础/09-ReactRouter.md",
+                "/03-Front-End-Frame/04-React/React基础/10-Mobx.md",
+                "/03-Front-End-Frame/04-React/React基础/11-Redux.md",
+                "/03-Front-End-Frame/04-React/React基础/12-Zustand.md",
+              ],
+            },
+          ],
+        },
+        {
+          text: "Vue3",
           collapsible: true,
           children: [
             {
