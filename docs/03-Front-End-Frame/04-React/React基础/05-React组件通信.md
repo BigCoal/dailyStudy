@@ -264,13 +264,13 @@ export default App;
 const { Provider, Consumer } = createContext();
 ```
 
-2- 使用 Provider 包裹上层组件提供数据
+2- 使用 Provider 包裹上层组件提供数据（value 语法是固定的）
 
 ```jsx
 <Provider value={this.state.message}>{/* 根组件 */}</Provider>
 ```
 
-3- 需要用到数据的组件使用 Consumer 包裹获取数据
+3- 需要用到数据的组件使用 Consumer 包裹获取数据（value 语法是固定的）
 
 ```jsx
 <Consumer >

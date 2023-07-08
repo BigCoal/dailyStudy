@@ -4,6 +4,8 @@
 
 ![](./static/1654489956815-0348d9cc-a001-4d76-a832-1bccc2f1fde4.png)
 
+> 分为组件可以提高可维护性和复用性
+
 ## 函数组件
 
 `目标任务:`   能够独立使用函数完成 react 组件的创建和渲染
@@ -84,7 +86,7 @@ export default App;
 ### 1. 如何绑定事件
 
 - 语法\
-  on + 事件名称 = { 事件处理程序 } ，比如：`<div onClick={ onClick }></div>`
+  on + 事件名称 = { 事件处理程序 } ，比如：`<div onClick={()=>{}}></div>`
 - 注意点\
   react 事件采用驼峰命名法，比如：onMouseEnter、onFocus
 - 样例
@@ -265,7 +267,7 @@ class Counter extends React.Component {
 - setState 方法作用
 
 1.  修改 state 中的数据状态
-2.  更新 UI
+2.  更新 UI(会从新触发 render 函数)
 
 - 思想\
   &#x20;数据驱动视图，也就是只要修改数据状态，那么页面就会自动刷新，无需手动操作 dom
@@ -294,6 +296,64 @@ class Counter extends React.Component {
 ## this 问题说明
 
 ![](./static/1654490096737-17caed54-acc7-47f3-a25f-4f293c5a0e62.png)
+
+```jsx
+class Counter extends React.Component {
+  // 定义修改数据的方法
+  setCount() {
+    console.log(this); //这时候this指向undefined
+  }
+  // 使用数据 并绑定事件
+  render() {
+    return <button onClick={this.setCount}>click</button>;
+  }
+}
+```
+
+```jsx
+class Counter extends React.Component {
+  constructor() {
+    super();
+    this.setCount = this.setCount.bind(this); //使用bind强行修正this
+  }
+  // 定义修改数据的方法
+  setCount() {
+    console.log(this); //这时候this指向类，可以正常使用
+  }
+  // 使用数据 并绑定事件
+  render() {
+    return <button onClick={this.setCount}>click</button>;
+  }
+}
+```
+
+```jsx
+class Counter extends React.Component {
+  // 定义修改数据的方法
+  setCount() {
+    console.log(this); //这时候this指向类，可以正常使用
+  }
+  // 使用数据 并绑定事件
+  render() {
+    return <button onClick={() => this.setCount()}>click</button>; //通过箭头函数绑定this
+  }
+}
+```
+
+最推荐的还是下面写法：
+
+```jsx
+class Counter extends React.Component {
+  // 定义修改数据的方法
+  setCount = () => {
+    console.log(this); //这时候this指向类，可以正常使用
+  };
+  // 使用数据 并绑定事件
+  render() {
+    return <button onClick={this.setCount}>click</button>; //通过箭头函数绑定this
+  }
+}
+```
 
 这里我们作为了解内容，随着 js 标准的发展，主流的写法已经变成了 class fields，无需考虑太多 this 问题
 

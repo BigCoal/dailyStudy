@@ -76,10 +76,26 @@ export default App;
 
 ![](./static/1654489746660-d500357d-1e62-4016-a25f-d36594fdfead.png)
 
-1.  key 在 HTML 结构中是看不到的，是 React 内部用来进行性能优化时使用
+1.  key 在 HTML 结构中是看不到的，是 React 内部用来进行性能优化时使用(DIFF 算法优化)
 2.  key 在当前列表中要唯一的字符串或者数值（String/Number）
 3.  如果列表中有像 id 这种的唯一值，就用 id 来作为 key 值
 4.  如果列表中没有像 id 这种的唯一值，就可以使用 index（下标）来作为 key 值
+
+```jsx
+// 来个列表
+
+function App() {
+  return (
+    <div className="App">
+      <ul>
+        {songs.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
 
 ## 4. JSX 条件渲染
 
@@ -99,6 +115,40 @@ function App() {
       {flag ? "react真有趣" : "vue真有趣"}
       {/* 条件渲染标签/组件 */}
       {flag ? <span>this is span</span> : null}
+      {/* 可以加（）让结构更美化 */}
+      {flat ? (
+        <div>
+          <span>this is span</span>
+        </div>
+      ) : null}
+      {/* 逻辑与(&&)运算符 */}
+      {true && <span>3434343</span>}
+    </div>
+  );
+}
+export default App;
+```
+
+模版中的逻辑尽量保持精简，对于复杂的多分支逻辑，尽量收敛于一个函数，通过一个函数来处理分支逻辑，模版中只负责调用
+
+```jsx
+// 来个布尔值
+const type = 1;
+
+function getTag(type){
+  if(type===1){
+    return <h1>hahaha<h1>
+  }
+
+  if(type===2){
+    return <h2>hahaha<h2>
+  }
+}
+
+function App() {
+  return (
+    <div className="App">
+      {getTag(type)}
     </div>
   );
 }
@@ -127,7 +177,7 @@ export default App;
 
 ```jsx
 const styleObj = {
-  color: red,
+  color: "red",
 };
 
 function App() {
@@ -158,6 +208,7 @@ const showTitle = true;
 function App() {
   return (
     <div className="App">
+      <div className="title">this is a div</div>
       <div className={showTitle ? "title" : ""}>this is a div</div>
     </div>
   );
@@ -288,3 +339,6 @@ export default App;
 1.  拉取准备好的项目模块到本地 ，安装依赖，run 起来项目\
     <https://gitee.com/react-course-series/react-jsx-demo>
 2.  按照图示，完成 `评论数据渲染`  `tab内容渲染`  `评论列表点赞和点踩`   三个视图渲染
+
+> 实现最终效果如下
+> ![](./static/WX20230707-140658@2x.png)

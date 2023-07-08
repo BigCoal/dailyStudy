@@ -66,6 +66,8 @@ export default App;
 
 不可以直接在 useEffect 的回调函数外层直接包裹 await ，因为**异步会导致清理函数无法立即返回**
 
+**错误写法**
+
 ```javascript
 useEffect(async () => {
   const res = await axios.get("http://geek.itheima.net/v1_0/channels");
@@ -151,6 +153,11 @@ function App() {
 }
 export default App;
 ```
+
+> useRef 在 react hook 中的作用, 正如官网说的, 它像一个变量, 类似于 this , 它就像一个盒子, 你可以存放任何东西. createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。
+> ![](./static/cnsckcoqqv.jpeg)
+
+> ![](./static/aoorbvrwc7.gif)
 
 ## useContext
 

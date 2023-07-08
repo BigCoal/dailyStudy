@@ -85,6 +85,24 @@ optionalObjectWithShape: PropTypes.shape({
 直接使用函数参数默认值
 
 ```jsx
+import PropTypes from "prop-types";
+
+const List = ({ colors }) => {
+  return <ul>{colors}</ul>;
+};
+
+List.propTypes = {
+  colors: PropTypes.number,
+};
+
+List.defaultProps = {
+  colors: 10,
+};
+```
+
+以上写法不推荐，更推荐下述的写法
+
+```jsx
 function List({ pageSize = 10 }) {
   return <div>此处展示props的默认值：{pageSize}</div>;
 }
