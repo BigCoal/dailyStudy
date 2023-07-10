@@ -75,7 +75,7 @@ async function crawlingImg(mdPath) {
   const markdownString = fs.readFileSync(mdPath, "utf-8");
 
   //匹配md文件内所有的图片资源
-  const imgReg = /\((http|https):.*?\.(jpg|png|awebp|jpeg)/g;
+  const imgReg = /\((http|https):.*?\.(jpg|png|awebp|jpeg|gif)/g;
   const imgs = markdownString.match(imgReg);
   try {
     if (imgs) {
@@ -111,7 +111,10 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(__dirname, "../docs/03-Front-End-Frame/04-React/React基础");
+const p = path.join(
+  __dirname,
+  "../docs/03-Front-End-Frame/05-ThreeJS/01 开发环境配置"
+);
 const paths = getMDFiles(p);
 
 paths.map((pathItem) => {

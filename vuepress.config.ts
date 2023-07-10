@@ -605,6 +605,22 @@ export default defineUserConfig({
             },
           ],
         },
+        {
+          text: "ThreeJS",
+          collapsible: true,
+          children: [
+            {
+              text: "01 开发环境配置",
+              collapsible: true,
+              children: [
+                "/03-Front-End-Frame/05-ThreeJS/01 开发环境配置/01-了解Three.js.md",
+                "/03-Front-End-Frame/05-ThreeJS/01 开发环境配置/02-本地搭建Threejs官方文档网站.md",
+                "/03-Front-End-Frame/05-ThreeJS/01 开发环境配置/03-使用parcel搭建three.js开发环境.md",
+                "/03-Front-End-Frame/05-ThreeJS/01 开发环境配置/04-渲染第一个场景和物体.md",
+              ],
+            },
+          ],
+        },
       ],
       "/04-Front-End-Engineering/": [
         // {
