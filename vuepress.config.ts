@@ -296,6 +296,13 @@ export default defineUserConfig({
                     "/02-Front-End-Basic/01-JavaScript/专题系列/函数系列/递归.md",
                   ],
                 },
+                {
+                  text: "模块化",
+                  collapsible: true,
+                  children: [
+                    "/02-Front-End-Basic/01-JavaScript/专题系列/模块化/import、require、export、module.exports 混合使用详解.md",
+                  ],
+                },
                 "/02-Front-End-Basic/01-JavaScript/专题系列/深浅拷贝.md",
                 "/02-Front-End-Basic/01-JavaScript/专题系列/判断两个对象相等.md",
                 "/02-Front-End-Basic/01-JavaScript/专题系列/实现 jQuery 的 each .md",
@@ -377,7 +384,6 @@ export default defineUserConfig({
             {
               text: "流的破坏与保护",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float.md",
                 "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float的天然克星clear.md",
