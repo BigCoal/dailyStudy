@@ -398,7 +398,6 @@ export default defineUserConfig({
             {
               text: "强大的文本处理能力",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-size.md",
                 "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-family.md",
@@ -629,6 +628,14 @@ export default defineUserConfig({
         },
       ],
       "/04-Front-End-Engineering/": [
+        {
+          text: "Babel",
+          collapsible: true,
+          children: [
+            "/04-Front-End-Engineering/06-Babel/user-handbook.md",
+            "/04-Front-End-Engineering/06-Babel/plugin-handbook.md",
+          ],
+        },
         // {
         //   text: "性能优化",
         //   collapsible: true,
