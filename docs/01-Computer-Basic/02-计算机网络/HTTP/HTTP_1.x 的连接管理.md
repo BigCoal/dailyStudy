@@ -8,7 +8,7 @@ HTTP 的传输协议主要依赖于 TCP 来提供从客户端到服务器端之�
 
 有两个新的模型在 HTTP/1.1 诞生了。首先是 **“长连接模型”**，它会保持连接去完成多次连续的请求，减少了不断重新打开连接的时间。然后是 HTTP **“流水线模型”**，它还要更先进一些，多个连续的请求甚至都不用等待返回立即就可以被发送，这样就减少了耗费在网络延迟上的时间。
 
-![](https://mdn.mozillademos.org/files/13727/HTTP1_x_Connections.png)
+![](./static/HTTP1_x_Connections.png)
 
 HTTP/2 新增了其它连接管理模型。
 
@@ -68,7 +68,7 @@ HTTP/1.0 里默认并不使用长连接。把 [`Connection`](https://developer.m
 
 如果服务器端想要更快速的响应网站或应用程序的应答，它可以迫使客户端建立更多的连接。例如，不要在同一个域名下获取所有资源，假设有个域名是 `www.example.com`，我们可以把它拆分成好几个域名：`www1.example.com`、`www2.example.com`、`www3.example.com`。所有这些域名都指向同一台服务器，浏览器会同时为每个域名建立 6 条连接 (在我们这个例子中，连接数会达到 18 条)。这一技术被称作域名分片。
 
-![](https://mdn.mozillademos.org/files/13783/HTTPSharding.png)
+![](./static/HTTPSharding.png)
 
 [结论](#结论 "Permalink to 结论")
 ---------------------------

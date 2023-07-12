@@ -9,7 +9,7 @@
 
 缓存的种类有很多, 其大致可归为两类：私有与共享缓存。共享缓存存储的响应能够被多个用户使用。私有缓存只能用于单独用户。本文将主要介绍浏览器与代理缓存，除此之外还有网关缓存、CDN、反向代理缓存和负载均衡器等部署在服务器上的缓存方式，为站点和 web 应用提供更好的稳定性、性能和扩展性。
 
-![](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching/http_cache_type.png)
+![](./static/http_cache_type.png)
 
 ### [(私有) 浏览器缓存](#私有浏览器缓存 "Permalink to (私有)浏览器缓存")
 
@@ -95,7 +95,7 @@ Cache-Control: must-revalidate
 
 下面是上述缓存处理过程的一个图示：
 
-![](https://mdn.mozillademos.org/files/13771/HTTPStaleness.png)
+![](./static/HTTPStaleness.png)
 
 对于含有特定头信息的请求，会去计算缓存寿命。比如`Cache-control: max-age=N`的头，相应的缓存的寿命就是`N`。通常情况下，对于不含这个属性的请求则会去查看是否包含 [Expires](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Expires) 属性，通过比较 Expires 的值和头里面 [Date](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Date) 属性的值来判断是否缓存还有效。如果 max-age 和 expires 属性都没有，找找头里的 [Last-Modified](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Last-Modified) 信息。如果有，缓存的寿命就等于头里面 Date 的值减去 Last-Modified 的值除以 10（注：根据 rfc2626 其实也就是乘以 10%）。
 
@@ -115,7 +115,7 @@ web 开发者发明了一种被 Steve Souders 称之为 `revving` 的技术 [[1
 
 这种方法还有一个好处：同时更新两个缓存资源不会造成部分缓存先更新而引起新旧文件内容不一致。对于互相有依赖关系的 css 和 js 文件，避免这种不一致性是非常重要的。
 
-![](https://mdn.mozillademos.org/files/13779/HTTPRevved.png)
+![](./static/HTTPRevved.png)
 
 加在加速文件后面的版本号不一定是一个正式的版本号字符串，如 1.1.3 这样或者其他固定自增的版本数。它可以是任何防止缓存碰撞的标记例如 hash 或者时间戳。
 
@@ -141,7 +141,7 @@ web 开发者发明了一种被 Steve Souders 称之为 `revving` 的技术 [[1
 
 当缓存服务器收到一个请求，只有当前的请求和原始（缓存）的请求头跟缓存的响应头里的 Vary 都匹配，才能使用缓存的响应。
 
-![](https://mdn.mozillademos.org/files/13769/HTTPVary.png)
+![](./static/HTTPVary.png)
 
 使用 vary 头有利于内容服务的动态多样性。例如，使用 Vary: User-Agent 头，缓存服务器需要通过 UA 判断是否使用缓存的页面。如果需要区分移动端和桌面端的展示内容，利用这种方式就能避免在不同的终端展示错误的布局。另外，它可以帮助 Google 或者其他搜索引擎更好地发现页面的移动版本，并且告诉搜索引擎没有引入 [Cloaking](https://en.wikipedia.org/wiki/Cloaking)。
 

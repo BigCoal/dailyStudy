@@ -6,7 +6,7 @@ HTTP 消息由采用 ASCII 编码的多行文本构成。在 HTTP/1.1 及早期�
 
 Web 开发人员或网站管理员，很少自己手工创建这些原始的 HTTP 消息︰ 由软件、浏览器、 代理或服务器完成。他们通过配置文件（用于代理服务器或服务器），API （用于浏览器）或其他接口提供 HTTP 消息。
 
-![](https://mdn.mozillademos.org/files/13825/HTTPMsg2.png)
+![](./static/HTTPMsg2.png)
 
 HTTP/2 二进制框架机制被设计为不需要改动任何 API 或配置文件即可应用︰ 它大体上对用户是透明的。
 
@@ -19,7 +19,7 @@ HTTP 请求和响应具有相似的结构，由以下部分组成︰
 
 起始行和  HTTP 消息中的 HTTP 头统称为请求头，而其有效负载被称为消息正文。
 
-![](https://mdn.mozillademos.org/files/13827/HTTPMsgStructure2.png)
+![](./static/HTTPMsgStructure2.png)
 
 [HTTP 请求](#http_请求 "Permalink to HTTP 请求")
 ------------------------------------------
@@ -77,7 +77,7 @@ HTTP 响应的起始行被称作 _状态行_ _(status line)_，包含以下信�
 *   _Response headers，_例如 [`Vary`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Vary) 和 [`Accept-Ranges`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Ranges)，提供其它不符合状态行的关于服务器的信息。
 *   _Entity headers_，例如 [`Content-Length`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Length)，适用于请求的 body。显然，如果请求中没有任何 body，则不会发送这样的头文件。
 
-![](https://mdn.mozillademos.org/files/13823/HTTP_Response_Headers2.png)
+![](./static/HTTP_Response_Headers2.png)
 
 ### [Body](#body_2 "Permalink to Body")
 
@@ -92,7 +92,7 @@ HTTP/1.x 报文有一些性能上的缺点：
 
 HTTP/2 引入了一个额外的步骤：它将 HTTP/1.x 消息分成帧并嵌入到流 (stream) 中。数据帧和报头帧分离，这将允许报头压缩。将多个流组合，这是一个被称为 _多路复用 (multiplexing)_ 的过程，它允许更有效的底层 TCP 连接。
 
-![](https://mdn.mozillademos.org/files/13819/Binary_framing2.png)
+![](./static/Binary_framing2.png)
 
 HTTP 帧现在对 Web 开发人员是透明的。在 HTTP/2 中，这是一个在  HTTP/1.1 和底层传输协议之间附加的步骤。Web 开发人员不需要在其使用的 API 中做任何更改来利用 HTTP 帧；当浏览器和服务器都可用时，HTTP/2 将被打开并使用。
 

@@ -8,7 +8,7 @@ CDN（Content Delivery Network，内容分发网络）将源站的内容发布�
 
 为了更加清楚地展示 CDN 的原理，我们首先回顾一下不使用缓存直接到源站请求数据的过程：
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/6/24/16b87f006a1ab7bd~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/16b87f006a1ab7bd~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 如上图所示，如果要访问的网站名为："join.qq.com"，客户端首先会在本机的 hosts 文件和 hosts 缓存中查找该域名对应的 IP 地址；如果本机中没有此信息，则会到我们的`本地DNS`进行询问该域名对应的 IP 地址；如果本地 DNS 中仍然没有该域名的 IP 信息时，则会由本地 DNS 依次向`根DNS`、`顶级域DNS`、`权威DNS`进行询问，最终`本地DNS`将 IP 地址发送给客户端。客户端通过 IP 地址向远程的源站服务器发出 HTTP 请求并获取相应的数据内容。
 
@@ -39,7 +39,7 @@ CDN（Content Delivery Network，内容分发网络）将源站的内容发布�
 
 如图所示是通过 CDN 进行请求响应的过程图。通过图中可以看出，在 DNS 解析域名时新增了一个`全局负载均衡系统（GSLB）`，GSLB 的主要功能是根据用户的本地 DNS 的 IP 地址判断用户的位置，筛选出距离用户较近的`本地负载均衡系统（SLB）`，并将该 SLB 的 IP 地址作为结果返回给本地 DNS。SLB 主要负责判断`缓存服务器集群`中是否包含用户请求的资源数据，如果缓存服务器中存在请求的资源，则根据缓存服务器集群中节点的健康程度、负载量、连接数等因素筛选出最优的缓存节点，并将 HTTP 请求重定向到最优的缓存节点上。
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/6/24/16b87f0340a17453~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/16b87f0340a17453~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 为了更清晰地说明 CDN 的工作原理，下面以客户端发起对 "join.qq.com/video.php" 的 HTTP 请求为例进行说明：
 

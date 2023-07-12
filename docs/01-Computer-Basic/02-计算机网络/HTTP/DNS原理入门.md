@@ -4,7 +4,7 @@ DNS 是互联网核心协议之一。不管是上网浏览，还是编程开发�
 
 本文详细介绍 DNS 的原理，以及如何运用工具软件观察它的运作。我的目标是，读完此文后，你就能完全理解 DNS。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061513.png)
+![](./static/bg2016061513.png)
 
 DNS 是什么？
 ----------
@@ -28,37 +28,37 @@ DNS （Domain Name System 的缩写）的作用非常简单，就是根据域名
 
 上面的命令会输出六段信息。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061501.png)
+![](./static/bg2016061501.png)
 
 第一段是查询参数和统计。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061502.png)
+![](./static/bg2016061502.png)
 
 第二段是查询内容。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061503.png)
+![](./static/bg2016061503.png)
 
 上面结果表示，查询域名`math.stackexchange.com`的`A`记录，`A`是 address 的缩写。
 
 第三段是 DNS 服务器的答复。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061504.png)
+![](./static/bg2016061504.png)
 
 上面结果显示，`math.stackexchange.com`有四个`A`记录，即四个 IP 地址。`600`是 TTL 值（Time to live 的缩写），表示缓存时间，即 600 秒之内不用重新查询。
 
 第四段显示`stackexchange.com`的 NS 记录（Name Server 的缩写），即哪些服务器负责管理`stackexchange.com`的 DNS 记录。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061505.png)
+![](./static/bg2016061505.png)
 
 上面结果显示`stackexchange.com`共有四条 NS 记录，即四个域名服务器，向其中任一台查询就能知道`math.stackexchange.com`的 IP 地址是什么。
 
 第五段是上面四个域名服务器的 IP 地址，这是随着前一段一起返回的。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061506.png)
+![](./static/bg2016061506.png)
 
 第六段是 DNS 服务器的一些传输信息。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061514.png)
+![](./static/bg2016061514.png)
 
 上面结果显示，本机的 DNS 服务器是`192.168.1.253`，查询端口是 53（DNS 服务器的默认端口），以及回应长度是 305 字节。
 
@@ -82,7 +82,7 @@ DNS 服务器
 
 首先，本机一定要知道 DNS 服务器的 IP 地址，否则上不了网。通过 DNS 服务器，才能知道某个域名的 IP 地址到底是什么。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061507.jpg)
+![](./static/bg2016061507.jpg)
 
 DNS 服务器的 IP 地址，有可能是动态的，每次上网时由网关分配，这叫做 DHCP 机制；也有可能是事先指定的固定地址。Linux 系统里面，DNS 服务器的 IP 地址保存在`/etc/resolv.conf`文件。
 
@@ -103,7 +103,7 @@ DNS 服务器怎么会知道每个域名的 IP 地址呢？答案是分级查询
 
 请仔细看前面的例子，每个域名的尾部都多了一个点。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061503.png)
+![](./static/bg2016061503.png)
 
 比如，域名`math.stackexchange.com`显示为`math.stackexchange.com.`。这不是疏忽，而是所有域名的尾部，实际上都有一个根域名。
 
@@ -144,7 +144,7 @@ DNS 服务器根据域名的层级，进行分级查询。
 
 下面是内置的根域名服务器 IP 地址的一个[例子](http://www.cyberciti.biz/faq/unix-linux-update-root-hints-data-file/)。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061508.png)
+![](./static/bg2016061508.png)
 
 上面列表中，列出了根域名（`.root`）的三条 NS 记录`A.ROOT-SERVERS.NET`、`B.ROOT-SERVERS.NET`和`C.ROOT-SERVERS.NET`，以及它们的 IP 地址（即`A`记录）`198.41.0.4`、`192.228.79.201`、`192.33.4.12`。
 
@@ -163,25 +163,25 @@ DNS 服务器根据域名的层级，进行分级查询。
 
 上面命令的第一段列出根域名`.`的所有 NS 记录，即所有根域名服务器。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061509.png)
+![](./static/bg2016061509.png)
 
 根据内置的根域名服务器 IP 地址，DNS 服务器向所有这些 IP 地址发出查询请求，询问`math.stackexchange.com`的顶级域名服务器`com.`的 NS 记录。最先回复的根域名服务器将被缓存，以后只向这台服务器发请求。
 
 接着是第二段。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061510.png)
+![](./static/bg2016061510.png)
 
 上面结果显示`.com`域名的 13 条 NS 记录，同时返回的还有每一条记录对应的 IP 地址。
 
 然后，DNS 服务器向这些顶级域名服务器发出查询请求，询问`math.stackexchange.com`的次级域名`stackexchange.com`的 NS 记录。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061511.png)
+![](./static/bg2016061511.png)
 
 上面结果显示`stackexchange.com`有四条 NS 记录，同时返回的还有每一条 NS 记录对应的 IP 地址。
 
 然后，DNS 服务器向上面这四台 NS 服务器查询`math.stackexchange.com`的主机名。
 
-![](https://www.ruanyifeng.com/blogimg/asset/2016/bg2016061512.png)
+![](./static/bg2016061512.png)
 
 上面结果显示，`math.stackexchange.com`有 4 条`A`记录，即这四个 IP 地址都可以访问到网站。并且还显示，最先返回结果的 NS 服务器是`ns-463.awsdns-57.com`，IP 地址为`205.251.193.207`。
 

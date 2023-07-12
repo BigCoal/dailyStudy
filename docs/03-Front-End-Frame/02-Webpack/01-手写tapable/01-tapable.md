@@ -1,5 +1,3 @@
-> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [juejin.cn](https://juejin.cn/post/7040982789650382855)
-
 # 前言
 
 Webpack 在前端工程化中可谓是大名鼎鼎，在 Webpack 编译过程中存在两个核心对象。

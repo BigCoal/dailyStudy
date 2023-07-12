@@ -6,7 +6,7 @@ TCP(Transmission Control Protocol 传输控制协议)是一种面向连接 (连�
 
 学习计算机网络时我们一般采用折中的办法，也就是中和 OSI 和 TCP/IP 的优点，采用一种只有五层协议的体系结构，这样既简洁又能将概念阐述清楚。
 
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/7/29/164e5307471e8eba~tplv-t2oaga2asx-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/164e5307471e8eba~tplv-t2oaga2asx-zoom-in-crop-mark-3024-0-0-0.png)
 
 ![image](./assets/tcp4.webp)
 
@@ -163,7 +163,7 @@ TCP 通过滑动窗口的概念来进行流量控制。设想在发送端发送�
 
 ### 三次握手
 
-![](https://pic1.zhimg.com/v2-576b043d12353928eea6e45373655668_r.jpg?source=1940ef5c)
+![](./static/v2-576b043d12353928eea6e45373655668_r.jpg?source=1940ef5c)
 
 PS：TCP 协议中，主动发起请求的一端称为『[客户端](https://www.zhihu.com/search?q=%E5%AE%A2%E6%88%B7%E7%AB%AF&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A254224088%7D)』，被动连接的一端称为『[服务端](https://www.zhihu.com/search?q=%E6%9C%8D%E5%8A%A1%E7%AB%AF&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22%3A%22answer%22%2C%22sourceId%22%3A254224088%7D)』。不管是客户端还是服务端，TCP 连接建立完后都能发送和接收数据。
 
@@ -201,7 +201,7 @@ TCP 还设有一个保活计时器，显然，客户端如果出现故障，服�
 
 ### 四次挥手
 
-![](https://pic4.zhimg.com/v2-c8b61ed2a249700583b11bc5d16c5711_r.jpg?source=1940ef5c)
+![](./static/v2-c8b61ed2a249700583b11bc5d16c5711_r.jpg?source=1940ef5c)
 
 TCP 连接的释放一共需要四步，因此称为『四次挥手』。  
 我们知道，TCP 连接是双向的，因此在四次挥手中，前两次挥手用于断开一个方向的连接，后两次挥手用于断开另一方向的连接。

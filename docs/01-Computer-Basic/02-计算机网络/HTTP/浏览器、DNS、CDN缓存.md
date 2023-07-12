@@ -75,12 +75,12 @@ CDN 优势
 
 浏览器到底是载入缓存还是请求数据？看下图。
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/350977e822904bcc9bc858932313797f~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/350977e822904bcc9bc858932313797f~tplv-k3u1fbpfcp-zoom-in-crop-mark-3024-0-0-0.png)
 
 什么是浏览器缓存
 --------
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c35423c95ad4847bc9ebbc8e5e8c1ee~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp)
+![](./static/7c35423c95ad4847bc9ebbc8e5e8c1ee~tplv-k3u1fbpfcp-zoom-in-crop-mark-3024-0-0-0.png)
 
 简单来说, 浏览器缓存其实就是浏览器保存通过 HTTP 获取的所有资源, 是浏览器将网络资源存储在本地的一种行为。
 

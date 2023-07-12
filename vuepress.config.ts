@@ -23,7 +23,10 @@ export default defineUserConfig({
   ],
   theme: defaultTheme({
     logo: "/logo.png",
-    // search: true, //搜索
+    search: true, //搜索
+    editLinkPattern: ":repo/edit/master/docs/:path",
+    lastUpdated: false,
+    contributors: false,
     // darkMode: false,
     repo: "https://github.com/BigCoal/dailyStudy",
     // searchMaxSuggestions: 12,
@@ -34,7 +37,7 @@ export default defineUserConfig({
         link: "/01-Computer-Basic/03-设计模式/策略模式.md",
       },
       {
-        text: "前端基础三大件",
+        text: "前端基础四大件",
         link: "/02-Front-End-Basic/01-JavaScript/基础系列/slice-substring-substr.md",
       },
       {
@@ -43,7 +46,7 @@ export default defineUserConfig({
       },
       {
         text: "工程化",
-        link: "/04-Front-End-Engineering/01-CanIUse/01-caniuse.md",
+        link: "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.md",
       },
       {
         text: "英语自学",
@@ -127,7 +130,7 @@ export default defineUserConfig({
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP2四大核心特性.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTPS.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP_1.x 的连接管理.md",
-            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全",
+            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/内容安全策略( CSP ).md",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP概述.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/meta标签.md",
             "/01-Computer-Basic/02-计算机网络/HTTP/图解SSL_TLS协议.md",
@@ -143,6 +146,14 @@ export default defineUserConfig({
             // 字符串 - 页面文件路径
             "/01-Computer-Basic/03-设计模式/策略模式.md",
             "/01-Computer-Basic/03-设计模式/代理模式.md",
+          ],
+        },
+        {
+          text: "操作系统",
+          collapsible: true,
+          children: [
+            // 字符串 - 页面文件路径
+            "/01-Computer-Basic/04-操作系统/index.md",
           ],
         },
       ],
@@ -285,6 +296,13 @@ export default defineUserConfig({
                     "/02-Front-End-Basic/01-JavaScript/专题系列/函数系列/递归.md",
                   ],
                 },
+                {
+                  text: "模块化",
+                  collapsible: true,
+                  children: [
+                    "/02-Front-End-Basic/01-JavaScript/专题系列/模块化/import、require、export、module.exports 混合使用详解.md",
+                  ],
+                },
                 "/02-Front-End-Basic/01-JavaScript/专题系列/深浅拷贝.md",
                 "/02-Front-End-Basic/01-JavaScript/专题系列/判断两个对象相等.md",
                 "/02-Front-End-Basic/01-JavaScript/专题系列/实现 jQuery 的 each .md",
@@ -357,7 +375,6 @@ export default defineUserConfig({
             {
               text: "内联元素和流",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/内联元素和流/字母x.md",
                 "/02-Front-End-Basic/02-CSS/内联元素和流/line-height.md",
@@ -367,7 +384,6 @@ export default defineUserConfig({
             {
               text: "流的破坏与保护",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float.md",
                 "/02-Front-End-Basic/02-CSS/流的破坏与保护/魔鬼属性float的天然克星clear.md",
@@ -382,7 +398,6 @@ export default defineUserConfig({
             {
               text: "强大的文本处理能力",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-size.md",
                 "/02-Front-End-Basic/02-CSS/强大的文本处理能力/font-family.md",
@@ -399,13 +414,13 @@ export default defineUserConfig({
               collapsible: true,
               sidebarDepth: 10,
               children: [
-                "/02-Front-End-Basic/04-Typescript/handbook/basic-types.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/interfaces.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/functions.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/literal-types.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/classes.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/enums.md",
-                "/02-Front-End-Basic/04-Typescript/handbook/generics.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/basic-types.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/interfaces.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/functions.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/literal-types.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/classes.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/enums.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/handbook/generics.md",
               ],
             },
             {
@@ -413,17 +428,17 @@ export default defineUserConfig({
               collapsible: true,
               sidebarDepth: 10,
               children: [
-                "/02-Front-End-Basic/04-Typescript/reference/advanced-types.md",
-                "/02-Front-End-Basic/04-Typescript/reference/utility-types.md",
-                "/02-Front-End-Basic/04-Typescript/reference/declaration-merging.md",
-                "/02-Front-End-Basic/04-Typescript/reference/mixins.md",
-                "/02-Front-End-Basic/04-Typescript/reference/type-compatibility.md",
-                "/02-Front-End-Basic/04-Typescript/reference/type-inference.md",
-                "/02-Front-End-Basic/04-Typescript/reference/jsx.md",
-                "/02-Front-End-Basic/04-Typescript/reference/modules.md",
-                "/02-Front-End-Basic/04-Typescript/reference/module-resolution.md",
-                "/02-Front-End-Basic/04-Typescript/reference/namespaces.md",
-                "/02-Front-End-Basic/04-Typescript/reference/namespaces-and-modules",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/advanced-types.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/utility-types.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/declaration-merging.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/mixins.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/type-compatibility.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/type-inference.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/jsx.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/modules.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/module-resolution.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/namespaces.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/reference/namespaces-and-modules",
               ],
             },
             {
@@ -431,10 +446,14 @@ export default defineUserConfig({
               collapsible: true,
               sidebarDepth: 10,
               children: [
-                "/02-Front-End-Basic/04-Typescript/declaration-files/introduction.md",
-                "/02-Front-End-Basic/04-Typescript/declaration-files/by-example.md",
-                "/02-Front-End-Basic/04-Typescript/declaration-files/library-structures.md",
-                "/02-Front-End-Basic/04-Typescript/declaration-files/templates.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/introduction.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/by-example.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/library-structures.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/templates.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/do-s-and-don-ts.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/deep-dive.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/publishing.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/consumption.md",
               ],
             },
             {
@@ -442,9 +461,17 @@ export default defineUserConfig({
               collapsible: true,
               sidebarDepth: 10,
               children: [
-                "/02-Front-End-Basic/04-Typescript/project-config/tsconfig.json.md",
-                "/02-Front-End-Basic/04-Typescript/project-config/project-references.md",
-                "/02-Front-End-Basic/04-Typescript/project-config/compiler-options.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/project-config/tsconfig.json.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/project-config/project-references.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/project-config/compiler-options.md",
+              ],
+            },
+            {
+              text: "常见问题",
+              collapsible: true,
+              sidebarDepth: 10,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/理解 TypeScript 中 any 和 unknown.md",
               ],
             },
           ],
@@ -460,7 +487,31 @@ export default defineUserConfig({
           ],
         },
         {
-          text: "Vue3源码解读",
+          text: "React18",
+          collapsible: true,
+          children: [
+            {
+              text: "React基础",
+              collapsible: true,
+              children: [
+                "/03-Front-End-Frame/04-React/React基础/01-React介绍.md",
+                "/03-Front-End-Frame/04-React/React基础/02-环境初始化.md",
+                "/03-Front-End-Frame/04-React/React基础/03-jsx基础.md",
+                "/03-Front-End-Frame/04-React/React基础/04-React组件基础.md",
+                "/03-Front-End-Frame/04-React/React基础/05-React组件通信.md",
+                "/03-Front-End-Frame/04-React/React基础/06-React组件进阶.md",
+                "/03-Front-End-Frame/04-React/React基础/07-Hooks基础.md",
+                "/03-Front-End-Frame/04-React/React基础/08-Hooks进阶.md",
+                "/03-Front-End-Frame/04-React/React基础/09-ReactRouter.md",
+                "/03-Front-End-Frame/04-React/React基础/10-Mobx.md",
+                "/03-Front-End-Frame/04-React/React基础/11-Redux.md",
+                "/03-Front-End-Frame/04-React/React基础/12-Zustand.md",
+              ],
+            },
+          ],
+        },
+        {
+          text: "Vue3",
           collapsible: true,
           children: [
             {
@@ -559,31 +610,55 @@ export default defineUserConfig({
             },
           ],
         },
+        {
+          text: "ThreeJS",
+          collapsible: true,
+          children: [
+            {
+              text: "01-开发环境配置",
+              collapsible: true,
+              children: [
+                "/03-Front-End-Frame/05-ThreeJS/01-开发环境配置/01-了解Three.js.md",
+                "/03-Front-End-Frame/05-ThreeJS/01-开发环境配置/02-本地搭建Threejs官方文档网站.md",
+                "/03-Front-End-Frame/05-ThreeJS/01-开发环境配置/03-使用parcel搭建three.js开发环境.md",
+                "/03-Front-End-Frame/05-ThreeJS/01-开发环境配置/04-渲染第一个场景和物体.md",
+              ],
+            },
+          ],
+        },
       ],
       "/04-Front-End-Engineering/": [
         {
-          text: "性能优化",
+          text: "Babel",
           collapsible: true,
           children: [
-            "/04-Front-End-Engineering/00-性能优化01/开篇：知识体系与小册格局.md",
-            "/04-Front-End-Engineering/00-性能优化01/网络篇 1：webpack 性能调优与 Gzip 原理.md",
-            "/04-Front-End-Engineering/00-性能优化01/网络篇 2：图片优化质量与性能的博弈.md",
-            "/04-Front-End-Engineering/00-性能优化01/存储篇 1：浏览器缓存机制介绍与缓存策略剖析.md",
-            "/04-Front-End-Engineering/00-性能优化01/存储篇 2：本地存储从 Cookie 到 Web Storage、IndexDB.md",
-            "/04-Front-End-Engineering/00-性能优化01/彩蛋篇：CDN 的缓存与回源机制解析.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 1：服务端渲染的探索与实践.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 2：知己知彼解锁浏览器背后的运行机制.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 3：对症下药DOM 优化原理与基本实践.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 4：千方百计Event Loop 与异步更新策略.md",
-            "/04-Front-End-Engineering/00-性能优化01/渲染篇 5：最后一击回流（Reflow）与重绘（Repaint）.md",
-            "/04-Front-End-Engineering/00-性能优化01/应用篇 1：优化首屏体验Lazy-Load 初探.md",
-            "/04-Front-End-Engineering/00-性能优化01/应用篇 2：事件的节流（throttle）与防抖（debounce）.md",
-            "/04-Front-End-Engineering/00-性能优化01/性能监测篇：Performance、LightHouse 与性能 API.md",
-            "/04-Front-End-Engineering/00-性能优化01/前方的路：希望以此为你的起点.md",
+            "/04-Front-End-Engineering/06-Babel/user-handbook.md",
+            "/04-Front-End-Engineering/06-Babel/plugin-handbook.md",
           ],
         },
+        // {
+        //   text: "性能优化",
+        //   collapsible: true,
+        //   children: [
+        //     "/04-Front-End-Engineering/00-性能优化01/开篇：知识体系与小册格局.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/网络篇 1：webpack 性能调优与 Gzip 原理.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/网络篇 2：图片优化质量与性能的博弈.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/存储篇 1：浏览器缓存机制介绍与缓存策略剖析.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/存储篇 2：本地存储从 Cookie 到 Web Storage、IndexDB.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/彩蛋篇：CDN 的缓存与回源机制解析.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 1：服务端渲染的探索与实践.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 2：知己知彼解锁浏览器背后的运行机制.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 3：对症下药DOM 优化原理与基本实践.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 4：千方百计Event Loop 与异步更新策略.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/渲染篇 5：最后一击回流（Reflow）与重绘（Repaint）.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/应用篇 1：优化首屏体验Lazy-Load 初探.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/应用篇 2：事件的节流（throttle）与防抖（debounce）.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/性能监测篇：Performance、LightHouse 与性能 API.md",
+        //     "/04-Front-End-Engineering/00-性能优化01/前方的路：希望以此为你的起点.md",
+        //   ],
+        // },
         {
-          text: "性能优化2",
+          text: "性能优化",
           collapsible: true,
           children: [
             "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.md",

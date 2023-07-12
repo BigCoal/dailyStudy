@@ -1,5 +1,3 @@
-> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [blog.csdn.net](https://blog.csdn.net/u012961419/article/details/124748721?ops_request_misc=&request_id=f203ab6119a840f2a86d53a95833ef95&biz_id=&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~koosearch~default-1-124748721-null-null.268^v1^control&utm_term=%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96&spm=1018.2226.3001.4450)
-
 # Web [性能指标](https://so.csdn.net/so/search?q=%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87&spm=1001.2101.3001.7020)
 
 我们已经知道性能的重要性，但当我们讨论性能的时候，让一个网页变得更快，具体指哪些内容？
