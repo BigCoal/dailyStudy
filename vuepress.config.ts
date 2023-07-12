@@ -23,12 +23,12 @@ export default defineUserConfig({
   ],
   theme: defaultTheme({
     logo: "/logo.png",
-    search: true, //搜索
     editLinkPattern: ":repo/edit/master/docs/:path",
     lastUpdated: false,
     contributors: false,
     // darkMode: false,
     repo: "https://github.com/BigCoal/dailyStudy",
+    sidebarDepth: 2,
     // searchMaxSuggestions: 12,
     navbar: [
       { text: "首页", link: "/" },
@@ -412,7 +412,7 @@ export default defineUserConfig({
             {
               text: "基本",
               collapsible: true,
-              sidebarDepth: 10,
+
               children: [
                 "/02-Front-End-Basic/04-Typescript/01文档/handbook/basic-types.md",
                 "/02-Front-End-Basic/04-Typescript/01文档/handbook/interfaces.md",
@@ -426,7 +426,6 @@ export default defineUserConfig({
             {
               text: "进阶",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/04-Typescript/01文档/reference/advanced-types.md",
                 "/02-Front-End-Basic/04-Typescript/01文档/reference/utility-types.md",
@@ -444,7 +443,6 @@ export default defineUserConfig({
             {
               text: "声明文件",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/introduction.md",
                 "/02-Front-End-Basic/04-Typescript/01文档/declaration-files/by-example.md",
@@ -459,7 +457,6 @@ export default defineUserConfig({
             {
               text: "工程配置",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/04-Typescript/01文档/project-config/tsconfig.json.md",
                 "/02-Front-End-Basic/04-Typescript/01文档/project-config/project-references.md",
@@ -469,7 +466,6 @@ export default defineUserConfig({
             {
               text: "常见问题",
               collapsible: true,
-              sidebarDepth: 10,
               children: [
                 "/02-Front-End-Basic/04-Typescript/01文档/QA/理解 TypeScript 中 any 和 unknown.md",
               ],
@@ -696,4 +692,9 @@ export default defineUserConfig({
       "/07-Plan/": ["/07-Plan/index.md"],
     },
   }),
+  markdown: {
+    headers: {
+      level: [2, 3, 4],
+    },
+  },
 });
