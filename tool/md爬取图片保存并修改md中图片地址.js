@@ -111,10 +111,7 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(
-  __dirname,
-  "../docs/02-Front-End-Basic/04-Typescript/01文档/QA"
-);
+const p = path.join(__dirname, "../docs/04-Front-End-Engineering/06-Babel");
 const paths = getMDFiles(p);
 
 paths.map((pathItem) => {

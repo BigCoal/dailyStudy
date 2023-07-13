@@ -11,7 +11,7 @@
 
 ### 工程化
 
-- <Checkbox :isOk="false" title="梳理babel性能优化，和vue，react的使用 "/>
+- <Checkbox :isOk="true" title="梳理babel性能优化 "/>
   计划时间：2023-07-12  
   完成时间：运行中
 - <Checkbox :isOk="true" title="梳理babel体系，插件体系，并编写插件 "/>

@@ -642,6 +642,8 @@ export default defineUserConfig({
           children: [
             "/04-Front-End-Engineering/06-Babel/user-handbook.md",
             "/04-Front-End-Engineering/06-Babel/plugin-handbook.md",
+            "/04-Front-End-Engineering/06-Babel/如何利用Babel优化项目.md",
+            "/04-Front-End-Engineering/06-Babel/Babel-爬坑.md",
           ],
         },
         // {
