@@ -113,7 +113,7 @@ function normalizeFileName(url) {
 //目标文件
 const p = path.join(
   __dirname,
-  "../docs/02-Front-End-Basic/01-JavaScript/专题系列/模块化/import、require、export、module.exports 混合使用详解.md"
+  "../docs/02-Front-End-Basic/04-Typescript/01文档/QA"
 );
 const paths = getMDFiles(p);
 

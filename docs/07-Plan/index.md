@@ -13,7 +13,7 @@
 
 - <Checkbox :isOk="false" title="梳理babel性能优化，和vue，react的使用 "/>
   计划时间：2023-07-12  
-  完成时间：-
+  完成时间：运行中
 - <Checkbox :isOk="true" title="梳理babel体系，插件体系，并编写插件 "/>
   计划时间：2023-07-11  
   完成时间：2023-07-12
@@ -22,18 +22,24 @@
   完成时间：2023-07-05
 - <Checkbox :isOk="false" title="总结 NPM CNPM YARN PNPM 内容和差别对比 "/>
   计划时间：2023-06-28  
-  完成时间：未开始
+  完成时间：运行中
 
 ### 前端框架
 
 - <Checkbox :isOk="false" title="手写qiankun "/>
   计划时间：2023-07-04  
-  完成时间：未开始
+  完成时间：运行中
 
 - <Checkbox :isOk="false" title="手写Vue instance.proxy的taget代理错误，提PR "/>
   计划时间：2023-06-29  
-  完成时间：未开始
+  完成时间：运行中
 
 - <Checkbox :isOk="false" title="手写Vue Computed的this._dirty赋值错误，提PR "/>
   计划时间：2023-06-28  
-  完成时间：未开始
+  完成时间：运行中
+
+### 前端基础四大件
+
+- <Checkbox :isOk="false" title="typescript类型体操 "/>
+  计划时间：2023-07-13  
+  完成时间：运行中

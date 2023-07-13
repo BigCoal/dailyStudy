@@ -1,4 +1,4 @@
-# 理解 TypeScript 中 any 和 unknown
+# 详解 TypeScript 中 any 和 unknown
 
 在我们的项目中实现 TypeScript 时，我们努力写出最好的类型。我们可能经常觉得使用 any 类型违背了 TypeScript 的目的，确实如此。还有其他一些类型值得了解，我们可能会发现它们在尝试不使用 any 时很有用，比如 unknown 。
 

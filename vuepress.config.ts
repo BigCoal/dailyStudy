@@ -464,10 +464,22 @@ export default defineUserConfig({
               ],
             },
             {
-              text: "常见问题",
+              text: "再次进阶",
               collapsible: true,
               children: [
-                "/02-Front-End-Basic/04-Typescript/01文档/QA/理解 TypeScript 中 any 和 unknown.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中 any 和 unknown.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中的 const 断言.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中的 typeof 和 keyof.md",
+              ],
+            },
+            {
+              text: "类型体操",
+              collapsible: true,
+              children: [
+                "/02-Front-End-Basic/04-Typescript/02-typescript类型体操/01-简单.md",
+                "/02-Front-End-Basic/04-Typescript/02-typescript类型体操/02-中等.md",
+                "/02-Front-End-Basic/04-Typescript/02-typescript类型体操/03-困难.md",
+                "/02-Front-End-Basic/04-Typescript/02-typescript类型体操/04-地狱.md",
               ],
             },
           ],
