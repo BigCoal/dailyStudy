@@ -467,9 +467,10 @@ export default defineUserConfig({
               text: "再次进阶",
               collapsible: true,
               children: [
-                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中 any 和 unknown.md",
-                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中的 const 断言.md",
-                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解 TypeScript 中的 typeof 和 keyof.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解TypeScript中any和unknown.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解TypeScript中的const断言.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/详解TypeScript中的typeof和keyof.md",
+                "/02-Front-End-Basic/04-Typescript/01文档/QA/深入讲解Ts最晦涩难懂的高级类型工具.md",
               ],
             },
             {
