@@ -49,7 +49,7 @@ TLS 的全称是 Transport Layer Security，即安全传输层协议，最新版
 **HTTPS 为了兼顾安全与效率，同时使用了对称加密和非对称加密。数据是被对称加密传输的，对称加密过程需要客户端的一个密钥，为了确保能把该密钥安全传输到服务器端，采用非对称加密对该密钥进行加密传输，总的来说，对数据进行对称加密，对称加密所要使用的密钥通过非对称加密传输。**
 
 以下图片来自于 [limboy 的博客](http://limboy.me/tech/2011/02/19/https-workflow.html)  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIwMzM3Njky?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIwMzM3Njky.png)
 
 HTTPS 在传输的过程中会涉及到三个密钥：
 
@@ -88,30 +88,30 @@ HTTPS 在传输的过程中会涉及到三个密钥：
 通过浏览器直接获取服务器的公钥很容易，各个浏览器操作大同小异。百度现在已经实现了全站点 HTTPS，我们就以百度为例如何从 Chrome 中获取其公钥。
 
 1.  用 Chrome 打开百度首页，在 https 左侧我们会发现有一个绿色的锁头。  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMjI0OTI2?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMjI0OTI2.png)
 2.  点击该锁头，出现一个弹出面板，点击面板中的 “详细信息” 几个字。  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzE2MDM3?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzE2MDM3.png)
 3.  这是会打开 Chrome 的 Developer Tool，并自动切换到 Security 这个页面。  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzUwNzEy?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxMzUwNzEy.png)
 4.  点击 “View ceertificate” 按钮就可以查看该网站的证书了，如下所示：  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNDMyNzI3?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNDMyNzI3.png)
 
 在 “常规” 这个面板中，我们从中可以查看该证书是又 Symantec 颁发给 baidu.com 这个网站的，有效期是从 2015 年 9 月 17 到 2016 年 9 月 1 日。
 
 5.  切换到 “详细信息” 面板，可以查看证书的一些详细信息，比如证书所使用的数字签名的算法，如下图所示：  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNjAzNDk0?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNjAzNDk0.png)
 
 上面有个 “复制到文件” 的按钮，点击该按钮就可以将百度的数字证书导出成文件，从而我们就可以保存到自己的机器上，界面如下所示：
 
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNjM5MDI3?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNjM5MDI3.png)
 
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNzAxMzg1?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNzAxMzg1.png)
 
 我们将其导出成 X.509 格式的证书，以. cer 作为文件扩展名，最后保存到本地机器如下所示：  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNzM5MTUz?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIxNzM5MTUz.png)
 
 6.  切换到 “证书路径” 面板，可以查看证书的证书链。  
-    ![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIyODA0OTY3?x-oss-process=image/format,png)
+    ![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIyODA0OTY3.png)
 
 这里先解释一下什么是证书链。我们之前提到，VeriSign 是一个全球知名的 CA，但是一般情况下，CA 不会用自己的私钥去直接签名某网站的数字证书，一般 CA 会首先签发一种证书，然后用这种证书再去签发百度等的数字证书。在此例中，VeriSign 签发了 Symantec 证书，然后 Symantec 又签发了 baiduc.om，VeriSign 位于最顶端，类似于根结点，因此叫做根 CA，Symatec 位于中间，叫做中间 CA，当然，有可能有多个中间 CA，这样从根 CA 到中间 CA，再到最终的网站的证书，这样自上而下形成了一条证书链。如果想要查看证书链中的某个证书，只需要选中它，比如选中了 Symantec，然后点击下面的 “查看证书” 按钮就会弹出另一个对话框，在其中可以查看 Symantec 的数字证书，当然也可以将其导出成证书文件保存在硬盘上。
 
@@ -135,17 +135,17 @@ InputStream is = conn.getInputStream();
 12306.cn 的用户登录是需要 HTTPS 的访问的，如果浏览器第一次打开页面 https://kyfw.12306.cn/otn/regist/init，那么浏览器要么显示证书警告信息，要么索性直接不显示页面，因为 12306.cn 的数字证书存在问题。
 
 其证书链如下所示：  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIzNjM4MjI3?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjIzNjM4MjI3.png)
 
 大家可以看到，该 12306.cn 的证书是由 SRCA 这个机构签发的，也就是说 SRCA 是证书链上的根 CA。
 
 但是 SRCA 是啥呢？没听过啊！
 
 我们选中 SRCA 后，点击 “查看证书” 按钮，SRCA 的证书如下所示：  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI0NTExMjg2?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI0NTExMjg2.png)
 
 也就是说 SRCA 的全称是 Sinorail Certification Authority， 在百度里面搜索该名称，可以查到一个叫做中铁信息工程集团的网站，http://www.sinorail.com/ProductInfos.aspx?id=185，里面有这么一段描述：  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI1NjMyNDYy?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI1NjMyNDYy.png)
 
 也就是说 SRCA 是铁道部给旗下的网站等做签名的一个所谓 CA，但是它不具备公信力，因为它不是一个全球知名的 CA，所以客户端根本不认可它。
 
@@ -155,7 +155,7 @@ java.security.cert.CertPathValidatorException: Trust anchor for certification pa
 这是因为 Android 的客户端内置的可信任 CA 列表中没有包含所谓的 SRCA，这样就出现了 12306.cn 的证书不被客户端信任的异常。
 
 为了解决客户端不信任服务器数字证书的问题，网络上大部分的解决方案都是让客户端不对证书做任何检查，**这是一种有很大安全漏洞的办法**，如下所示：  
-![](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI1OTM2ODg1?x-oss-process=image/format,png)
+![](./static/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTYwNjA4MjI1OTM2ODg1.png)
 
 首先定义一个自己的 SSLTrustAllManager，其继承自 X509TrustManager，具体来说，用 SSLTrustAllManager 创建一个 SSLContext，然后用 SSLContext 生成一个 SSLSocketFactory，然后通过调用 HttpURLConnectoin 的 setSSLSocketFactory 方法将其给某个具体的连接对象使用。由于 SSLTrustAllManager 没有对其中的三个核心方法进行具体实现，也就是不对证书做任何审查。这样无论服务器的证书如何，都能建立 HTTPS 连接，因为客户端直接忽略了验证服务器证书这一步。
 

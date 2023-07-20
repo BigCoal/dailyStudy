@@ -4,7 +4,7 @@
 
 本周，[CloudFlare](https://www.cloudflare.com/) 宣布，开始提供 Keyless 服务，即你把网站放到它们的 CDN 上，不用提供自己的私钥，也能使用 SSL 加密链接。
 
-![](./static/bg2014092001.png)
+![](../static/bg2014092001.png)
 
 我看了 CloudFlare 的说明（[这里](https://blog.cloudflare.com/announcing-keyless-ssl-all-the-benefits-of-cloudflare-without-having-to-turn-over-your-private-ssl-keys/)和[这里](https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/)），突然意识到这是绝好的例子，可以用来说明 SSL/TLS 协议的运行机制。它配有插图，很容易看懂。
 
@@ -16,7 +16,7 @@
 
 假定客户端叫做爱丽丝，服务器叫做鲍勃，整个握手过程可以用下图说明（点击看大图）。
 
-[![](./static/bg2014092002.png)
+[![](../static/bg2014092002.png)
 
 握手阶段分成五步。
 
@@ -32,7 +32,7 @@
 
 上面的五步，画成一张图，就是下面这样。
 
-[![](./static/bg2014092003.png)
+[![](../static/bg2014092003.png)
 
 ## 二、私钥的作用
 
@@ -48,7 +48,7 @@
 
 某些客户（比如银行）想要使用外部 CDN，加快自家网站的访问速度，但是出于安全考虑，不能把私钥交给 CDN 服务商。这时，完全可以把私钥留在自家服务器，只用来解密对话密钥，其他步骤都让 CDN 服务商去完成。
 
-[![](./static/bg2014092005.png)
+[![](../static/bg2014092005.png)
 
 上图中，银行的服务器只参与第四步，后面的对话都不再会用到私钥了。
 
@@ -60,7 +60,7 @@
 
 采用 DH 算法后，Premaster secret 不需要传递，双方只要交换各自的参数，就可以算出这个随机数。
 
-[![](./static/bg2014092007.png)
+[![](../static/bg2014092007.png)
 
 上图中，第三步和第四步由传递 Premaster secret 变成了传递 DH 算法所需的参数，然后双方各自算出 Premaster secret。这样就提高了安全性。
 
@@ -72,13 +72,13 @@
 
 session ID 的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以重新使用已有的 "对话密钥"，而不必重新生成一把。
 
-[![](./static/bg2014092009.png)
+[![](../static/bg2014092009.png)
 
 上图中，客户端给出 session ID，服务器确认该编号存在，双方就不再进行握手阶段剩余的步骤，而直接用已有的对话密钥进行加密通信。
 
 session ID 是目前所有浏览器都支持的方法，但是它的缺点在于 session ID 往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话。session ticket 就是为了解决这个问题而诞生的，目前只有 Firefox 和 Chrome 浏览器支持。
 
-[![](./static/bg2014092011.png)
+[![](../static/bg2014092011.png)
 
 上图中，客户端不再发送 session ID，而是发送一个服务器在上一次对话中发送过来的 session ticket。这个 session ticket 是加密的，只有服务器才能解密，其中包括本次对话的主要信息，比如对话密钥和加密方法。当服务器收到 session ticket 以后，解密后就不必重新生成对话密钥了。
 

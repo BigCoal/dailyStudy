@@ -6,13 +6,11 @@
 
 出于安全性，浏览器限制脚本内发起的跨源 HTTP 请求。 例如，`XMLHttpRequest` 和 [Fetch API](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API) 遵循[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy)。这意味着使用这些 API 的 Web 应用程序只能从加载应用程序的同一个域请求 HTTP 资源，除非响应报文包含了正确 CORS 响应头。
 
-![](./static/cors_principle.png)
+![](../static/cors_principle.png)
 
 跨源域资源共享（[CORS](https://developer.mozilla.org/zh-CN/docs/Glossary/CORS)）机制允许 Web 应用服务器进行跨源访问控制，从而使跨源数据传输得以安全进行。现代浏览器支持在 API 容器中（例如 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 或 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API)）使用 CORS，以降低跨源 HTTP 请求所带来的风险。
 
-
-[功能概述](#功能概述 "Permalink to 功能概述")
----------------------------------
+## [功能概述](#功能概述 "Permalink to 功能概述")
 
 跨源资源共享标准新增了一组 HTTP 首部字段，允许服务器声明哪些源站通过浏览器有权限访问哪些资源。另外，规范要求，对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 [`GET`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/GET) 以外的 HTTP 请求，或者搭配某些 [MIME 类型](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types) 的 [`POST`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST) 请求），浏览器必须首先使用 [`OPTIONS`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS) 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨源请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 [Cookies](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies) 和 [HTTP 认证](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Authentication) 相关数据）。
 
@@ -20,36 +18,35 @@ CORS 请求失败会产生错误，但是为了安全，在 JavaScript 代码层
 
 接下来的内容将讨论相关场景，并剖析该机制所涉及的 HTTP 首部字段。
 
-[若干访问控制场景](#若干访问控制场景 "Permalink to 若干访问控制场景")
----------------------------------------------
+## [若干访问控制场景](#若干访问控制场景 "Permalink to 若干访问控制场景")
 
 ### [简单请求](#简单请求 "Permalink to 简单请求")
 
 某些请求不会触发 [CORS 预检请求](https://developer.mozilla.org/zh-CN/docs/Glossary/Preflight_request)。本文称这样的请求为 “简单请求”，请注意，该术语并不属于 [Fetch](https://fetch.spec.whatwg.org/ "Fetch") （其中定义了 CORS）规范。若请求 **满足所有下述条件**，则该请求可视为 “简单请求”：
 
-*   使用下列方法之一：
-    *   [`GET`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/GET)
-    *   [`HEAD`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/HEAD)
-    *   [`POST`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST)
-*   除了被用户代理自动设置的首部字段（例如 [`Connection`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Connection)，[`User-Agent`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/User-Agent)）和在 Fetch 规范中定义为 [禁用首部名称](https://fetch.spec.whatwg.org/#forbidden-header-name) 的其他首部，允许人为设置的字段为 Fetch 规范定义的 [对 CORS 安全的首部字段集合](https://fetch.spec.whatwg.org/#cors-safelisted-request-header)。该集合为：
-    *   [`Accept`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept)
-    *   [`Accept-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language)
-    *   [`Content-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Language)
-    *   [`Content-Type`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) （需要注意额外的限制）
-*   [`Content-Type`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) 的值仅限于下列三者之一：
-    *   `text/plain`
-    *   `multipart/form-data`
-    *   `application/x-www-form-urlencoded`
-*   请求中的任意 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 对象均没有注册任何事件监听器；[`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 对象可以使用 [`XMLHttpRequest.upload`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/upload) 属性访问。
-*   请求中没有使用 [`ReadableStream`](https://developer.mozilla.org/zh-CN/docs/Web/API/ReadableStream) 对象。
+- 使用下列方法之一：
+  - [`GET`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/GET)
+  - [`HEAD`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/HEAD)
+  - [`POST`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST)
+- 除了被用户代理自动设置的首部字段（例如 [`Connection`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Connection)，[`User-Agent`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/User-Agent)）和在 Fetch 规范中定义为 [禁用首部名称](https://fetch.spec.whatwg.org/#forbidden-header-name) 的其他首部，允许人为设置的字段为 Fetch 规范定义的 [对 CORS 安全的首部字段集合](https://fetch.spec.whatwg.org/#cors-safelisted-request-header)。该集合为：
+  - [`Accept`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept)
+  - [`Accept-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language)
+  - [`Content-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Language)
+  - [`Content-Type`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) （需要注意额外的限制）
+- [`Content-Type`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) 的值仅限于下列三者之一：
+  - `text/plain`
+  - `multipart/form-data`
+  - `application/x-www-form-urlencoded`
+- 请求中的任意 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 对象均没有注册任何事件监听器；[`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 对象可以使用 [`XMLHttpRequest.upload`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/upload) 属性访问。
+- 请求中没有使用 [`ReadableStream`](https://developer.mozilla.org/zh-CN/docs/Web/API/ReadableStream) 对象。
 
 比如说，假如站点 `https://foo.example` 的网页应用想要访问 `https://bar.other` 的资源。`foo.example` 的网页中可能包含类似于下面的 JavaScript 代码：
 
 ```js
 const xhr = new XMLHttpRequest();
-const url = 'https://bar.other/resources/public-data/';
+const url = "https://bar.other/resources/public-data/";
 
-xhr.open('GET', url);
+xhr.open("GET", url);
 xhr.onreadystatechange = someHandler;
 xhr.send();
 ```
@@ -108,16 +105,16 @@ Access-Control-Allow-Origin: https://foo.example
 
 ```js
 const xhr = new XMLHttpRequest();
-xhr.open('POST', 'https://bar.other/resources/post-here/');
-xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
-xhr.setRequestHeader('Content-Type', 'application/xml');
+xhr.open("POST", "https://bar.other/resources/post-here/");
+xhr.setRequestHeader("X-PINGOTHER", "pingpong");
+xhr.setRequestHeader("Content-Type", "application/xml");
 xhr.onreadystatechange = handler;
-xhr.send('<person><name>Arun</name></person>'); 
+xhr.send("<person><name>Arun</name></person>");
 ```
 
 上面的代码使用 `POST` 请求发送一个 XML 文档，该请求包含了一个自定义的请求首部字段（X-PINGOTHER: pingpong）。另外，该请求的 `Content-Type` 为 `application/xml`。因此，该请求需要首先发起 “预检请求”。
 
-![](./static/preflight_correct.png)
+![](../static/preflight_correct.png)
 
 **备注：** 如下所述，实际的 `POST` 请求不会携带 `Access-Control-Request-*` 首部，它们仅用于 `OPTIONS` 请求。
 
@@ -219,8 +216,8 @@ CORS 最初要求浏览器具有该行为，不过在后续的 [修订](https://
 
 在浏览器的实现跟上规范之前，有两种方式规避上述报错行为：
 
-*   在服务端去掉对预检请求的重定向；
-*   将实际请求变成一个[简单请求](#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82)。
+- 在服务端去掉对预检请求的重定向；
+- 将实际请求变成一个[简单请求](#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82)。
 
 如果上面两种方式难以做到，我们仍有其他办法：
 
@@ -239,21 +236,21 @@ CORS 最初要求浏览器具有该行为，不过在后续的 [修订](https://
 
 ```js
 const invocation = new XMLHttpRequest();
-const url = 'https://bar.other/resources/credentialed-content/';
+const url = "https://bar.other/resources/credentialed-content/";
 
 function callOtherDomain() {
   if (invocation) {
-    invocation.open('GET', url, true);
+    invocation.open("GET", url, true);
     invocation.withCredentials = true;
     invocation.onreadystatechange = handler;
     invocation.send();
   }
-} 
+}
 ```
 
 第 7 行将 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 的 `withCredentials` 标志设置为 `true`，从而向服务器发送 Cookies。因为这是一个简单 `GET` 请求，所以浏览器不会对其发起 “预检请求”。但是，如果服务器端的响应中未携带 [`Access-Control-Allow-Credentials`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials)`: true`，浏览器将不会把响应内容返回给请求的发送者。
 
-![](./static/cred-req-updated.png)
+![](../static/cred-req-updated.png)
 
 客户端与服务器端交互示例如下：
 
@@ -302,9 +299,9 @@ Firefox 87 允许通过在设置中设定 `network.cors_preflight.allow_client_c
 
 在响应附带身份凭证的请求时：
 
-*   服务器不能将 `Access-Control-Allow-Origin` 的值设为通配符 “`*`”，而应将其设置为特定的域，如：`Access-Control-Allow-Origin: https://example.com`。
-*   服务器不能将 `Access-Control-Allow-Headers` 的值设为通配符 “`*`”，而应将其设置为首部名称的列表，如：`Access-Control-Allow-Headers: X-PINGOTHER, Content-Type`
-*   服务器不能将 `Access-Control-Allow-Methods` 的值设为通配符 “`*`”，而应将其设置为特定请求方法名称的列表，如：`Access-Control-Allow-Methods: POST, GET`
+- 服务器不能将 `Access-Control-Allow-Origin` 的值设为通配符 “`*`”，而应将其设置为特定的域，如：`Access-Control-Allow-Origin: https://example.com`。
+- 服务器不能将 `Access-Control-Allow-Headers` 的值设为通配符 “`*`”，而应将其设置为首部名称的列表，如：`Access-Control-Allow-Headers: X-PINGOTHER, Content-Type`
+- 服务器不能将 `Access-Control-Allow-Methods` 的值设为通配符 “`*`”，而应将其设置为特定请求方法名称的列表，如：`Access-Control-Allow-Methods: POST, GET`
 
 对于附带身份凭证的请求（通常是 `Cookie`），服务器不得设置 `Access-Control-Allow-Origin` 的值为 “`*`”。
 
@@ -320,8 +317,7 @@ Firefox 87 允许通过在设置中设定 `network.cors_preflight.allow_client_c
 
 Cookie 策略受 [SameSite](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Set-Cookie/SameSite) 属性控制。
 
-[HTTP 响应首部字段](#http_响应首部字段 "Permalink to HTTP 响应首部字段")
-------------------------------------------------------
+## [HTTP 响应首部字段](#http_响应首部字段 "Permalink to HTTP 响应首部字段")
 
 ### [Access-Control-Allow-Origin](#access-control-allow-origin "Permalink to Access-Control-Allow-Origin")
 
@@ -340,7 +336,7 @@ Access-Control-Allow-Origin: https://mozilla.org
 Vary: Origin
 ```
 
-如果服务端指定了具体的域名而非 “*”，那么响应首部中的 [`Vary`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Vary) 字段的值必须包含 [`Origin`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin)。这将告诉客户端：服务器对不同的源站返回不同的内容。
+如果服务端指定了具体的域名而非 “\*”，那么响应首部中的 [`Vary`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Vary) 字段的值必须包含 [`Origin`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin)。这将告诉客户端：服务器对不同的源站返回不同的内容。
 
 译者注：在跨源访问时，`XMLHttpRequest` 对象的 [`getResponseHeader()`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/getResponseHeader "getResponseHeader()") 方法只能拿到一些最基本的响应头，Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma，如果要访问其他头，则需要服务器设置本响应头。
 
@@ -377,8 +373,7 @@ Access-Control-Allow-Credentials: true
 
 ### [Access-Control-Allow-Methods](#access-control-allow-methods "Permalink to Access-Control-Allow-Methods")
 
-[HTTP 请求首部字段](#http_请求首部字段 "Permalink to HTTP 请求首部字段")
-------------------------------------------------------
+## [HTTP 请求首部字段](#http_请求首部字段 "Permalink to HTTP 请求首部字段")
 
 本节列出了可用于发起跨源请求的首部字段。请注意，这些首部字段无须手动设置。 当开发者使用 XMLHttpRequest 对象发起跨源请求时，它们已经被设置就绪。
 
@@ -398,6 +393,5 @@ origin 参数的值为源站 URI。它不包含任何路径信息，只是服务
 注意，在所有访问控制请求（Access control request）中，[`Origin`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin) 首部字段 **总是** 被发送。
 
 ### [Access-Control-Request-Method](#access-control-request-method "Permalink to Access-Control-Request-Method")
-
 
 ### [Access-Control-Request-Headers](#access-control-request-method "Permalink to Access-Control-Request-Method")

@@ -114,28 +114,43 @@ export default defineUserConfig({
           collapsible: true,
           children: [
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP发展历程.html",
+            {
+              text: "HTTP安全",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/图解SSL_TLS协议.html",
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/HTTPS.html",
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/跨源资源共享 (CORS).html",
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/内容安全策略( CSP ).html",
+              ],
+            },
+            {
+              text: "HTTP缓存",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP缓存/HTTP 缓存.html",
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP缓存/浏览器、DNS、CDN缓存.html",
+                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP缓存/http缓存与cdn缓存配置指南.html",
+              ],
+            },
+
             "/01-Computer-Basic/02-计算机网络/HTTP/TCP协议详解.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/DNS原理入门.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/CDN原理入门.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/浏览器、DNS、CDN缓存.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/http缓存与cdn缓存配置指南.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/Data-URL.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP Headers.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP cookies.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 消息.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 缓存.html",
+
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 请求方法.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 请求的响应头部 Vary 的理解.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP 详解长短连接，管道化，队头阻塞及它们之间的关系.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP2四大核心特性.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/HTTPS.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP_1.x 的连接管理.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/内容安全策略( CSP ).html",
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP概述.html",
             "/01-Computer-Basic/02-计算机网络/HTTP/meta标签.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/图解SSL_TLS协议.html",
+
             "/01-Computer-Basic/02-计算机网络/HTTP/理解TCP序列号Seq和确认号Ack.html",
-            "/01-Computer-Basic/02-计算机网络/HTTP/跨源资源共享 (CORS).html",
             "/01-Computer-Basic/02-计算机网络/HTTP/浏览器的工作原理.html",
           ],
         },
@@ -704,7 +719,9 @@ export default defineUserConfig({
         "/06-English/新概念/新概念1/Lesson05~06/Lesson05~06.html",
         "/06-English/新概念/新概念1/Lesson07~08/Lesson07~08.html",
       ],
-      "/07-Plan/": ["/07-Plan/index.html"],
+      "/07-Plan/": [
+        "/07-Plan/index.html",
+      ],
     },
   }),
   markdown: {
