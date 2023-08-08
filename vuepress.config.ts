@@ -113,6 +113,13 @@ export default defineUserConfig({
           text: "计算机网络",
           collapsible: true,
           children: [
+            {
+              text: "计算机网络自顶向下",
+              collapsible: true,
+              children: [
+                "/01-Computer-Basic/02-计算机网络/计算机网络自顶向下/01计算机网络和英特网/01计算机网络和英特网.html",
+              ],
+            },
             "/01-Computer-Basic/02-计算机网络/HTTP/HTTP发展历程.html",
             {
               text: "HTTP安全",
@@ -719,9 +726,7 @@ export default defineUserConfig({
         "/06-English/新概念/新概念1/Lesson05~06/Lesson05~06.html",
         "/06-English/新概念/新概念1/Lesson07~08/Lesson07~08.html",
       ],
-      "/07-Plan/": [
-        "/07-Plan/index.html",
-      ],
+      "/07-Plan/": ["/07-Plan/index.html"],
     },
   }),
   markdown: {

@@ -113,7 +113,7 @@ function normalizeFileName(url) {
 //目标文件
 const p = path.join(
   __dirname,
-  "../docs/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全"
+  "../docs/01-Computer-Basic/02-计算机网络/计算机网络自顶向下"
 );
 const paths = getMDFiles(p);
 
