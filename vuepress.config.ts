@@ -711,6 +711,7 @@ export default defineUserConfig({
         "/04-Front-End-Engineering/01-CanIUse/01-caniuse.html",
         "/04-Front-End-Engineering/03-Babel/ AST（抽象语法树）以及 AST 的广泛应用.html",
         "/04-Front-End-Engineering/04-commitLint/commitLint.html",
+        "/04-Front-End-Engineering/07-UML类图/UML类图.html",
         {
           text: "Git",
           collapsible: true,
