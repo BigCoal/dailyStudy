@@ -117,6 +117,7 @@ export default defineUserConfig({
               text: "计算机网络自顶向下",
               collapsible: true,
               children: [
+                "/01-Computer-Basic/02-计算机网络/计算机网络自顶向下/01计算机网络和英特网/00计算机基础知识.html",
                 "/01-Computer-Basic/02-计算机网络/计算机网络自顶向下/01计算机网络和英特网/01计算机网络和英特网.html",
               ],
             },
