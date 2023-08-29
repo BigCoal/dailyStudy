@@ -111,10 +111,7 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(
-  __dirname,
-  "../docs/01-Computer-Basic/02-计算机网络/计算机网络自顶向下"
-);
+const p = path.join(__dirname, "../docs/03-Front-End-Frame/06-Flutter");
 const paths = getMDFiles(p);
 
 paths.map((pathItem) => {
