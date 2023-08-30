@@ -15,10 +15,8 @@
 
 我们先从简单的无状态`Widget`开始学习，我们来定义一个自定义的`Widget`，名为`MyWidget`：
 
-```
-class MyWidget extends StatelessWidget {
-
-}
+```js
+class MyWidget extends StatelessWidget {}
 ```
 
 > `Flutter`中类名可以使用驼峰命名格式，工程名和文件名都需要用小写；
@@ -27,7 +25,7 @@ class MyWidget extends StatelessWidget {
 
 代码补全之后，将会如下：
 
-```
+```js
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,7 @@ class MyWidget extends StatelessWidget {
 
 我们使用`Center`和`Text`两个部件来完成`MyWidget`的渲染效果：
 
-```
+```js
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -59,7 +57,7 @@ class MyWidget extends StatelessWidget {
 
 我们只需要修改`main`函数中的`runApp`即可：
 
-```
+```js
 void main() {
   runApp(
     MyWidget()
@@ -73,7 +71,7 @@ void main() {
 
 在之前的代码中，我们使用如下代码创建一个`Text`部件：
 
-```
+```js
 Text(
 	'自定义Widget',
 	textDirection: TextDirection.ltr,
@@ -93,13 +91,13 @@ Text(
 
 我们如果要修改`Text`的样式，那么就需要给`style`属性赋值，那么我们点击`style`属性，发现其定义如下：
 
-```
+```js
 final TextStyle? style;
 ```
 
 那么我们就需要创建一个`TextStyle`部件给`style属性赋值`：
 
-```
+```js
 TextStyle(
 	color: Colors.red,
 	fontSize: 30.0,
@@ -115,7 +113,7 @@ TextStyle(
 
 在`Android Studio`中工具里边有个闪电图标： ![](./static/912edb7ccd874d108ad21217b7ec05fe~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 这是`Flutter`的`热重载`（增量文件渲染），比如我们要求改`Text`控件的文本信息如下：
 
-```
+```js
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -138,7 +136,7 @@ class MyWidget extends StatelessWidget {
 
 ### 箭头函数
 
-```
+```js
 void main() {
   runApp(MyWidget());
 }
@@ -146,7 +144,7 @@ void main() {
 
 在如上代码中，由于`runApp`只有一行代码，那么可以将其修改为：
 
-```
+```js
 void main() => runApp(MyWidget());
 ```
 

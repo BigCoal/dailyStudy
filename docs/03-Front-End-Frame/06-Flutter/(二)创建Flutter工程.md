@@ -1,7 +1,5 @@
 # (二)创建 Flutter 工程
 
-=============
-
 我们已经配好了`Android Studio`的`Flutter`环境，那么我们接下来就是用`Android Studio`来创建工程： ![](./static/73921540bc6b46409ec26cef5087e94d~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 打开`Android Studio`，然后点击`New Flutter Project`： ![](./static/a157a485c1334bc486516f27cc2d01c7~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 选中`Flutter`，确保`Flutter SDK path`后边的路径正确，然后点击`next`： ![](./static/b0f1b16e6a384c338bed78b21b8ef484~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png)
 
 - `Project name`：工程名字；需要注意的是，`Flutter`工程名字不能使用`驼峰命名`格式，`Flutter`推荐使用`下划线(_)`来链接；

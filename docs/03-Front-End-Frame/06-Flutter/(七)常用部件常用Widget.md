@@ -6,15 +6,17 @@
 
 在我们进行日常开发工作中，`Text`可以说是我们使用最多的部件了，那么我们来研究一下`Text`的相关使用； 首先，我们来看一下一段文本在`Text`上的默认显示效果：
 
-```
-Text('Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。');
+```js
+Text(
+  "Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。"
+);
 ```
 
 其显示效果如下： ![](./static/e50dd65804fc4bfdbc6a45bfd522c5a0~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png)
 
 ### 居中显示
 
-```
+```js
 textAlign: TextAlign.center,
 ```
 
@@ -24,7 +26,7 @@ textAlign: TextAlign.center,
 
 创建一个`TextStyle`给`Text`的`style`属性赋值，用来改变字体大小及粗细；
 
-```
+```js
 final TextStyle _textStyle = const TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w800,
@@ -46,7 +48,7 @@ final TextStyle _textStyle = const TextStyle(
 
 显示最大行数：
 
-```
+```js
 return Text(
       'Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。',
       textAlign: TextAlign.center,
@@ -67,7 +69,7 @@ return Text(
 
 我们先定义几个文本字符串：
 
-```
+```js
 final String _title = '《法外狂徒张三的自我修养》';
   final String _lector = '讲师：';
   final String _name = '罗翔';
@@ -75,7 +77,7 @@ final String _title = '《法外狂徒张三的自我修养》';
 
 那么，我们如何将这三个字符串进行拼接呢？在`Flutter`中可以使用`$`来进行操作：
 
-```
+```js
 Text(
 	'$_title -- $_lector$_name',
 	textAlign: TextAlign.center,
@@ -97,7 +99,7 @@ Text(
 
 我们先来给`Container`添加一个颜色：
 
-```
+```js
 Container(
 	color: Colors.orange,
 );

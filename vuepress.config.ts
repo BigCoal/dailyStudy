@@ -657,7 +657,8 @@ export default defineUserConfig({
               ],
             },
           ],
-        },{
+        },
+        {
           text: "Flutter",
           collapsible: true,
           children: [
@@ -669,6 +670,16 @@ export default defineUserConfig({
             "/03-Front-End-Frame/06-Flutter/(六)常用部件ListView初体验.html",
             "/03-Front-End-Frame/06-Flutter/(七)常用部件常用Widget.html",
             "/03-Front-End-Frame/06-Flutter/(八)线性布局Row&Column.html",
+            "/03-Front-End-Frame/06-Flutter/(九)层叠布局-Stack.html",
+            "/03-Front-End-Frame/06-Flutter/(十)基础知识-Widget的状态管理.html",
+            "/03-Front-End-Frame/06-Flutter/(十一)实战-项目搭建.html",
+            "/03-Front-End-Frame/06-Flutter/(十二)实战-工程配置及本地资源使用.html",
+            "/03-Front-End-Frame/06-Flutter/(十三)实战-模仿微信发现界面.html",
+            "/03-Front-End-Frame/06-Flutter/(十四)实战-cell的点击处理.html",
+            "/03-Front-End-Frame/06-Flutter/(十五)实战-微信我的界面.html",
+            "/03-Front-End-Frame/06-Flutter/(十六)实战-微信通讯录界面.html",
+            "/03-Front-End-Frame/06-Flutter/(十七)实战-通讯录分组.html",
+            "/03-Front-End-Frame/06-Flutter/(十八)实战-通讯录索引条.html",
           ],
         },
       ],

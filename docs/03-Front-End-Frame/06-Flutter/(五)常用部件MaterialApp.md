@@ -6,7 +6,7 @@
 
 在`Flutter`中，`runApp`推荐返回一个`MaterialApp`，那么我们来看一下它是个什么样的部件：
 
-```
+```js
 class MaterialApp extends StatefulWidget
 ```
 
@@ -24,7 +24,7 @@ class MaterialApp extends StatefulWidget
 
 我们编写如下代码：
 
-```
+```js
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
 
 我们发现`Scaffold`还有一个`body`属性，并且它也是一个`Widget`：`final Widget? body;` ![](./static/6c51fa35ef1e47afa70be627846f54b6~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 我们将自定义的`MyWidget`赋值给`Scaffold`的`body`属性试试看：
 
-```
+```js
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
 
 `MaterialApp`中`debugShowCheckedModeBanner`就是控制`debug`标识的显示与隐藏的，我们将代码修改如下：
 
-```
+```js
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

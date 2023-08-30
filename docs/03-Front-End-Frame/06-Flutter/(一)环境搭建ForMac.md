@@ -54,14 +54,14 @@
 
 我们需要在配置文件中，进行镜像的配置：
 
-```
+```js
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
 ```
 
 > 可能有一部分之前用的老电脑，配置信息放在了`bash_profile`文件中，现在更新到新系统之后，默认的是`zsh`，这样的话我们会有两份配置文件，那么我们只需要在`zshrc`文件最后添加如下指令，就可以直接将`bash_profile`文件中所有的环境变量引入`zshrc`中：
 
-```
+```js
 if [ -f ~/.bash_profile ]; then
     . ~/.bash_profile;
 fi
@@ -71,7 +71,7 @@ fi
 
 在配置文件中添加配置如下：
 
-```
+```js
 #flutter环境变量
 export PUB_HOSTED_URL=https://pub.flutter-io.cn #国内用户需要设置
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn #国内用户需要设置
@@ -82,7 +82,7 @@ export PATH=/Users/******/development/flutter/bin:$PATH
 
 配置完成之后，重新打开终端，或者直接在终端中输入指令重新载入配置：
 
-```
+```js
 ## zsh 指令
 source ~/.zshrc
 
@@ -152,7 +152,7 @@ source ~/.bash_profile
 
 即使我们已经安装好了`Android Studio`，此时还可能出现`JDK`的版本问题，目前`JDK`已经是`10+`的版本，而此处需要`1.8`版本 (好像，貌似是这个版本)，所以我们需要指定一个`软链接`:
 
-```
+```js
 cd /Applications/Android\ Studio.app/Contents/jre
 ln -s ../jre jdk
 ln -s "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" jdk
@@ -164,7 +164,7 @@ ln -s "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" jdk
 
 执行指令：
 
-```
+```js
 flutter doctor --android-licenses
 ```
 

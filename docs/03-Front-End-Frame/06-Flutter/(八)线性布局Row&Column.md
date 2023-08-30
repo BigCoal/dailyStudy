@@ -17,7 +17,7 @@
 
 接下来我们再来看一个`Container`的属性：`alignment`对齐方式，其定义如下：
 
-```
+```js
 final AlignmentGeometry? alignment;
 ```
 
@@ -25,7 +25,7 @@ final AlignmentGeometry? alignment;
 
 这里我们先使用`Alignment`来进行布局，其构造函数为：
 
-```
+```js
 const Alignment(this.x, this.y)
 ```
 
@@ -39,7 +39,7 @@ const Alignment(this.x, this.y)
 
 `Row`可以沿水平方向布局其`子Widget`；其定义如下：
 
-```
+```js
 Row({
     Key? key,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
@@ -98,7 +98,7 @@ Row({
 
 `MainAxisAlignment`是一个枚举类型，其定义如下：
 
-```
+```js
 enum MainAxisAlignment {
   start,
   end,

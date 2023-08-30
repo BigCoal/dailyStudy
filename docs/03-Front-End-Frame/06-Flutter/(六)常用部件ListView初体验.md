@@ -8,7 +8,7 @@
 
 既然要显示一个列表，那么我们就需要在列表中显示一个数据模型，这里我们创建一个`article.dart`文件，在其中创建一个模型：
 
-```
+```js
 class Article {
   const Article(this.name, this.iconUrl); // 构造函数
   final String name;
@@ -18,7 +18,7 @@ class Article {
 
 模型的创建方式还有另外一种，如下：
 
-```
+```js
 class Article {
   const Article({this.name, this.iconUrl}); // 构造函数 可选赋值
   final String? name; // ? 表示空安全
@@ -37,7 +37,7 @@ class Article {
 
 为了方便，我们直接在`article.dart`文件中创建一个数组，来存放`Article`类作为列表的数据源；
 
-```
+```js
 final List<Article> datas = [] // 具体内容没有放出来
 ```
 
@@ -47,19 +47,19 @@ final List<Article> datas = [] // 具体内容没有放出来
 
 在使用之前，我们首先需要知道如果创建`ListView`，我们在使用`ListView`的时候一般不直接进行构造创建，而是使用其`命名构造函数`进行创建；创建代码如下：
 
-```
+```js
 ListView.builder(itemBuilder: itemBuilder)
 ```
 
 `builder`就是在创建`ListView`的时候，我们需要一个渲染；`itemBuilder`是一个方法回调；根据其定义
 
-```
+```js
 required IndexedWidgetBuilder itemBuilder,
 ```
 
 我们了解到其返回的是`IndexedWidgetBuilder`：
 
-```
+```js
 typedef IndexedWidgetBuilder = Widget Function(BuildContext context, int index);
 ```
 
@@ -67,7 +67,7 @@ typedef IndexedWidgetBuilder = Widget Function(BuildContext context, int index);
 
 我们依据此函数，创建一个返回`Widget`的方法：
 
-```
+```js
 Widget _itemForRow(BuildContext context, int index) {
     return null
   }
@@ -98,7 +98,7 @@ Widget _itemForRow(BuildContext context, int index) {
 
 我们先简单返回一个`Text`部件显示文章标题：
 
-```
+```js
 Widget _itemForRow(BuildContext context, int index) {
     return Text(datas[index].name);
 }
@@ -108,7 +108,7 @@ Widget _itemForRow(BuildContext context, int index) {
 
 注意，如果`name`属性为`空安全`的，那么此时需要进行强制解包：
 
-```
+```js
 Widget _itemForRow(BuildContext context, int index) {
     return Text(datas[index].name!);
 }
@@ -122,13 +122,13 @@ Widget _itemForRow(BuildContext context, int index) {
 
 加载图片时，我们使用`Image`部件；
 
-```
+```js
 Image.network(’‘)
 ```
 
 我们将`_itemForRow`函数代码修改如下：
 
-```
+```js
 Widget _itemForRow(BuildContext context, int index) {
     return Container(
       color: Colors.white,
@@ -150,7 +150,7 @@ Widget _itemForRow(BuildContext context, int index) {
 
 那么，有没有一个部件，它可以存放多个部件呢？我们希望在封面的下方能显示出标题，封面和标题竖着排列，这个时候，就有`Column`部件能够达到这个效果，并且`Column`部件有`children`属性是个数组，能够同时存放多个部件：
 
-```
+```js
 Widget _itemForRow(BuildContext context, int index) {
     return Container(
       color: Colors.white,
@@ -174,7 +174,7 @@ Widget _itemForRow(BuildContext context, int index) {
 
 效果如下： ![](./static/f0546522a96b4f94b580fc6293bbcecb~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 完整代码如下：
 
-```
+```js
 class ListViewDemo extends StatelessWidget {
   // _的内部是指 文件内部！
   Widget _itemForRow(BuildContext context, int index) {

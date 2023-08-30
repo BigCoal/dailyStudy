@@ -6,8 +6,8 @@
 
 我们在`iOS`工程中写`UI`控件的时候一般需要导入`UIKit`框架，那么在`Flutter`中也是同样的道理，需要导入框架，在`Flutter`中，这个框架名叫`material.dart`，导入方式为：
 
-```
-import 'package:flutter/material.dart';
+```js
+import "package:flutter/material.dart";
 ```
 
 这个库类似于`iOS`中的`UIKit`，是一个`素材库`；
@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 
 在`iOS`中我们把`容器`放在`UIWindow`上，那么在`Flutter`上，如果我们需要显示界面，那么需要先执行`runApp()`方法
 
-```
+```js
 void main() {
   runApp(
 
@@ -38,7 +38,7 @@ void main() {
 
 我们先在界面上显示一个`Center`，这个`Widget`看名字就是将控件显示在视图中间的;
 
-```
+```js
 void main() {
   runApp(
     Center(
@@ -54,7 +54,7 @@ void main() {
 
 我们在`Center`中添加一个显示文字的`Text`：
 
-```
+```js
 void main() {
   runApp(
     Center(
@@ -71,7 +71,7 @@ void main() {
 
 这个时候，我们发现我们的代码会发出警告信息： ![](./static/acb78b695b224ec9af57fd976fd59e3e~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 将光标移动到黄色虚线位置时，将会出现`💡`(灯泡)，点击出现提示信息： ![](./static/67dbc32b58e94989a818f9d18a6a04ab~tplv-k3u1fbpfcp-zoom-in-crop-mark-1512-0-0-0.png) 最终代码变为：
 
-```
+```js
 void main() {
   runApp(
     const Center(
