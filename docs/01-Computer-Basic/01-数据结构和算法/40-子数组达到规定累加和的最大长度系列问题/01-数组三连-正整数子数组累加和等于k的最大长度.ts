@@ -4,7 +4,7 @@
 
 //滑动窗口，如果i开头到j位置正好超过k，则判断i+1到j位置（小于j位置不用考虑，都是正数具有单调性）
 
-function getMaxLen(arr: number[], k: number) {
+function getMaxLen1(arr: number[], k: number) {
   let left = 0;
   let right = 0;
   let sum = arr[0];
@@ -26,4 +26,4 @@ function getMaxLen(arr: number[], k: number) {
   return maxLen;
 }
 
-console.log(getMaxLen([3, 2, 1, 1, 2], 6));
+console.log(getMaxLen1([3, 2, 1, 1, 2], 6));

@@ -3,7 +3,7 @@
 // 找到arr的所有子数组里，哪个子数组的累加和等于K，并且是长度最大的
 // 返回其长度
 
-function getMaxLen(arr: number[], k: number) {
+function getMaxLen2(arr: number[], k: number) {
   const sumMap = new Map();
   let sum = 0;
   let maxLen = 0;
@@ -21,4 +21,4 @@ function getMaxLen(arr: number[], k: number) {
   return maxLen;
 }
 
-console.log(getMaxLen([3, 2, 1, 1, 2], 6));
+console.log(getMaxLen2([3, 2, 1, 1, 2], 6));
