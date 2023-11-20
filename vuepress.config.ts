@@ -45,6 +45,10 @@ export default defineUserConfig({
         link: "/03-Front-End-Frame/01-Vue3/Vue3源码解析/文章/01  组件渲染：vnode 到真实 DOM 是如何转变的？.html",
       },
       {
+        text: "JAVA",
+        link: "/08-Java/maven/Maven-基础.html",
+      },
+      {
         text: "工程化",
         link: "/04-Front-End-Engineering/00-性能优化02/01 前端性能优化介绍.html",
       },
@@ -757,6 +761,16 @@ export default defineUserConfig({
             "/04-Front-End-Engineering/05-Git/commit合并.html",
           ],
         },
+      ],
+      "/08-Java/": [
+        {
+          text: "Maven",
+          collapsible: true,
+          children: [
+            "/08-Java/maven/Maven-基础.html"
+          ],
+        },
+        
       ],
       "/06-English/": [
         "/06-English/新概念/新概念1/Lesson00/音标.html",
