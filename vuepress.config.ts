@@ -519,6 +519,7 @@ export default defineUserConfig({
           collapsible: true,
           children: [
             "/03-Front-End-Frame/06-Flutter/(一)环境搭建ForMac.html",
+            "/03-Front-End-Frame/06-Flutter/(一)环境配置及问题.html",
             "/03-Front-End-Frame/06-Flutter/(二)创建Flutter工程.html",
             "/03-Front-End-Frame/06-Flutter/(三)Flutter从零开始.html",
             "/03-Front-End-Frame/06-Flutter/(四)基础知识自定义Widget.html",
@@ -768,6 +769,12 @@ export default defineUserConfig({
           collapsible: true,
           children: [
             "/08-Java/maven/Maven-基础.html"
+          ],
+        },{
+          text: "Gradle",
+          collapsible: true,
+          children: [
+            "/08-Java/maven/Gradle-基础.html"
           ],
         },
         

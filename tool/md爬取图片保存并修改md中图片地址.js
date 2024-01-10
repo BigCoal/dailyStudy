@@ -111,7 +111,7 @@ function normalizeFileName(url) {
 }
 
 //目标文件
-const p = path.join(__dirname, "../docs/08-Java/maven/Maven-基础.md");
+const p = path.join(__dirname, "../docs/08-Java/maven/Gradle-基础.md");
 const paths = getMDFiles(p);
 console.log(paths);
 paths.map((pathItem) => {
