@@ -109,9 +109,8 @@ function normalizeFileName(url) {
   }
   return url;
 }
-
 //目标文件
-const p = path.join(__dirname, "../docs/08-Java/maven/Gradle-基础.md");
+const p = path.join(__dirname, "../docs/03-Front-End-Frame/06-Flutter/dart基础/");
 const paths = getMDFiles(p);
 console.log(paths);
 paths.map((pathItem) => {
