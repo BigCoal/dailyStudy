@@ -110,7 +110,7 @@ function normalizeFileName(url) {
   return url;
 }
 //目标文件
-const p = path.join(__dirname, "../docs/03-Front-End-Frame/06-Flutter/dart基础/");
+const p = path.join(__dirname, "../docs/02-Front-End-Basic/06-Flutter/Getx/");
 const paths = getMDFiles(p);
 console.log(paths);
 paths.map((pathItem) => {

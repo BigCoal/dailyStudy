@@ -1,8 +1,8 @@
-import { defineUserConfig } from "vuepress";
-import { defaultTheme } from "@vuepress/theme-default";
 import { viteBundler } from "@vuepress/bundler-vite";
 import { registerComponentsPlugin } from "@vuepress/plugin-register-components";
+import { defaultTheme } from "@vuepress/theme-default";
 import { path } from "@vuepress/utils";
+import { defineUserConfig } from "vuepress";
 
 export default defineUserConfig({
   lang: "zh-CN",
@@ -37,8 +37,8 @@ export default defineUserConfig({
         link: "/01-Computer-Basic/03-设计模式/策略模式.html",
       },
       {
-        text: "前端基础四大件",
-        link: "/02-Front-End-Basic/01-JavaScript/基础系列/slice-substring-substr.html",
+        text: "前端基础五大件",
+        link: "/02-Front-End-Basic/06-Flutter/dart基础/基础一：变量、类型、操作符.html",
       },
       {
         text: "前端框架",
@@ -512,63 +512,79 @@ export default defineUserConfig({
             },
           ],
         },
-      ],
-      "/03-Front-End-Frame/": [
         {
           text: "Flutter",
           collapsible: true,
+          
           children: [
             {
               text: "Dart基础",
               collapsible: true,
               children: [
-                "/03-Front-End-Frame/06-Flutter/dart基础/基础一：变量、类型、操作符.html",
-                "/03-Front-End-Frame/06-Flutter/dart基础/基础二：函数.html",
-                "/03-Front-End-Frame/06-Flutter/dart基础/基础三：类.html",
-                "/03-Front-End-Frame/06-Flutter/dart基础/基础四：泛型、库.html",
-                "/03-Front-End-Frame/06-Flutter/dart基础/基础五：异步支持及异常.html",
+                "/02-Front-End-Basic/06-Flutter/dart基础/基础一：变量、类型、操作符.html",
+                "/02-Front-End-Basic/06-Flutter/dart基础/基础二：函数.html",
+                "/02-Front-End-Basic/06-Flutter/dart基础/基础三：类.html",
+                "/02-Front-End-Basic/06-Flutter/dart基础/基础四：泛型、库.html",
+                "/02-Front-End-Basic/06-Flutter/dart基础/基础五：异步支持及异常.html",
               ]
             },
             {
               text: "Flutter基础",
               collapsible: true,
               children: [
-                "/03-Front-End-Frame/06-Flutter/(一)环境搭建ForMac.html",
-                "/03-Front-End-Frame/06-Flutter/(一)环境配置及问题.html",
-                "/03-Front-End-Frame/06-Flutter/(二)创建Flutter工程.html",
-                "/03-Front-End-Frame/06-Flutter/(三)Flutter从零开始.html",
-                "/03-Front-End-Frame/06-Flutter/(四)基础知识自定义Widget.html",
-                "/03-Front-End-Frame/06-Flutter/(五)常用部件MaterialApp.html",
-                "/03-Front-End-Frame/06-Flutter/(六)常用部件ListView初体验.html",
-                "/03-Front-End-Frame/06-Flutter/(七)常用部件常用Widget.html",
-                "/03-Front-End-Frame/06-Flutter/(八)线性布局Row&Column.html",
-                "/03-Front-End-Frame/06-Flutter/(九)层叠布局-Stack.html",
-                "/03-Front-End-Frame/06-Flutter/(十)基础知识-Widget的状态管理.html",
-                "/03-Front-End-Frame/06-Flutter/(十一)实战-项目搭建.html",
-                "/03-Front-End-Frame/06-Flutter/(十二)实战-工程配置及本地资源使用.html",
-                "/03-Front-End-Frame/06-Flutter/(十三)实战-模仿微信发现界面.html",
-                "/03-Front-End-Frame/06-Flutter/(十四)实战-cell的点击处理.html",
-                "/03-Front-End-Frame/06-Flutter/(十五)实战-微信我的界面.html",
-                "/03-Front-End-Frame/06-Flutter/(十六)实战-微信通讯录界面.html",
-                "/03-Front-End-Frame/06-Flutter/(十七)实战-通讯录分组.html",
-                "/03-Front-End-Frame/06-Flutter/(十八)实战-通讯录索引条.html",
-                "/03-Front-End-Frame/06-Flutter/(十九)实战-网络请求与模型转换.html",
-                "/03-Front-End-Frame/06-Flutter/(二十)-FutureBuilder异步UI更新.html",
-                "/03-Front-End-Frame/06-Flutter/(二十一)-部件状态的保持.html",
-                "/03-Front-End-Frame/06-Flutter/(二十二)-Dart中的异步编程Future.html",
-                "/03-Front-End-Frame/06-Flutter/(二十三)-多个异步编程.html",
-                "/03-Front-End-Frame/06-Flutter/(二十四)-Dart事件循环机制.html",
-                "/03-Front-End-Frame/06-Flutter/(二十五)-Dart中多线程Isolate.html",
-                "/03-Front-End-Frame/06-Flutter/(二十六)-pubspec.yaml文件介绍.html",
-                "/03-Front-End-Frame/06-Flutter/(二十七)-异步与多线程相结合.html",
-                "/03-Front-End-Frame/06-Flutter/(二十八)-定时器Timer的使用.html",
-                "/03-Front-End-Frame/06-Flutter/(二十九)-网络框架Dio.html",
-                "/03-Front-End-Frame/06-Flutter/(三十)实战-微信聊天搜索输入框.html",
+                "/02-Front-End-Basic/06-Flutter/(一)环境搭建ForMac.html",
+                "/02-Front-End-Basic/06-Flutter/(一)环境配置及问题.html",
+                "/02-Front-End-Basic/06-Flutter/(二)创建Flutter工程.html",
+                "/02-Front-End-Basic/06-Flutter/(三)Flutter从零开始.html",
+                "/02-Front-End-Basic/06-Flutter/(四)基础知识自定义Widget.html",
+                "/02-Front-End-Basic/06-Flutter/(五)常用部件MaterialApp.html",
+                "/02-Front-End-Basic/06-Flutter/(六)常用部件ListView初体验.html",
+                "/02-Front-End-Basic/06-Flutter/(七)常用部件常用Widget.html",
+                "/02-Front-End-Basic/06-Flutter/(八)线性布局Row&Column.html",
+                "/02-Front-End-Basic/06-Flutter/(九)层叠布局-Stack.html",
+                "/02-Front-End-Basic/06-Flutter/(十)基础知识-Widget的状态管理.html",
+                "/02-Front-End-Basic/06-Flutter/(十一)实战-项目搭建.html",
+                "/02-Front-End-Basic/06-Flutter/(十二)实战-工程配置及本地资源使用.html",
+                "/02-Front-End-Basic/06-Flutter/(十三)实战-模仿微信发现界面.html",
+                "/02-Front-End-Basic/06-Flutter/(十四)实战-cell的点击处理.html",
+                "/02-Front-End-Basic/06-Flutter/(十五)实战-微信我的界面.html",
+                "/02-Front-End-Basic/06-Flutter/(十六)实战-微信通讯录界面.html",
+                "/02-Front-End-Basic/06-Flutter/(十七)实战-通讯录分组.html",
+                "/02-Front-End-Basic/06-Flutter/(十八)实战-通讯录索引条.html",
+                "/02-Front-End-Basic/06-Flutter/(十九)实战-网络请求与模型转换.html",
+                "/02-Front-End-Basic/06-Flutter/(二十)-FutureBuilder异步UI更新.html",
+                "/02-Front-End-Basic/06-Flutter/(二十一)-部件状态的保持.html",
+                "/02-Front-End-Basic/06-Flutter/(二十二)-Dart中的异步编程Future.html",
+                "/02-Front-End-Basic/06-Flutter/(二十三)-多个异步编程.html",
+                "/02-Front-End-Basic/06-Flutter/(二十四)-Dart事件循环机制.html",
+                "/02-Front-End-Basic/06-Flutter/(二十五)-Dart中多线程Isolate.html",
+                "/02-Front-End-Basic/06-Flutter/(二十六)-pubspec.yaml文件介绍.html",
+                "/02-Front-End-Basic/06-Flutter/(二十七)-异步与多线程相结合.html",
+                "/02-Front-End-Basic/06-Flutter/(二十八)-定时器Timer的使用.html",
+                "/02-Front-End-Basic/06-Flutter/(二十九)-网络框架Dio.html",
+                "/02-Front-End-Basic/06-Flutter/(三十)实战-微信聊天搜索输入框.html",
               ]
             },
-            
+            {
+              text: "GetX",
+              collapsible: true,
+              
+              children: [
+                "/02-Front-End-Basic/06-Flutter/Getx/介绍、Snackbar、Dialog、BottomSheet、Navigation、Obx.html",
+                "/02-Front-End-Basic/06-Flutter/Getx/GetxController.html", 
+                "/02-Front-End-Basic/06-Flutter/Getx/国际化配置、依赖注入、Binding.html",
+                "/02-Front-End-Basic/06-Flutter/Getx/新闻案例.html",
+                "/02-Front-End-Basic/06-Flutter/Getx/GetUtils.html", 
+                "/02-Front-End-Basic/06-Flutter/Getx/GetView、GetWidget.html",
+                "/02-Front-End-Basic/06-Flutter/Getx/Cli 使用以及常用命令.html", 
+                "/02-Front-End-Basic/06-Flutter/Getx/RxList_E_、Rx_T_([])、.obs 对比分析.html",
+              ]
+            }
           ],
         },
+      ],
+      "/03-Front-End-Frame/": [
+       
         {
           text: "Webpack源码解读",
           collapsible: true,
