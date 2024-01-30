@@ -577,7 +577,7 @@ export default defineUserConfig({
                 "/02-Front-End-Basic/06-Flutter/Getx/GetUtils.html", 
                 "/02-Front-End-Basic/06-Flutter/Getx/GetView、GetWidget.html",
                 "/02-Front-End-Basic/06-Flutter/Getx/Cli 使用以及常用命令.html", 
-                "/02-Front-End-Basic/06-Flutter/Getx/RxList_E_、Rx_T_([])、.obs 对比分析.html",
+                "/02-Front-End-Basic/06-Flutter/Getx/RxList_E_、Rx_T_([])、obs对比分析.html",
               ]
             }
           ],

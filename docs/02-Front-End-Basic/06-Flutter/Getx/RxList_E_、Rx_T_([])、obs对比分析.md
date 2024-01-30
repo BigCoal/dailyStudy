@@ -1,4 +1,4 @@
-# RxList*E*、Rx*T*([])、.obs 对比分析
+# RxList*E*、Rx*T*([])、obs 对比分析
 
 --
 
@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
 
 效果展示
 
-[![](./static/getx_dvanced%E4%B8%89%E7%A7%8D%E5%B1%9E%E6%80%A7%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90.gif)](./static/getx_dvanced%E4%B8%89%E7%A7%8D%E5%B1%9E%E6%80%A7%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90.gif)
+[![](./static/getx_dvanced1.gif)](./static/getx_dvanced1.gif)
 
 ## Rx([]) 源码分析
 
