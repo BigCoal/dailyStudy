@@ -110,7 +110,7 @@ function normalizeFileName(url) {
   return url;
 }
 //目标文件
-const p = path.join(__dirname, "../docs/02-Front-End-Basic/06-Flutter/Getx/");
+const p = path.join(__dirname, "../docs/08-Java/ruoyi/admin/");
 const paths = getMDFiles(p);
 console.log(paths);
 paths.map((pathItem) => {
