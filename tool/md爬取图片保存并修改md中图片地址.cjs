@@ -109,8 +109,8 @@ function normalizeFileName(url) {
   }
   return url;
 }
-//目标文件
-const p = path.join(__dirname, "../docs/08-Java/ruoyi/admin/");
+//目标文件docs\01-Computer-Basic\02-计算机网络\HTTPS
+const p = path.join(__dirname, "../docs/01-Computer-Basic/02-计算机网络/HTTPS/");
 const paths = getMDFiles(p);
 console.log(paths);
 paths.map((pathItem) => {

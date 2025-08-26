@@ -228,12 +228,14 @@ Promise解析过程 是以一个promise和一个值做为参数的抽象过程�
 如果 x 不是对象也不是函数，则以x为值 fulfill promise。
 
 
-## 起步构建
+## Promise 构建
 
 
 本章来自己开发一个Promise实现，提升异步编程的能力。
 
 首先声明定义类并声明Promise状态与值，有以下几个细节需要注意。
+
+### 实现 resolve 和 rejected 的状态更新
 
 executor为执行者
 当执行者出现异常时触发拒绝状态
@@ -279,13 +281,12 @@ class HD {
   console.log(p);
 </script>
 ```
-### THEN
+### Then（同步任务）
 现在添加then方法来处理状态的改变，有以下几点说明
 
 then可以有两个参数，即成功和错误时的回调函数
 then的函数参数都不是必须的，所以需要设置默认值为函数，用于处理当没有传递时情况
 当执行then传递的函数发生异常时，统一交给onRejected来处理错误
-### 基础构建
 ``` js
 then(onFulfilled, onRejected) {
   if (typeof onFulfilled != "function") {
@@ -324,7 +325,7 @@ let p = new HD((resolve, reject) => {
 );
 console.log("baidu.com");
 ```
-### 异步任务
+### Then（异步任务）
 但上面的代码产生的Promise并不是异步的，使用setTimeout来将onFulfilled与onRejected做为异步宏任务执行
 ``` js
 then(onFulfilled, onRejected) {
@@ -368,7 +369,7 @@ let p = new HD((resolve, reject) => {
 );
 console.log("baidu.com");
 ```
-### PENDING状态
+### Then（PENDING同步状态）
 目前then方法无法处理promise为pending时的状态
 ``` js
 ...
@@ -440,7 +441,8 @@ reject(value) {
   }
 }
 ```
-### PENDING异步
+### Then（PENDING异步状态）
+
 执行以下代码发现并不是异步操作，应该先输出 视频 然后是`百度
 ``` js
 let p = new HD((resolve, reject) => {
@@ -482,7 +484,7 @@ reject(value) {
   }
 }
 ```
-### 链式操作
+### Then 链式操作
 Promise中的then是链式调用执行的，所以then也要返回Promise才能实现
 
 then的onReject函数是对前面Promise的rejected的处理
@@ -567,10 +569,9 @@ let p = new HD((resolve, reject) => {
 console.log("baidu.com");
 ```
 
-### 返回类型
+### Then 链式操作（返回Promise）
 如果then返回的是Promise呢？所以我们需要判断分别处理返回值为Promise与普通值的情况
 
-### 基本实现
 下面来实现不同类型不同处理机制
 ``` js
 then(onFulfilled, onRejected) {
@@ -758,7 +759,7 @@ p = p.then(value => {
   return p;
 });
 ```
-### RESOLVE
+## Promise.resolve
 下面来实现Promise的resolve方法
 ``` js
 static resolve(value) {
@@ -802,7 +803,7 @@ HD.resolve(
   }
 );
 ```
-### REJEDCT
+## Promise.reject
 下面定义Promise的rejecte方法
 ``` js
 static reject(reason) {
@@ -817,7 +818,7 @@ HD.reject("rejected").then(null, reason => {
   console.log(reason);
 });
 ```
-### ALL
+## Promise.all
 下面来实现Promise的all方法
 
 ``` js
@@ -890,7 +891,7 @@ let promises = HD.all([p1, p2]).then(
 );
 ```
 
-### RACE
+## Promise.rece()
 下面实现Promise的race方法
 
 ``` js

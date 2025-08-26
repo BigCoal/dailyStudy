@@ -1,4 +1,4 @@
-# XSS攻击
+# XSS(Cross-Site Scripting)攻击
 
 随着互联网的高速发展，信息安全问题已经成为企业最为关注的焦点之一，而前端又是引发企业安全问题的高危据点。在移动互联网时代，前端人员除了传统的 XSS、CSRF 等安全问题之外，又时常遭遇网络劫持、非法调用 Hybrid API 等新型安全问题。当然，浏览器自身也在不断在进化和发展，不断引入 CSP、Same-Site Cookies 等新技术来增强安全性，但是仍存在很多潜在的威胁，这需要前端技术人员不断进行 “查漏补缺”。
 
@@ -74,10 +74,10 @@ XSS 攻击是页面被注入了恶意的代码，为了更形象的介绍，我�
 经过了转义函数的处理后，最终浏览器接收到的响应为：
 
 ```html
-<input type="text" value=""><script>alert('XSS');</script>">
+<input type="text" value="&quot;&gt;&lt;script&gt;alert(&#x27;XSS&#x27;);&lt;&#x2F;script&gt;">
 <button>搜索</button>
 <div>
-  您搜索的关键词是："><script>alert('XSS');</script>
+  您搜索的关键词是：&quot;&gt;&lt;script&gt;alert(&#x27;XSS&#x27;);&lt;&#x2F;script&gt;
 </div>
 ```
 

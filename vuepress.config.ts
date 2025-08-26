@@ -128,8 +128,7 @@ export default defineUserConfig({
               text: "HTTP安全",
               collapsible: true,
               children: [
-                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/图解SSL_TLS协议.html",
-                "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/HTTPS.html",
+                "/01-Computer-Basic/02-计算机网络/HTTPS/HTTPS原理全解析.html", 
                 "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/跨源资源共享 (CORS).html",
                 "/01-Computer-Basic/02-计算机网络/HTTP/HTTP安全/内容安全策略( CSP ).html",
               ],
