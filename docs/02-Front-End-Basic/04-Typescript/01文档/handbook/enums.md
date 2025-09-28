@@ -71,7 +71,7 @@ enum Direction {
 
 由于字符串枚举没有自增长的行为，字符串枚举可以很好的序列化。 换句话说，如果你正在调试并且必须要读一个数字枚举的运行时的值，这个值通常是很难读的 - 它并不能表达有用的信息（尽管[反向映射](enums.md#enums-at-runtime)会有所帮助），字符串枚举允许你提供一个运行时有意义的并且可读的值，独立于枚举成员的名字。
 
-### 异构枚举（Heterogeneous enums）
+### 异构枚举
 
 从技术的角度来说，枚举可以混合字符串和数字成员，但是似乎你并不会这么做：
 
@@ -230,7 +230,7 @@ function printImportant(key: LogLevelStrings, message: string) {
 printImportant('ERROR', 'This is a message');
 ```
 
-#### 反向映射
+### 反向映射
 
 除了创建一个以属性名做为对象成员的对象之外，数字枚举成员还具有了_反向映射_，从枚举值到枚举名字。 例如，在下面的例子中：
 
@@ -257,7 +257,7 @@ var nameOfA = Enum[a]; // "A"
 
 要注意的是_不会_为字符串枚举成员生成反向映射。
 
-#### `const`枚举
+### `const`枚举
 
 大多数情况下，枚举是十分有效的方案。 然而在某些情况下需求很严格。 为了避免在额外生成的代码上的开销和额外的非直接的对枚举成员的访问，我们可以使用`const`枚举。 常量枚举通过在枚举上使用`const`修饰符来定义。
 
@@ -287,9 +287,10 @@ let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Ri
 var directions = [0 /* Up */, 1 /* Down */, 2 /* Left */, 3 /* Right */];
 ```
 
-## 外部枚举
+### 外部枚举
 
-外部枚举用来描述已经存在的枚举类型的形状。
+在 TypeScript 里，普通枚举会被编译成真实的JavaScript代码。
+而外部枚举 (ambient enum) 使用 declare enum 声明，只会在类型系统里存在，不会生成任何JavaScript代码。
 
 ```typescript
 declare enum Enum {
@@ -299,5 +300,20 @@ declare enum Enum {
 }
 ```
 
-外部枚举和非外部枚举之间有一个重要的区别，在正常的枚举里，没有初始化方法的成员被当成常量成员。 对于非常量的外部枚举而言，没有初始化方法时被当做需要经过计算的。
+这里 Enum 只是一个 类型信息，编译器认为它会在外部环境（比如已有 JS 库）中存在，自己不会输出任何代码。
 
+外部枚举和非外部枚举之间有一个重要的区别，数值初始化规则有点不同：普通枚举可以推断递增值。外部枚举如果没有初始化，成员会被当成 number 类型，而不会自动推断数值。
+
+```ts
+enum NormalEnum {
+  A, // 0
+  B, // 1
+  C  // 2
+}
+
+declare enum ExternalEnum {
+  A, // number
+  B, // number
+  C  // number
+}
+```

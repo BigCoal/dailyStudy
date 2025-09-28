@@ -338,9 +338,9 @@ File 'node_modules/typescript/lib/typescript.d.ts' exist - use it as a module re
 ======== Module name 'typescript' was successfully resolved to 'node_modules/typescript/lib/typescript.d.ts'. ========
 ```
 
-#### 需要留意的地方
+需要留意的地方：
 
-* 导入的名字及位置
+- 导入的名字及位置
 
   > ======== Resolving module **'typescript'** from **'src/app.ts'**. ========
 
@@ -364,7 +364,7 @@ File 'node_modules/typescript/lib/typescript.d.ts' exist - use it as a module re
 
 比如
 
-#### app.ts
+app.ts
 
 ```typescript
 import * as A from "moduleA" // OK, moduleA passed on the command-line
